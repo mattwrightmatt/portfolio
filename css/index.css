@@ -4,31 +4,39 @@ h3,
 h4,
 p {
     margin: 1rem 0;
-    color:#222222;
-    font-family: gimlet-text,serif;;
 }
 
 h1 {
     font-size: 2rem;
     font-weight: 700;
+    color:#222222;
+    font-family: gimlet-text,serif;
 }
 
 h2 {
     font-size: 1.5rem;
     font-weight: 700;
+    color:#222222;
+    font-family: gimlet-text,serif;
 }
 
 //h3 {
     font-size: 1.2rem;
     font-weight: 700;
+    color:#222222;
+    font-family: gimlet-text,serif;
 }
 
 h4 {
     font-size: 1rem;
     font-weight: 700;
+    color:#222222;
+    font-family: gimlet-text,serif;
 }
 
 p {
     font-size: 1rem;
     font-weight: 400;
+    color:#222222;
+    font-family: gimlet-text,serif;
 }
