@@ -1,8 +1,4 @@
 html {
   color: purple;
-  #page-wrap {
-     width: 640px;
-     margin: 0 auto;
-     align: center;
-	}
+  font-family: public sans;
 }
