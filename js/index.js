@@ -1,1 +1,1 @@
-alert("This is an alert I created in index.js!");
+alert("I'll be joining Mercury as a Product Designer later this month!");
