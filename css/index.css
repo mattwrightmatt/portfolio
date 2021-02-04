@@ -1,7 +1,8 @@
 html {
-  color: blue;
+  color: purple;
   #page-wrap {
      width: 640px;
      margin: 0 auto;
-     align-content: center;
+     align: center;
+	}
 }
