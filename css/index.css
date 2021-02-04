@@ -1,10 +1,10 @@
 html, body {
-  margin: 48px;
+  margin: 0;
   padding: 0;
 }
 
 html {
-  font-size: 16px;
+  font-size: 14px;
   background-color: #f7f9fb;
 }
 
@@ -22,18 +22,18 @@ h1, h2, h3, h4, p, li {
 
 
 h1 {
-    font-size: 2rem;
+    font-size: 1rem;
     font-weight: 700;
 
 }
 
 h2 {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
 }
 
 //h3 {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
 }
 
