@@ -1,4 +1,4 @@
-body {
+body{
   background-color: #F7F9FB;
   margin-top: 120px;
   margin-bottom: 120px;
@@ -6,7 +6,7 @@ body {
   margin-left: 120px;
 }
 
-h2 {
+h2{
   color: grey;
   text-align: left;
   font-family: helvetica;
@@ -14,7 +14,7 @@ h2 {
   line-height: 1.2rem;
 }
 
-p {
+p{
   color: black;
   font-family: times;
   font-size: 1em;
