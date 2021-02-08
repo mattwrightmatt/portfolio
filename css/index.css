@@ -1,15 +1,13 @@
-html, body {
+html {
+  font-size: 14px;
+  background-color: #f7f9fb;
   margin: 0;
   padding: 0;
 }
 
-html {
-  font-size: 14px;
-  background-color: #f7f9fb;
-}
-
 body {
   width: 100%;
+  max-width: 600px;
   margin: 24px;
 }
 
@@ -53,33 +51,8 @@ li {
 }
 
 
-/* || header layout */
-
-nav, article, aside, footer {
-  padding: none;
-}
-
-nav {
-  height: 48px;
-  display: flex;
-  margin-bottom: 16px;
-}
-
-nav ul {
-  padding-right: 16px;
-  list-style-type: none;
-  flex: 1;
-  display: flex;
-}
-
-
 /* || main layout */
 
 main {
   display: none;
-}
-
-
-footer {
-  margin-top: 240px;
 }
