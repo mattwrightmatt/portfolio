@@ -1,7 +1,7 @@
 html {
   font-size: 14px;
   background-color: #eeeeee;
-  margin: 24px;
+  margin: 16px;
   padding: 0;
 }
 
@@ -13,8 +13,8 @@ body {
 p{
   font-family: helvetica, serif;
   color: #222222;
-  font-size: 22px;
-  line-height: 32px;
+  font-size: 20px;
+  line-height: 28px;
   font-weight: 400;
 }
 
