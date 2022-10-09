@@ -1,1 +1,0 @@
-alert("I'll be joining Mercury as a Product Designer later this month!");
