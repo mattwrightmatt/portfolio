@@ -1,58 +1,27 @@
 html {
   font-size: 14px;
-  background-color: #f7f9fb;
-  margin: 0;
+  background-color: #eeeeee;
+  margin: 24px;
   padding: 0;
 }
 
 body {
-  width: 100%;
-  max-width: 600px;
-  margin: 24px;
 }
 
 /* || typography */
 
-h1, h2, h3, h4, p, li {
-  font-family: gimlet-text, serif;
-  color: #333333;
-}
-
-
-h1 {
-    font-size: 1rem;
-    font-weight: 700;
-
-}
-
-h2 {
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-h3 {
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-h4 {
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-p {
-    font-size: 1rem;
-    font-weight: 400;
-}
-
-li {
-    font-size: 1rem;
-    font-weight: 400
+p{
+  font-family: helvetica, serif;
+  color: #222222;
+  font-size: 22px;
+  line-height: 32px;
+  font-weight: 400;
 }
 
 
 /* || main layout */
 
 main {
-  width: 420px;
+  max-width: 520px;
+  margin: auto;
 }
