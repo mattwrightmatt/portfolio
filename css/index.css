@@ -8,14 +8,19 @@ html {
 body {
 }
 
+head {
+  margin-top: 56px;
+}
+
 /* || typography */
 
 p{
   font-family: HelveticaNeue-Medium;
   color: #222222;
-  font-size: 20px;
+  font-size: 21px;
   line-height: 28px;
   font-weight: 400;
+  margin-top: 7px;
 }
 
 
