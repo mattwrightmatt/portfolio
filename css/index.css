@@ -36,34 +36,6 @@ a {
   text-decoration: none;
 }
 
-/* unvisited link */
-a:link {
-  color: #222222;
-  opacity: 50%;
-  text-decoration: none;
-}
-
-/* visited link */
-a:visited {
-  color: #222222;
-  opacity: 50%;
-  text-decoration: none;
-}
-
-/* mouse over link */
-a:hover {
-  color: #222222;
-  opacity: 100%;
-  text-decoration: none;
-}
-
-/* selected link */
-a:active {
-  color: #222222;
-  opacity: 100%;
-  text-decoration: none;
-}
-
 
 /* NAV BAR */
 /* navigation list*/
