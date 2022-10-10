@@ -53,6 +53,11 @@ a:active {
   text-decoration: none;
 }
 
+/*nav bar item*/
+li {
+   margin-right: 12px;
+   }
+
 
 /* || main layout */
 
