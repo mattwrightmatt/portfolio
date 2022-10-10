@@ -1,47 +1,30 @@
 html {
-  background-color: #eeeeee;
+  /*background-color: #eeeeee;*/
   margin: 16px;
   padding: 0;
   font-family: Helvetica;
-  color: #222222;
+/*  color: #222222;*/
   font-size: 20px;
   line-height: 30px;
   font-weight: 400;
   margin-top: 8px;
 }
 
-
-.day {
-  background: #eeeeee;
-  color: #222222;
+/* set light mode color as default value */
+:root {
+  --bg-color: #eeeeee;
+  --txt-color: #222222;
 }
-.night {
-  background: #222222;
-  color: #eeeeee;
-}
-
+/* switch to dark mode color */
 @media (prefers-color-scheme: dark) {
-  .day.dark-scheme {
-  background: #eeeeee;
-  color: #222222;
-  }
-  .night.dark-scheme {
-  background: #222222;
-  color: #eeeeee;
-  }
+  --background-color: #222222;
+  --txt-color: #eeeeee;
 }
-
-@media (prefers-color-scheme: light) {
-  .day.light-scheme {
-  background: #eeeeee;
-  color: #222222;
-  }
-  .night.light-scheme {
-  background: #222222;
-  color: #eeeeee;
-  }
+/* apply CSS varaible through var() */
+* {
+  background: var(--bg-color);
+  color: var(--txt-color);
 }
-
 
 
 body {
