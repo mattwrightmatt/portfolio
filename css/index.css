@@ -45,6 +45,7 @@ html {
 
 /* LINKS */
 a {
+  color: var(--color-text);
   opacity: 50%;
   text-decoration: none;
 }
