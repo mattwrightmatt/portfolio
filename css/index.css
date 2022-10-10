@@ -1,22 +1,36 @@
-html {
-  background-color: #eeeeee;
-  margin: 16px;
-  padding: 0;
-  font-family: Helvetica;
-  color: #222222;
-  font-size: 20px;
-  line-height: 30px;
-  font-weight: 400;
-  margin-top: 8px;
+/* 1. Create global variables for text and background color */
+:root {
+  --color-text: #222222;
+  --color-background: #eeeeee;
 }
+
+/* 2. Add conditional styling for dark mode preference */
+@media (prefers-color-scheme: dark) {
+  /* Re-assign previous variables */
+  :root {
+    --color-text: #eeeeee; /* black => white */
+    --color-background: #222222; /* white => black */
+  }
+}
+
 
 body {
   margin-top: 72px;
   margin-bottom: 72px;
+  color: var(--color-text);
+  background-color: var(--color-background);
 }
 
+
 html {
-  overflow-y: scroll;
+  margin: 16px;
+  padding: 0;
+  font-family: Helvetica;
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 400;
+  margin-top: 8px;
+  overflow-y: scroll; 
 }
 
 
