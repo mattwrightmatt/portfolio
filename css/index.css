@@ -14,7 +14,9 @@ body {
   margin-top: 56px;
   margin-bottom: 56px;
   max-width: 552px;
-  display: table-cell;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* navigation list*/
@@ -22,7 +24,8 @@ ul {
   list-style-type: none;
   margin: 0;
   overflow: hidden;
-  padding: 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 li {
