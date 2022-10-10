@@ -13,7 +13,10 @@ html {
 body {
   margin-top: 56px;
   margin-bottom: 56px;
-  max-width: 552px;
+}
+
+html {
+  overflow-y: scroll;
 }
 
 /* navigation list*/
@@ -21,7 +24,7 @@ ul {
   list-style-type: none;
   margin: 0;
   overflow: hidden;
-  padding: 0px, 0px, 16px, 16px;
+  padding: 0;
 }
 
 li {
@@ -34,7 +37,7 @@ li a {
   text-align: left;
   opacity: 50%;
   text-decoration: none;
-  padding-right: 12px;
+  padding-right: 16px;
 }
 
 li a:hover:not(.active) {
@@ -45,9 +48,34 @@ li a:hover:not(.active) {
   opacity: 100%;
 }
 
-/* || main layout */
+/* Content Style */
+.content {
+  max-width: 552px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-main {
-  margin: auto;
-  align-items: center;
+/* scrollbar styling */
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 6px;
+  background: #eeeeee;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #bbbbbb; 
+  opacity: 50%;
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #bbbbbb;
+  opacity: 100%;
 }
