@@ -31,9 +31,8 @@ body {
 ul {
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 0px, 12px, 0px, 0px;
   overflow: hidden;
-  background-color: #333;
 }
 
 li {
@@ -48,12 +47,11 @@ li a {
 }
 
 li a:hover:not(.active) {
-  /*background-color: #111;*/
   opacity: 100%;
 }
 
 .active {
-  background-color: #04AA6D;
+  opacity: 50%;
 }
 
 /* || main layout */
