@@ -41,15 +41,15 @@ li {
 }
 
 li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
+  display: inline-block;
+  color: #222222;
+  text-align: left;
   text-decoration: none;
 }
 
 li a:hover:not(.active) {
-  background-color: #111;
+  /*background-color: #111;*/
+  opacity: 100%;
 }
 
 .active {
