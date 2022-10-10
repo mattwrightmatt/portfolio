@@ -19,6 +19,53 @@ html {
   overflow-y: scroll;
 }
 
+
+/* CONTENT */
+/* Content Style */
+.content {
+  max-width: 552px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* LINKS */
+a {
+  color: #222222;
+  opacity: 50%;
+  text-decoration: none;
+}
+
+/* unvisited link */
+a:link {
+  color: #222222;
+  opacity: 50%;
+  text-decoration: none;
+}
+
+/* visited link */
+a:visited {
+  color: #222222;
+  opacity: 50%;
+  text-decoration: none;
+}
+
+/* mouse over link */
+a:hover {
+  color: #222222;
+  opacity: 100%;
+  text-decoration: none;
+}
+
+/* selected link */
+a:active {
+  color: #222222;
+  opacity: 100%;
+  text-decoration: none;
+}
+
+
+/* NAV BAR */
 /* navigation list*/
 ul {
   list-style-type: none;
@@ -33,10 +80,8 @@ li {
 
 li a {
   display: inline-block;
-  color: #222222;
   text-align: left;
   opacity: 50%;
-  text-decoration: none;
   padding-right: 16px;
 }
 
@@ -48,14 +93,8 @@ li a:hover:not(.active) {
   opacity: 100%;
 }
 
-/* Content Style */
-.content {
-  max-width: 552px;
-  margin-left: auto;
-  margin-right: auto;
-}
 
-/* scrollbar styling */
+/* SCROLLBAR */
 /* width */
 ::-webkit-scrollbar {
   width: 6px;
