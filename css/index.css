@@ -80,10 +80,8 @@ li {
 
 li a {
   display: inline-block;
-  color: #222222;
   text-align: left;
   opacity: 50%;
-  text-decoration: none;
   padding-right: 16px;
 }
 
