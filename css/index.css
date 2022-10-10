@@ -29,23 +29,15 @@ html {
 }
 
 
-li a:hover:not(.active) {
-  opacity: 100%;
-}
-
-.active {
-  opacity: 100%;
-}
-
 /* LINKS */
 a {
   color: #222222;
+  opacity: 50%;
   text-decoration: none;
 }
 
 /* unvisited link */
 a:link {
-  opacity: 50%;
   text-decoration: none;
 }
 
@@ -88,6 +80,13 @@ li a {
   padding-right: 16px;
 }
 
+li a:hover:not(.active) {
+  opacity: 100%;
+}
+
+.active {
+  opacity: 100%;
+}
 
 /* SCROLLBAR */
 /* width */
