@@ -29,20 +29,23 @@ html {
 }
 
 
+li a:hover:not(.active) {
+  opacity: 100%;
+}
+
 .active {
   opacity: 100%;
 }
 
 /* LINKS */
 a {
-  opacity: 50%;
   color: #222222;
   text-decoration: none;
 }
 
 /* unvisited link */
 a:link {
-  /*opacity: 50%;*/
+  opacity: 50%;
   text-decoration: none;
 }
 
@@ -83,10 +86,6 @@ li a {
   display: inline-block;
   text-align: left;
   padding-right: 16px;
-}
-
-li a:hover:not(.active) {
-  opacity: 100%;
 }
 
 
