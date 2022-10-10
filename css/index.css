@@ -30,6 +30,12 @@ html {
 
 
 /* LINKS */
+a {
+  color: #222222;
+  opacity: 50%;
+  text-decoration: none;
+}
+
 /* unvisited link */
 a:link {
   color: #222222;
@@ -74,7 +80,10 @@ li {
 
 li a {
   display: inline-block;
+  color: #222222;
   text-align: left;
+  opacity: 50%;
+  text-decoration: none;
   padding-right: 16px;
 }
 
