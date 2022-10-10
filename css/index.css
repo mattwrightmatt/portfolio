@@ -1,5 +1,4 @@
 html {
-  font-size: 14px;
   background-color: #eeeeee;
   margin: 16px;
   padding: 0;
@@ -17,15 +16,15 @@ p{
   font-family: HelveticaNeue;
   color: #222222;
   font-size: 20px;
-  line-height: 28px;
-  font-weight: 500;
-  margin-top: 7px;
+  line-height: 30px;
+  font-weight: 600;
+  margin-top: 8px;
 }
 
 
 /* || main layout */
 
 main {
-  max-width: 500px;
+  max-width: 576px;
   margin: auto;
 }
