@@ -36,18 +36,19 @@ ul {
 
 li {
   float: left;
-  padding: 0px, 12px, 0px, 0px;
 }
 
 li a {
   display: inline-block;
   color: #222222;
   text-align: left;
+  opacity: 50%;
   text-decoration: none;
+  padding-right: 12px;
 }
 
 li a:hover:not(.active) {
-  opacity: 50%;
+  opacity: 100%;
 }
 
 .active {
