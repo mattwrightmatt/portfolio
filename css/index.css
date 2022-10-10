@@ -13,18 +13,7 @@ html {
 body {
   margin-top: 56px;
   margin-bottom: 56px;
-}
-
-
-/* || typography */
-
-/*p{
-  font-family: Helvetica;
-  color: #222222;
-  font-size: 20px;
-  line-height: 30px;
-  font-weight: 400;
-  margin-top: 8px;
+  max-width: 552px;
 }
 
 /* navigation list*/
@@ -59,6 +48,5 @@ li a:hover:not(.active) {
 /* || main layout */
 
 main {
-  max-width: 552px;
   margin: auto;
 }
