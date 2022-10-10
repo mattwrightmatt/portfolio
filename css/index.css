@@ -28,49 +28,34 @@ body {
 }
 
 /* navigation list*/
-li {
-  float: left;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
 }
+
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+li a:hover {
+  background-color: #555;
+  color: white;
+}
+
 
 a {
   display: inline;
   padding: 0px, 12px, 0px, 0px;
 }
 
-/* unvisited link */
-a:link {
-  color: #222222;
-  opacity: 50%;
-  text-decoration: none;
-}
 
-/* visited link */
-a:visited {
-  color: #222222;
-  opacity: 50%;
-  text-decoration: none;
-}
-
-/* mouse over link */
-a:hover {
-  color: #222222;
-  opacity: 100%;
-  text-decoration: none;
-}
-
-/* selected link */
-a:active {
-  color: #222222;
-  opacity: 100%;
-  text-decoration: none;
-}
-
-/* current link */
-a:current {
-  color: #222222;
-  opacity: 100%
-  text-decoration: none;
-}
 
 
 /* || main layout */
