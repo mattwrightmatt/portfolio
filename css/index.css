@@ -54,9 +54,9 @@ a:active {
 }
 
 /*nav bar item*/
-li {
-   margin-right: 12px;
-   }
+.nav1 {
+    margin-right: 12px;
+}
 
 
 /* || main layout */
