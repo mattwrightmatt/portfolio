@@ -21,6 +21,31 @@ p{
   margin-top: 8px;
 }
 
+/* unvisited link */
+a:link {
+  color: #222222;
+  text-decoration: underline;
+}
+
+/* visited link */
+a:visited {
+  color: #222222;
+  text-decoration: underline;
+}
+
+/* mouse over link */
+a:hover {
+  color: #222222;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* selected link */
+a:active {
+  color: #222222;
+  text-decoration: underline;
+}
+
 
 /* || main layout */
 
