@@ -2,17 +2,6 @@ html {
   background-color: #eeeeee;
   margin: 16px;
   padding: 0;
-}
-
-body {
-  margin-top: 56px;
-  margin-bottom: 56px;
-}
-
-
-/* || typography */
-
-p{
   font-family: Helvetica;
   color: #222222;
   font-size: 20px;
@@ -21,35 +10,72 @@ p{
   margin-top: 8px;
 }
 
-/* unvisited link */
-a:link {
-  color: #222222;
-  text-decoration: underline;
+body {
+  margin-top: 72px;
+  margin-bottom: 72px;
 }
 
-/* visited link */
-a:visited {
-  color: #222222;
-  text-decoration: underline;
+html {
+  overflow-y: scroll;
 }
 
-/* mouse over link */
-a:hover {
-  color: #222222;
-  text-decoration: underline;
-  font-weight: 600;
+/* navigation list*/
+ul {
+  list-style-type: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
 }
 
-/* selected link */
-a:active {
-  color: #222222;
-  text-decoration: underline;
+li {
+  float: left;
 }
 
+li a {
+  display: inline-block;
+  color: #222222;
+  text-align: left;
+  opacity: 50%;
+  text-decoration: none;
+  padding-right: 16px;
+}
 
-/* || main layout */
+li a:hover:not(.active) {
+  opacity: 100%;
+}
 
-main {
+.active {
+  opacity: 100%;
+}
+
+/* Content Style */
+.content {
   max-width: 552px;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* scrollbar styling */
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 6px;
+  background: #eeeeee;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #bbbbbb; 
+  opacity: 50%;
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #bbbbbb;
+  opacity: 100%;
 }
