@@ -29,6 +29,10 @@ html {
 }
 
 
+.active {
+  opacity: 100%;
+}
+
 /* LINKS */
 a {
   opacity: 50%;
@@ -38,6 +42,12 @@ a {
 
 /* unvisited link */
 a:link {
+  /*opacity: 50%;*/
+  text-decoration: none;
+}
+
+/* visited link */
+a:visited {
   /*opacity: 50%;*/
   text-decoration: none;
 }
@@ -76,10 +86,6 @@ li a {
 }
 
 li a:hover:not(.active) {
-  opacity: 100%;
-}
-
-.active {
   opacity: 100%;
 }
 
