@@ -1,9 +1,9 @@
 html {
-  /*background-color: #eeeeee;*/
+  background-color: var(--bg-color);
   margin: 16px;
   padding: 0;
   font-family: Helvetica;
-/*  color: #222222;*/
+  color: var(--txt-color);
   font-size: 20px;
   line-height: 30px;
   font-weight: 400;
@@ -21,10 +21,10 @@ html {
   --txt-color: #eeeeee;
 }
 /* apply CSS varaible through var() */
-* {
+/** {
   background: var(--bg-color);
   color: var(--txt-color);
-}
+}*/
 
 
 body {
