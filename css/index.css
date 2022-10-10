@@ -79,3 +79,27 @@ li a:hover:not(.active) {
   background: #bbbbbb;
   opacity: 100%;
 }
+
+/* unvisited link */
+a:link {
+  color: #222222;
+  opacity: 50%;
+}
+
+/* visited link */
+a:visited {
+  color: #222222;
+  opacity: 50%;
+}
+
+/* mouse over link */
+a:hover {
+  color: #222222;
+  opacity: 100%;
+}
+
+/* selected link */
+a:active {
+  color: #222222;
+  opacity: 100%;
+}
