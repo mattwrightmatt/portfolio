@@ -31,12 +31,12 @@ body {
 ul {
   list-style-type: none;
   margin: 0;
-  padding: 0px, 12px, 0px, 0px;
   overflow: hidden;
 }
 
 li {
   float: left;
+  padding: 0px, 12px, 0px, 0px;
 }
 
 li a {
@@ -47,11 +47,11 @@ li a {
 }
 
 li a:hover:not(.active) {
-  opacity: 100%;
+  opacity: 50%;
 }
 
 .active {
-  opacity: 50%;
+  opacity: 100%;
 }
 
 /* || main layout */
