@@ -31,19 +31,20 @@ html {
 
 /* LINKS */
 a {
+  opacity: 50%;
   color: #222222;
   text-decoration: none;
 }
 
 /* unvisited link */
 a:link {
-  opacity: 50%;
+  /*opacity: 50%;*/
   text-decoration: none;
 }
 
 /* visited link */
 a:visited {
-  opacity: 50%;
+  /*opacity: 50%;*/
   text-decoration: none;
 }
 
@@ -74,7 +75,7 @@ li {
 }
 
 li a {
-  opacity: 50%;
+  /*opacity: 50%;*/
   display: inline-block;
   text-align: left;
   padding-right: 16px;
