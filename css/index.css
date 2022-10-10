@@ -10,6 +10,40 @@ html {
   margin-top: 8px;
 }
 
+
+.day {
+  background: #eeeeee;
+  color: #222222;
+}
+.night {
+  background: #222222;
+  color: #eeeeee;
+}
+
+@media (prefers-color-scheme: dark) {
+  .day.dark-scheme {
+  background: #eeeeee;
+  color: #222222;
+  }
+  .night.dark-scheme {
+  background: #222222;
+  color: #eeeeee;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .day.light-scheme {
+  background: #eeeeee;
+  color: #222222;
+  }
+  .night.light-scheme {
+  background: #222222;
+  color: #eeeeee;
+  }
+}
+
+
+
 body {
   margin-top: 72px;
   margin-bottom: 72px;
