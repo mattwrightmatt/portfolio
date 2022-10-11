@@ -109,19 +109,19 @@ li a:hover:not(.active) {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  border-radius: 6px;
-  background: #eeeeee;
+  border-radius: 8px;
+  background: var(--color-background);
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #bbbbbb; 
-  opacity: 50%;
+  background: var(--color-text); 
+  opacity: 20%;
   border-radius: 8px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #bbbbbb;
-  opacity: 100%;
+  background: var(--color-text);
+  opacity: 50%;
 }
