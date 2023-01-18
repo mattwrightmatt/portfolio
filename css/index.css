@@ -1,15 +1,15 @@
 /* 1. Create global variables for text and background color */
 :root {
-  --color-text: #3b073e;
-  --color-background: dodgerblue;
+  --color-text: #2a0937;
+  --color-background: #9082ba;
 }
 
 /* 2. Add conditional styling for dark mode preference */
 @media (prefers-color-scheme: dark) {
   /* Re-assign previous variables */
   :root {
-    --color-text: dodgerblue; /* black => white */
-    --color-background: #3b073e; /* white => black */
+    --color-text: #9082ba; /* black => white */
+    --color-background: #2a0937; /* white => black */
   }
 }
 
