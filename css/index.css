@@ -25,8 +25,8 @@ body {
 html {
   margin: 16px;
   padding: 0;
-  font-family: serif;
-  font-size: 24px;
+  font-family: Helvetica, San-Serif;
+  font-size: 20px;
   line-height: 32px;
   margin-top: 8px;
   overflow-y: scroll; 
@@ -45,7 +45,7 @@ html {
 /* LINKS */
 a {
   color: var(--color-text);
-  opacity: 50%;
+  opacity: 60%;
   text-decoration: none;
 }
 
@@ -86,7 +86,7 @@ li {
 }
 
 li a {
-  /*opacity: 50%;*/
+  /*opacity: 60%;*/
   display: inline-block;
   text-align: left;
   padding-right: 16px;
