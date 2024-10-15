@@ -8,8 +8,8 @@
 @media (prefers-color-scheme: dark) {
   /* Re-assign previous variables */
   :root {
-    --color-text: #C8C4B8; /* black => white */
-    --color-background: #201F1C; /* white => black */
+    --color-text: #D5C69F; /* black => white */
+    --color-background: #2A2924; /* white => black */
   }
 }
 
