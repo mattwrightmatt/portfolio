@@ -1,125 +1,234 @@
-/* 1. Create global variables for text and background color */
+/* ============================================================
+   DESIGN TOKENS  — single source of truth for the whole site
+   ============================================================ */
 :root {
+  /* Color */
   --color-text: #736131;
   --color-background: #E0DED7;
+  --color-subtle: color-mix(in srgb, var(--color-text) 60%, transparent);
+
+  /* Typography */
+  --font-family: "Crimson Text", serif;
+  --font-size: 17px;          /* primary text */
+  --line-height: 27px;
+  --font-size-sm: 15px;       /* small text  */
+  --line-height-sm: 24px;
+
+  /* Shape */
+  --radius: 6px;
+  --radius-sm: 4px;
 }
 
-/* 2. Add conditional styling for dark mode preference */
+/* Dark mode: only the color tokens change; everything else derives from them */
 @media (prefers-color-scheme: dark) {
-  /* Re-assign previous variables */
   :root {
-    --color-text: #D5C69F; /* black => white */
-    --color-background: #2A2924; /* white => black */
+    --color-text: #D5C69F;
+    --color-background: #2A2924;
   }
 }
 
+
+/* ============================================================
+   BASE
+   ============================================================ */
+html {
+  margin: 16px;
+  margin-top: 10px;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  overflow-y: scroll;
+}
 
 body {
   margin-top: 72px;
   margin-bottom: 72px;
   color: var(--color-text);
   background-color: var(--color-background);
+  font-family: var(--font-family);
 }
 
-
-html {
-  margin: 16px;
-  padding: 0;
-  font-family: Helvetica, San-Serif;
-  font-size: 19px;
-  line-height: 31px;
-  margin-top: 10px;
-  overflow-y: scroll; 
-}
-
-
-/* CONTENT */
-/* Content Style */
 .content {
   max-width: 640px;
   margin-left: auto;
   margin-right: auto;
 }
 
+/* Small-text token as a utility */
+.text-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
 
-/* LINKS */
+
+/* ============================================================
+   LINKS
+   ============================================================ */
 a {
   color: var(--color-text);
   opacity: 60%;
   text-decoration: none;
 }
-
-/* unvisited link */
-a:link {
+a:link,
+a:visited,
+a:hover,
+a:active {
   text-decoration: none;
 }
-
-/* visited link */
-a:visited {
-  text-decoration: none;
-}
-
-/* mouse over link */
-a:hover {
-  opacity: 100%;
-  text-decoration: none;
-}
-
-/* selected link */
+a:hover,
 a:active {
   opacity: 100%;
-  text-decoration: none;
 }
 
 
-/* NAV BAR */
-/* navigation list*/
+/* ============================================================
+   NAV (home page list nav)
+   ============================================================ */
 ul {
   list-style-type: none;
   margin: 0;
   overflow: hidden;
   padding: 0;
 }
-
 li {
   float: left;
 }
-
 li a {
-  /*opacity: 60%;*/
   display: inline-block;
   text-align: left;
   padding-right: 16px;
 }
-
 li a:hover:not(.active) {
   opacity: 100%;
 }
-
 .active {
   opacity: 100%;
 }
 
-/* SCROLLBAR */
-/* width */
+
+/* ============================================================
+   COMPONENTS  — reusable across espresso, system, etc.
+   ============================================================ */
+
+/* Container */
+.card {
+  border: 1px solid var(--color-subtle);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* Filter chips + dropdown */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.chip-wrap {
+  position: relative;
+}
+.chip {
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  color: var(--color-text);
+  background: var(--color-background);
+  border: 1px solid var(--color-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.chip .chev {
+  margin-left: 6px;
+  font-size: 11px;
+}
+.chip.active {
+  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  max-height: min(200px, calc(100vh - 150px));
+  overflow-y: auto;
+  background: var(--color-background);
+  border: 1px solid var(--color-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+/* Custom scrollbar: 5px thumb, 4px inset from the right, 2px radius, 8px top/bottom inset */
+.dropdown::-webkit-scrollbar {
+  width: 9px;
+}
+.dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+.dropdown::-webkit-scrollbar-thumb {
+  background: var(--color-subtle);
+  border-radius: 2px;
+  border-right: 4px solid transparent;
+  background-clip: padding-box;
+}
+.dropdown label {
+  display: flex;
+  align-items: center;
+  padding: 3px 0;
+  cursor: pointer;
+}
+/* Checkbox component — used inside dropdowns and standalone via .checkbox */
+.dropdown input[type="checkbox"],
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  margin: 0 8px 0 0;
+  border: 1px solid var(--color-subtle);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+.dropdown input[type="checkbox"]:checked,
+.checkbox:checked {
+  background: var(--color-text);
+}
+.dropdown input[type="checkbox"]:checked::after,
+.checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--color-background);
+}
+
+
+/* ============================================================
+   PAGE SCROLLBAR (global)
+   ============================================================ */
 ::-webkit-scrollbar {
   width: 6px;
 }
-
-/* Track */
 ::-webkit-scrollbar-track {
   border-radius: 8px;
   background: var(--color-background);
 }
- 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--color-text); 
+  background: var(--color-text);
   opacity: 20%;
   border-radius: 8px;
 }
-
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text);
   opacity: 50%;

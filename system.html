@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Matt Wright – Design System</title>
+	<base href="https://mattwright.design/">
+	<meta name="description" content="Designer in Seattle, Washington" />
+	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
+	<link rel="stylesheet" href="css/index.css" type="text/css">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<style>
+		/* System-page layout helpers. All tokens & components come from css/index.css. */
+		.section-title {
+			font-weight: 600;
+			margin-top: 32px;
+		}
+		.sys-label {
+			font-size: var(--font-size-sm);
+			opacity: 60%;
+			margin-bottom: 8px;
+		}
+		.card > :first-child {
+			margin-top: 0;
+		}
+		.card > :last-child {
+			margin-bottom: 0;
+		}
+		.type-row + .type-row {
+			margin-top: 24px;
+		}
+		.swatches {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 24px;
+		}
+		.swatch {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.swatch-chip {
+			width: 44px;
+			height: 44px;
+			flex: none;
+			border-radius: var(--radius-sm);
+			border: 1px solid var(--color-subtle);
+		}
+		.swatch-meta {
+			font-size: var(--font-size-sm);
+			line-height: var(--line-height-sm);
+		}
+		.swatch-meta .muted {
+			opacity: 60%;
+		}
+		.check-row {
+			display: flex;
+			align-items: center;
+		}
+		.check-row + .check-row {
+			margin-top: 12px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="content">
+		<main><div>
+			<p><a href="/">Home</a> / System</p>
+
+			<p class="section-title">Typography</p>
+			<div class="card">
+				<div class="type-row">
+					<div class="sys-label">Primary — 17px / 27px</div>
+					<div>Most of my time spent designing is time spent looking through the lens of first principles thinking.</div>
+				</div>
+				<div class="type-row">
+					<div class="sys-label">Small — 15px / 24px</div>
+					<div class="text-sm">Most of my time spent designing is time spent looking through the lens of first principles thinking.</div>
+				</div>
+			</div>
+
+			<p class="section-title">Color tokens</p>
+			<div class="card">
+				<div class="swatches">
+					<div class="swatch">
+						<span class="swatch-chip" style="background: var(--color-text);"></span>
+						<div class="swatch-meta">
+							<div>--color-text</div>
+							<div class="muted">#736131 · #D5C69F dark</div>
+						</div>
+					</div>
+					<div class="swatch">
+						<span class="swatch-chip" style="background: var(--color-background);"></span>
+						<div class="swatch-meta">
+							<div>--color-background</div>
+							<div class="muted">#E0DED7 · #2A2924 dark</div>
+						</div>
+					</div>
+					<div class="swatch">
+						<span class="swatch-chip" style="background: var(--color-subtle);"></span>
+						<div class="swatch-meta">
+							<div>--color-subtle</div>
+							<div class="muted">text @ 60% — borders</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p class="section-title">Dropdown</p>
+			<div class="card">
+				<div class="filters">
+					<div class="chip-wrap">
+						<button class="chip" onclick="toggleDropdown(this)">Example <span class="chev">▾</span></button>
+						<div class="dropdown" hidden>
+							<label><input type="checkbox">Option one</label>
+							<label><input type="checkbox" checked>Option two</label>
+							<label><input type="checkbox">Option three</label>
+							<label><input type="checkbox">Option four</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p class="section-title">Checkbox</p>
+			<div class="card">
+				<label class="check-row"><input type="checkbox" class="checkbox" checked>Selected</label>
+				<label class="check-row"><input type="checkbox" class="checkbox">Unselected</label>
+			</div>
+		</div></main>
+
+	</div>
+
+	<script>
+		function toggleDropdown(btn) {
+			var wrap = btn.parentNode;
+			var dd = wrap.querySelector('.dropdown');
+			var isOpen = !dd.hasAttribute('hidden');
+			document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
+			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+			if (!isOpen) {
+				dd.removeAttribute('hidden');
+				dd.scrollTop = 0;
+				btn.querySelector('.chev').textContent = '▴';
+			}
+		}
+
+		document.addEventListener('click', function (e) {
+			if (!e.target.closest('.chip-wrap')) {
+				document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
+				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+			}
+		});
+	</script>
+</body>
+</html>
