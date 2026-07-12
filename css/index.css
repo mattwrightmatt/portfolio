@@ -6,9 +6,10 @@
   --color-primary: #736131;
   --color-subdued: #E0DED7;
   --color-primary-subtle: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  --color-primary-superSubtle: color-mix(in srgb, var(--color-primary) 30%, transparent);
 
   /* Typography */
-  --font-family: "Crimson Text", serif;
+  --font-family: serif;
   --font-size: 18px;          /* primary text */
   --line-height: 28px;
   --font-size-sm: 16px;       /* small text  */
@@ -20,7 +21,7 @@
 
   /* Radius */
   --radius: 6px;              /* cards */
-  --radius-sm: 4px;           /* chips, dropdowns */
+  --radius-sm: 4px;           /* chips, chip menus */
 }
 
 /* Dark mode: only the color tokens change; everything else derives from them */
@@ -129,7 +130,7 @@ li a:hover:not(.active) {
   margin-bottom: 16px;
 }
 
-/* Filter chips + dropdown */
+/* Filter chip + its menu */
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -150,15 +151,17 @@ li a:hover:not(.active) {
   padding: 6px 10px;
   cursor: pointer;
 }
-.chip .chev {
-  margin-left: 6px;
-  font-size: 11px;
-}
+/* Selected (has active filters) */
 .chip.active {
-  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  background: var(--color-primary-superSubtle);
+}
+/* Hover + pressed */
+.chip:hover,
+.chip:active {
+  background: var(--color-primary-subtle);
 }
 
-.dropdown {
+.chip-menu {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
@@ -173,28 +176,28 @@ li a:hover:not(.active) {
   white-space: nowrap;
 }
 /* Custom scrollbar: 5px thumb, 4px inset from the right, 2px radius, 8px top/bottom inset */
-.dropdown::-webkit-scrollbar {
+.chip-menu::-webkit-scrollbar {
   width: 9px;
 }
-.dropdown::-webkit-scrollbar-track {
+.chip-menu::-webkit-scrollbar-track {
   background: transparent;
   margin: 8px 0;
 }
-.dropdown::-webkit-scrollbar-thumb {
+.chip-menu::-webkit-scrollbar-thumb {
   background: var(--color-primary-subtle);
   border-radius: 2px;
   border-right: 4px solid transparent;
   background-clip: padding-box;
 }
-.dropdown label {
+.chip-menu label {
   display: flex;
   align-items: center;
   padding: 3px 0;
   cursor: pointer;
 }
 
-/* Checkbox component — used inside dropdowns and standalone via .checkbox */
-.dropdown input[type="checkbox"],
+/* Checkbox component — used inside chip menus and standalone via .checkbox */
+.chip-menu input[type="checkbox"],
 .checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -208,11 +211,11 @@ li a:hover:not(.active) {
   cursor: pointer;
   position: relative;
 }
-.dropdown input[type="checkbox"]:checked,
+.chip-menu input[type="checkbox"]:checked,
 .checkbox:checked {
   background: var(--color-primary);
 }
-.dropdown input[type="checkbox"]:checked::after,
+.chip-menu input[type="checkbox"]:checked::after,
 .checkbox:checked::after {
   content: "✓";
   position: absolute;

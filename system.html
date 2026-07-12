@@ -7,9 +7,6 @@
 	<title>Matt Wright – Design System</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/index.css" type="text/css">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -124,6 +121,13 @@
 							<div class="muted">primary @ 60% — borders</div>
 						</div>
 					</div>
+					<div class="swatch">
+						<span class="swatch-chip" style="background: var(--color-primary-superSubtle);"></span>
+						<div class="swatch-meta">
+							<div>--color-primary-superSubtle</div>
+							<div class="muted">primary @ 30% — selected chips</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -141,18 +145,18 @@
 						<span class="radius-chip" style="border-radius: var(--radius-sm);"></span>
 						<div class="swatch-meta">
 							<div>--radius-sm</div>
-							<div class="muted">4px — chips, dropdowns</div>
+							<div class="muted">4px — chips, chip menus</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<p class="section-title">Dropdown</p>
+			<p class="section-title">Chip &amp; menu</p>
 			<div class="card">
 				<div class="filters">
 					<div class="chip-wrap">
-						<button class="chip" onclick="toggleDropdown(this)">Example <span class="chev">▼</span></button>
-						<div class="dropdown" hidden>
+						<button class="chip" onclick="toggleChip(this)">Example</button>
+						<div class="chip-menu" hidden>
 							<label><input type="checkbox">Option one</label>
 							<label><input type="checkbox" checked>Option two</label>
 							<label><input type="checkbox">Option three</label>
@@ -172,23 +176,20 @@
 	</div>
 
 	<script>
-		function toggleDropdown(btn) {
+		function toggleChip(btn) {
 			var wrap = btn.parentNode;
-			var dd = wrap.querySelector('.dropdown');
-			var isOpen = !dd.hasAttribute('hidden');
-			document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
+			var menu = wrap.querySelector('.chip-menu');
+			var isOpen = !menu.hasAttribute('hidden');
+			document.querySelectorAll('.chip-menu').forEach(function (m) { m.setAttribute('hidden', ''); });
 			if (!isOpen) {
-				dd.removeAttribute('hidden');
-				dd.scrollTop = 0;
-				btn.querySelector('.chev').textContent = '▲';
+				menu.removeAttribute('hidden');
+				menu.scrollTop = 0;
 			}
 		}
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
-				document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
+				document.querySelectorAll('.chip-menu').forEach(function (m) { m.setAttribute('hidden', ''); });
 			}
 		});
 	</script>

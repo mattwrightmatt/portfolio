@@ -7,9 +7,6 @@
 	<title>Matt Wright – Home Espresso</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/index.css" type="text/css">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,14 +19,23 @@
 		.coffee-name {
 			font-weight: var(--weight-semibold);
 		}
-		.fav-star {
-			font-weight: var(--weight-regular);
+		.fav-tag {
+			margin-left: 6px;
+			padding: 1px 6px;
+			border-radius: var(--radius-sm);
+			background: var(--color-primary);
+			color: var(--color-subdued);
+			font-size: var(--font-size-sm);
+			white-space: nowrap;
 		}
 		.coffee > p:first-of-type {
 			margin: 0;
 		}
 		.more-info-link {
+			display: block;
 			font-size: var(--font-size-sm);
+			line-height: 1;
+			margin-top: 6px;
 		}
 		.notes {
 			border-left: 1px solid;
@@ -53,9 +59,11 @@
 		.coffee-details > div + div {
 			margin-top: 4px;
 		}
-		/* No notes: details is a direct child of .coffee, so drop the bottom divider */
+		/* No notes: details is a direct child of .coffee — no bottom rule, and its
+		   bottom padding collapses so the gap below matches the 12px card top. */
 		.coffee > .coffee-details {
 			border-bottom: none;
+			padding-bottom: 0;
 		}
 		/* Wraps details + notes so a persistent rule sits between the coffee info and
 		   the notes; the details expand out from that same rule when "More info" is clicked. */
@@ -85,8 +93,8 @@
 				<button class="chip chip-fav" data-filter="fav" onclick="toggleFav(this)">★ Favorites</button>
 
 				<div class="chip-wrap">
-					<button class="chip" data-group="origin" onclick="toggleDropdown(this)">Origin <span class="chev">▼</span></button>
-					<div class="dropdown" data-group="origin" hidden>
+					<button class="chip" data-group="origin" data-label="Origin" onclick="toggleChip(this)">Origin</button>
+					<div class="chip-menu" data-group="origin" hidden>
 						<label><input type="checkbox" value="Brazil" onchange="applyFilters()">Brazil</label>
 						<label><input type="checkbox" value="Burundi" onchange="applyFilters()">Burundi</label>
 						<label><input type="checkbox" value="Colombia" onchange="applyFilters()">Colombia</label>
@@ -104,8 +112,8 @@
 				</div>
 
 				<div class="chip-wrap">
-					<button class="chip" data-group="process" onclick="toggleDropdown(this)">Process <span class="chev">▼</span></button>
-					<div class="dropdown" data-group="process" hidden>
+					<button class="chip" data-group="process" data-label="Process" onclick="toggleChip(this)">Process</button>
+					<div class="chip-menu" data-group="process" hidden>
 						<label><input type="checkbox" value="Washed" onchange="applyFilters()">Washed</label>
 						<label><input type="checkbox" value="Natural" onchange="applyFilters()">Natural</label>
 						<label><input type="checkbox" value="Anaerobic Natural" onchange="applyFilters()">Anaerobic Natural</label>
@@ -118,8 +126,8 @@
 				</div>
 
 				<div class="chip-wrap">
-					<button class="chip" data-group="roaster" onclick="toggleDropdown(this)">Roaster <span class="chev">▼</span></button>
-					<div class="dropdown" data-group="roaster" hidden>
+					<button class="chip" data-group="roaster" data-label="Roaster" onclick="toggleChip(this)">Roaster</button>
+					<div class="chip-menu" data-group="roaster" hidden>
 						<label><input type="checkbox" value="8th &amp; Roast" onchange="applyFilters()">8th &amp; Roast</label>
 						<label><input type="checkbox" value="Airship Coffee" onchange="applyFilters()">Airship Coffee</label>
 						<label><input type="checkbox" value="Atomic Coffee Roasters" onchange="applyFilters()">Atomic Coffee Roasters</label>
@@ -154,8 +162,8 @@
 				     Sweet & Caramel: caramel/brown sugar/demerara/sugar cane/honey/molasses/cream/cake.
 				     Spiced & Savory: spice/ginger/clove/cinnamon/pine/cola/lemongrass. -->
 				<div class="chip-wrap">
-					<button class="chip" data-group="cat" onclick="toggleDropdown(this)">Tasting notes <span class="chev">▼</span></button>
-					<div class="dropdown" data-group="cat" hidden>
+					<button class="chip" data-group="cat" data-label="Tasting notes" onclick="toggleChip(this)">Tasting notes</button>
+					<div class="chip-menu" data-group="cat" hidden>
 						<label><input type="checkbox" value="choc" onchange="applyFilters()">Chocolatey</label>
 						<label><input type="checkbox" value="fruit" onchange="applyFilters()">Fruity &amp; Jammy</label>
 						<label><input type="checkbox" value="citrus" onchange="applyFilters()">Citrus</label>
@@ -175,8 +183,8 @@
 			     Each detail line is its own <div> inside .coffee-details. data-* attributes drive filters. -->
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty">
 			<p><span class="coffee-name">West Guji, Ethiopia</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
-			Sun Dried Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-1')">More info</a></p>
+			Sun Dried Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-1')">More info</a>
 
 			<div class="coffee-details" id="details-1" hidden><div>Origin: West Guji, Ethiopia</div>
 			<div>Variety: Heirloom</div>
@@ -185,8 +193,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Perc Coffee" data-cat="fruit sweet">
 			<p><span class="coffee-name">Colombia Jhoan Vergara</span> from <a href="https://perccoffee.com/products/colombia-jhoan-vergara">Perc Coffee</a><br>
-			Washed, Advanced Thermal Shock Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-2')">More info</a></p>
+			Washed, Advanced Thermal Shock Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-2')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-2" hidden><div>Origin: Finca Las Flores, Jhoan Vergara · Bruselas, Huila, Colombia</div>
@@ -200,8 +208,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Guatemala" data-process="Natural" data-roaster="8th &amp; Roast" data-cat="fruit choc sweet">
 			<p><span class="coffee-name">Buena Vista Natural, Guatemala</span> from <a href="https://www.8thandroast.com/products/concepcion-buena-vista-natural-guatemala">8th &amp; Roast</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-3')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-3')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-3" hidden><div>Origin: Finca Concepción Buena Vista, Solano Family · San Martín Jilotepeque, Chimaltenango, Guatemala</div>
@@ -219,8 +227,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Atomic Coffee Roasters" data-cat="citrus choc sweet">
 			<p><span class="coffee-name">Costa Rica Tarrazú</span> from <a href="https://atomicroastery.com/products/costa-rica-tarrazu">Atomic Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-4')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-4')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-4" hidden><div>Origin: Smallholder farms · Tarrazú Valley, Costa Rica</div>
@@ -235,8 +243,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Little Waves" data-cat="sweet fruit spice">
 			<p><span class="coffee-name">Bella Vista Mayan Harvest Women's Group, Mexico</span> from <a href="https://littlewaves.coffee">Little Waves</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-5')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-5')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-5" hidden><div>Origin: Mayan Harvest Women's Group · Bella Vista, Chiapas, Mexico</div>
@@ -250,8 +258,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Methodical Coffee" data-cat="nutty spice fruit">
 			<p><span class="coffee-name">Costa Rica, La Pastora</span> from <a href="https://methodicalcoffee.com/products/costa-rica-la-pastora">Methodical Coffee</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-6')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-6')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-6" hidden><div>Origin: CoopeTarrazú · La Pastora, Tarrazú, Costa Rica</div>
@@ -265,8 +273,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="fruit choc sweet">
 			<p><span class="coffee-name">Wild Forest, Colombia</span> from <a href="https://www.devocion.com/products/coffee-colombia-wildforest">Devoción</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-7')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-7')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-7" hidden><div>Origin: Tolima, Colombia</div>
@@ -281,8 +289,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Feast Coffee &amp; Culture" data-cat="sweet nutty citrus">
 			<p><span class="coffee-name">Palmera, Colombia</span> from <a href="https://www.feastcoffee.com">Feast Coffee &amp; Culture</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-8')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-8')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-8" hidden><div>Origin: Huila, Colombia</div>
@@ -295,8 +303,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Honduras" data-process="Washed" data-roaster="Dune Coffee Roasters" data-cat="citrus sweet floral">
 			<p><span class="coffee-name">Urpania Guzmán, Honduras</span> from <a href="https://www.dunecoffee.com/products/honduras-urpania-guzman-pacas">Dune Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-9')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-9')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-9" hidden><div>Origin: Urpania Guzmán · El Cedral, Santa Bárbara, Honduras</div>
@@ -310,8 +318,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Brazil|Peru|Ethiopia" data-process="Blend" data-roaster="Cerberus Coffee" data-cat="choc fruit">
 			<p><span class="coffee-name">Wizard Cat Blend</span> from <a href="https://cerberuscoffeeco.com/products/wizard-cat-blend">Cerberus Coffee</a><br>
-			Natural &amp; Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-10')">More info</a></p>
+			Natural &amp; Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-10')">More info</a>
 
 			<div class="coffee-details" id="details-10" hidden><div>Origin: Brazil Rio Brilhante · Peru Perales Huancaruna · Ethiopia Guji Natural</div>
 			<div>Roaster's notes: “Bright fruitiness, a backbone of milk chocolate, and a nice berry aftertaste.”</div></div>
@@ -319,8 +327,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="True North Coffee Roasters" data-cat="fruit">
 			<p><span class="coffee-name">Buesaco, Nariño — Colombia</span> from <a href="https://www.drinktruenorth.com">True North Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-11')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-11')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-11" hidden><div>Origin: Buesaco, Nariño, Colombia</div>
@@ -333,8 +341,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Timeless Coffee" data-cat="fruit sweet">
 			<p><span class="coffee-name">Peru Selva Andina</span> from <a href="https://timelesscoffee.com">Timeless Coffee</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-12')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-12')">More info</a>
 
 			<div class="coffee-details" id="details-12" hidden><div>Origin: Cajamarca, Peru · Organic</div>
 			<div>2,000+ MASL</div>
@@ -343,8 +351,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Co-Ferment" data-roaster="Perc Coffee" data-cat="fruit floral sweet">
 			<p><span class="coffee-name">Colombia Young Producers</span> from <a href="https://perccoffee.com/products/colombia-young-producers">Perc Coffee</a><br>
-			Red Fruits Co-Ferment Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-13')">More info</a></p>
+			Red Fruits Co-Ferment Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-13')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-13" hidden><div>Origin: Sebastián Ramírez · Colombia</div>
@@ -361,8 +369,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="fruit sweet">
 			<p><span class="coffee-name">Kiamugumo AB</span> from <a href="https://www.sterling.coffee">Sterling Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-101')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-101')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-101" hidden><div>Origin: Kenya</div>
@@ -374,8 +382,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="choc fruit nutty">
 			<p><span class="coffee-name">Toro</span> from <a href="https://www.devocion.com/products/house-blend-coffee-toro">Devoción</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-102')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-102')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-102" hidden><div>Origin: Colombia · House blend (Caturra, Típica)</div>
@@ -387,9 +395,9 @@
 			</div>
 
 			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral">
-			<p><span class="coffee-name">Benti Nenka, Ethiopia</span> <span class="fav-star">★</span> from <a href="https://perccoffee.com">Perc Coffee</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-103')">More info</a></p>
+			<p><span class="coffee-name">Benti Nenka, Ethiopia</span> from <a href="https://perccoffee.com">Perc Coffee</a> <span class="fav-tag">A favorite of 2025</span><br>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-103')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-103" hidden><div>Origin: Ethiopia</div>
@@ -407,8 +415,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Bird Rock Coffee Roasters" data-cat="fruit sweet">
 			<p><span class="coffee-name">Ethiopia Uraga</span> from <a href="https://birdrockcoffee.com">Bird Rock Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-104')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-104')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-104" hidden><div>Origin: Uraga, Ethiopia</div>
@@ -422,8 +430,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Olympia Coffee Roasters" data-cat="fruit choc">
 			<p><span class="coffee-name">Gotta Natural, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-105')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-105')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-105" hidden><div>Origin: Ethiopia</div>
@@ -437,8 +445,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="India" data-process="Pulped Natural" data-roaster="Methodical Coffee" data-cat="spice nutty choc">
 			<p><span class="coffee-name">Hulikere Estate, India</span> from <a href="https://methodicalcoffee.com">Methodical Coffee</a><br>
-			Pulped Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-106')">More info</a></p>
+			Pulped Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-106')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-106" hidden><div>Origin: Hulikere Estate, India</div>
@@ -454,8 +462,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="fruit sweet floral">
 			<p><span class="coffee-name">Arlen Humbo, Peru</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-107')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-107')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-107" hidden><div>Origin: Peru</div>
@@ -469,8 +477,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit citrus">
 			<p><span class="coffee-name">La Palmera, Colombia</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
-			Anaerobic Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-108')">More info</a></p>
+			Anaerobic Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-108')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-108" hidden><div>Origin: Colombia</div>
@@ -485,8 +493,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit choc">
 			<p><span class="coffee-name">Idido, Ethiopia</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-109')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-109')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-109" hidden><div>Origin: Idido, Ethiopia</div>
@@ -500,8 +508,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="choc fruit sweet">
 			<p><span class="coffee-name">San Sebastián Reserva, Colombia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-110')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-110')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-110" hidden><div>Origin: Colombia</div>
@@ -514,8 +522,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus">
 			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-111')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-111')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-111" hidden><div>Origin: Ethiopia</div>
@@ -528,8 +536,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Anaerobic Natural" data-roaster="Red Rooster Coffee" data-cat="fruit choc floral">
 			<p><span class="coffee-name">Sakaro, Gedeb District, Ethiopia</span> from <a href="https://redroostercoffee.com">Red Rooster Coffee</a><br>
-			Anaerobic Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-112')">More info</a></p>
+			Anaerobic Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-112')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-112" hidden><div>Origin: Gedeb, Ethiopia</div>
@@ -543,8 +551,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus">
 			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-113')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-113')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-113" hidden><div>Origin: Ethiopia</div>
@@ -556,8 +564,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Brazil" data-process="Natural" data-roaster="Máquina" data-cat="sweet choc">
 			<p><span class="coffee-name">Groupo de Minas, Brazil</span> from <a href="https://www.maquinacoffee.com">Máquina</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-114')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-114')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-114" hidden><div>Origin: Brazil</div>
@@ -570,8 +578,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Myanmar" data-process="Natural" data-roaster="Orcabay Coffee Roasters" data-cat="fruit">
 			<p><span class="coffee-name">Myanmar Natural</span> from <a href="https://www.orcabaycoffeebeans.com">Orcabay Coffee Roasters</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-115')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-115')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-115" hidden><div>Origin: Myanmar</div>
@@ -585,17 +593,17 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Airship Coffee" data-cat="choc sweet spice">
 			<p><span class="coffee-name">Lake Toba Caldera, Sumatra</span> from <a href="https://airshipcoffee.com">Airship Coffee</a><br>
-			Wet Hulled Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-116')">More info</a></p>
+			Wet Hulled Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-116')">More info</a>
 
 			<div class="coffee-details" id="details-116" hidden><div>Origin: Southwest Region, Sumatra, Indonesia</div>
 			<div>Roaster's notes: Dark chocolate, pine, brown sugar</div></div>
 			</div>
 
 			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="citrus fruit floral">
-			<p><span class="coffee-name">Bombe, Ethiopia</span> <span class="fav-star">★</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-117')">More info</a></p>
+			<p><span class="coffee-name">Bombe, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a> <span class="fav-tag">A favorite of 2025</span><br>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-117')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-117" hidden><div>Origin: Ethiopia</div>
@@ -608,8 +616,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Guatemala" data-process="Washed" data-roaster="Onda Origins" data-cat="choc nutty spice">
 			<p><span class="coffee-name">Ivonne Herrera, Guatemala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-118')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-118')">More info</a>
 
 			<div class="coffee-details" id="details-118" hidden><div>Origin: Las Parásitas, Santa Elena Barillas, Guatemala</div>
 			<div>Roaster's notes: Chocolate, almond brittle, ginger snap</div></div>
@@ -617,8 +625,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia|Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit">
 			<p><span class="coffee-name">Punch Bowl</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
-			Natural / Anaerobic Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-119')">More info</a></p>
+			Natural / Anaerobic Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-119')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-119" hidden><div>Origin: Ethiopia &amp; Colombia</div>
@@ -631,8 +639,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Brio Coffeeworks" data-cat="fruit floral">
 			<p><span class="coffee-name">Ethiopia Ardi</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-120')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-120')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-120" hidden><div>Origin: Ethiopia</div>
@@ -644,8 +652,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="nutty sweet citrus">
 			<p><span class="coffee-name">Mexico Chiapas</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-121')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-121')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-121" hidden><div>Origin: Chiapas, Mexico</div>
@@ -658,8 +666,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Burundi" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet fruit floral">
 			<p><span class="coffee-name">Gitwe, Burundi</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-122')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-122')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-122" hidden><div>Origin: Burundi</div>
@@ -672,9 +680,9 @@
 			</div>
 
 			<div class="card coffee" data-fav="true" data-origin="Brazil" data-process="Natural" data-roaster="Onda Origins" data-cat="choc nutty">
-			<p><span class="coffee-name">Kiko Ribeiro, Brazil</span> <span class="fav-star">★</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-123')">More info</a></p>
+			<p><span class="coffee-name">Kiko Ribeiro, Brazil</span> from <a href="https://ondaorigins.com">Onda Origins</a> <span class="fav-tag">A favorite of 2025</span><br>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-123')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-123" hidden><div>Origin: Sítio Palmital, Carmo de Minas, Brazil</div>
@@ -688,8 +696,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="choc citrus nutty">
 			<p><span class="coffee-name">Finca Santa Ana, Colombia</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-124')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-124')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-124" hidden><div>Origin: Colombia</div>
@@ -701,8 +709,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Brio Coffeeworks" data-cat="citrus spice">
 			<p><span class="coffee-name">Sumatra Lintong</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
-			Wet Hulled Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-125')">More info</a></p>
+			Wet Hulled Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-125')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-125" hidden><div>Origin: Lintong, Sumatra, Indonesia</div>
@@ -714,8 +722,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet choc fruit">
 			<p><span class="coffee-name">Amparo Pajoy</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-126')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-126')">More info</a>
 
 			<div class="coffee-details" id="details-126" hidden><div>Origin: Colombia</div>
 			<div>Good Food Award winner</div>
@@ -723,8 +731,8 @@
 			</div>
 
 			<div class="card coffee" data-fav="false" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
-			<p><span class="coffee-name">Tusitala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-127')">More info</a></p>
+			<p><span class="coffee-name">Tusitala</span> from <a href="https://ondaorigins.com">Onda Origins</a></p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-127')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-127" hidden><div>Rotating seasonal blend</div>
@@ -736,8 +744,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Onda Origins" data-cat="sweet fruit spice floral">
 			<p><span class="coffee-name">Carlos Cadena, Mexico</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
-			Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-128')">More info</a></p>
+			Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-128')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-128" hidden><div>Origin: Finca Huehuetepan, Mexico</div>
@@ -748,8 +756,8 @@
 			</div>
 
 			<div class="card coffee" data-fav="false" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
-			<p><span class="coffee-name">Tusitala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-129')">More info</a></p>
+			<p><span class="coffee-name">Tusitala</span> from <a href="https://ondaorigins.com">Onda Origins</a></p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-129')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-129" hidden><div>Rotating seasonal blend</div>
@@ -761,8 +769,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Reposado & Washed" data-roaster="Onda Origins" data-cat="fruit choc">
 			<p><span class="coffee-name">Enrique Navarro, Costa Rica</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
-			Reposado &amp; Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-130')">More info</a></p>
+			Reposado &amp; Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-130')">More info</a>
 
 			<div class="coffee-details" id="details-130" hidden><div>Origin: Monte Copey, Tarrazú, Costa Rica</div>
 			<div>Roaster's notes: Plum, chocolate, rainier cherry</div></div>
@@ -770,8 +778,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Sightseer Coffee" data-cat="fruit floral">
 			<p><span class="coffee-name">Space Cowboy, Yirgacheffe</span> from <a href="https://sightseercoffee.co">Sightseer Coffee</a><br>
-			Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-131')">More info</a></p>
+			Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-131')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-131" hidden><div>Origin: Yirgacheffe, Ethiopia</div>
@@ -785,8 +793,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty">
 			<p><span class="coffee-name">West Guji, Ethiopia</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
-			Sun Dried Natural Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-132')">More info</a></p>
+			Sun Dried Natural Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-132')">More info</a>
 
 			<div class="coffee-details" id="details-132" hidden><div>Origin: West Guji, Ethiopia</div>
 			<div>Roaster's notes: Stone fruit, blueberry, nougat</div></div>
@@ -794,8 +802,8 @@
 
 			<div class="card coffee" data-fav="false" data-origin="Colombia|Brazil" data-process="Blend" data-roaster="Naomi Joe" data-cat="fruit floral">
 			<p><span class="coffee-name">Meadowlark Blend</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
-			Co-Ferment, Pulped Natural &amp; Washed Process<br>
-			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-133')">More info</a></p>
+			Co-Ferment, Pulped Natural &amp; Washed Process</p>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-133')">More info</a>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-133" hidden><div>Origin: Colombia &amp; Brazil</div>
@@ -823,23 +831,20 @@
 			return false;
 		}
 
-		function toggleDropdown(btn) {
+		function toggleChip(btn) {
 			var wrap = btn.parentNode;
-			var dd = wrap.querySelector('.dropdown');
-			var isOpen = !dd.hasAttribute('hidden');
-			document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
+			var menu = wrap.querySelector('.chip-menu');
+			var isOpen = !menu.hasAttribute('hidden');
+			document.querySelectorAll('.chip-menu').forEach(function (m) { m.setAttribute('hidden', ''); });
 			if (!isOpen) {
-				dd.removeAttribute('hidden');
-				dd.scrollTop = 0;
-				btn.querySelector('.chev').textContent = '▲';
+				menu.removeAttribute('hidden');
+				menu.scrollTop = 0;
 			}
 		}
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
-				document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
+				document.querySelectorAll('.chip-menu').forEach(function (m) { m.setAttribute('hidden', ''); });
 			}
 		});
 
@@ -850,14 +855,17 @@
 
 		function getChecked(group) {
 			return Array.prototype.map.call(
-				document.querySelectorAll('.dropdown[data-group="' + group + '"] input:checked'),
+				document.querySelectorAll('.chip-menu[data-group="' + group + '"] input:checked'),
 				function (i) { return i.value; }
 			);
 		}
 
-		function setChipActive(group, on) {
+		function setChipCount(group, count) {
 			var chip = document.querySelector('.chip[data-group="' + group + '"]');
-			if (chip) { chip.classList.toggle('active', !!on); }
+			if (chip) {
+				chip.classList.toggle('active', count > 0);
+				chip.textContent = chip.dataset.label + (count ? ' (' + count + ')' : '');
+			}
 		}
 
 		function applyFilters() {
@@ -867,10 +875,10 @@
 			var roasters = getChecked('roaster');
 			var cats = getChecked('cat');
 
-			setChipActive('origin', origins.length);
-			setChipActive('process', processes.length);
-			setChipActive('roaster', roasters.length);
-			setChipActive('cat', cats.length);
+			setChipCount('origin', origins.length);
+			setChipCount('process', processes.length);
+			setChipCount('roaster', roasters.length);
+			setChipCount('cat', cats.length);
 
 			document.querySelectorAll('.coffee').forEach(function (c) {
 				var show = true;
