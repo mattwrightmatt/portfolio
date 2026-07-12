@@ -19,14 +19,39 @@
 		.coffee-name {
 			font-weight: var(--weight-semibold);
 		}
-		.fav-tag {
-			margin-left: 6px;
-			padding: 1px 6px;
-			border-radius: var(--radius-sm);
+		/* Marquee banner across the top of a favorite coffee card. Flush to the
+		   card's top and side edges (negative margins cancel the card padding),
+		   top corners rounded to match the card, bottom corners square so it
+		   reads as a header ribbon, and no gap between it and the coffee below. */
+		.fav-marquee {
+			margin: -12px -12px 0;
+			overflow: hidden;
 			background: var(--color-primary);
 			color: var(--color-subdued);
+			border-radius: var(--radius) var(--radius) 0 0;
 			font-size: var(--font-size-sm);
+			line-height: 1;
 			white-space: nowrap;
+		}
+		.fav-marquee-track {
+			display: inline-flex;
+			padding: 1px 0;
+			animation: fav-marquee-scroll 30s linear infinite;
+			will-change: transform;
+		}
+		.fav-marquee-group {
+			display: inline-flex;
+		}
+		.fav-marquee-item::after {
+			content: "•";
+			margin: 0 0.6em;
+		}
+		@keyframes fav-marquee-scroll {
+			from { transform: translateX(0); }
+			to { transform: translateX(-50%); }
+		}
+		@media (prefers-reduced-motion: reduce) {
+			.fav-marquee-track { animation: none; }
 		}
 		.coffee > p:first-of-type {
 			margin: 0;
@@ -448,7 +473,8 @@
 			</div>
 
 			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral">
-			<p><span class="coffee-name">Benti Nenka, Ethiopia</span> from <a href="https://perccoffee.com">Perc Coffee</a> <span class="fav-tag">A favorite of 2025</span><br>
+			<div class="fav-marquee" role="img" aria-label="A favorite of 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span></span></div></div>
+			<p><span class="coffee-name">Benti Nenka, Ethiopia</span> from <a href="https://perccoffee.com">Perc Coffee</a><br>
 			Natural Process</p>
 			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-103')">More info</a>
 
@@ -654,7 +680,8 @@
 			</div>
 
 			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="citrus fruit floral">
-			<p><span class="coffee-name">Bombe, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a> <span class="fav-tag">A favorite of 2025</span><br>
+			<div class="fav-marquee" role="img" aria-label="A favorite of 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span></span></div></div>
+			<p><span class="coffee-name">Bombe, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
 			Washed Process</p>
 			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-117')">More info</a>
 
@@ -733,7 +760,8 @@
 			</div>
 
 			<div class="card coffee" data-fav="true" data-origin="Brazil" data-process="Natural" data-roaster="Onda Origins" data-cat="choc nutty">
-			<p><span class="coffee-name">Kiko Ribeiro, Brazil</span> from <a href="https://ondaorigins.com">Onda Origins</a> <span class="fav-tag">A favorite of 2025</span><br>
+			<div class="fav-marquee" role="img" aria-label="A favorite of 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span><span class="fav-marquee-item">a favorite of 2025</span></span></div></div>
+			<p><span class="coffee-name">Kiko Ribeiro, Brazil</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
 			Natural Process</p>
 			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-123')">More info</a>
 
