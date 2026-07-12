@@ -22,9 +22,9 @@
 		/* Marquee banner across the top of a favorite coffee card. Flush to the
 		   card's top and side edges (negative margins cancel the card padding),
 		   top corners rounded to match the card, bottom corners square so it
-		   reads as a header ribbon, and no gap between it and the coffee below. */
+		   reads as a header ribbon, with the title sitting 12px below it. */
 		.fav-marquee {
-			margin: -12px -12px 0;
+			margin: -12px -12px 8px;
 			overflow: hidden;
 			background: var(--color-primary);
 			color: var(--color-subdued);
@@ -35,7 +35,7 @@
 		}
 		.fav-marquee-track {
 			display: inline-flex;
-			padding: 1px 0;
+			padding: 4px 0;
 			animation: fav-marquee-scroll 30s linear infinite;
 			will-change: transform;
 		}
