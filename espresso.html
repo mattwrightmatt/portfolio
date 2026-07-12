@@ -56,12 +56,20 @@
 		.coffee > p:first-of-type {
 			margin: 0;
 		}
-		/* Breadcrumbs on the left, the Details toggle aligned to the right. */
+		/* Breadcrumbs on the left, the Details toggle aligned to the right. Carry
+		   the paragraph's default 1em margin on the flex row itself (and zero it on
+		   the inner <p>) so the breadcrumb lands at the same spot as the "Matt
+		   Wright" heading on the home page — the flex container would otherwise
+		   trap the <p>'s top margin and push it down. */
 		.page-head {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			gap: 16px;
+			margin: 1em 0;
+		}
+		.page-head p {
+			margin: 0;
 		}
 		.notes {
 			border-left: 1px solid;
@@ -114,7 +122,7 @@
 	<div class="content">
 		<main><div>
 			<div class="page-head">
-				<p><a href="/">Home</a> / Espresso</p>
+				<p><a href="/">Matt Wright</a> / Espresso</p>
 				<label class="toggle"><span>Details</span><input type="checkbox" class="switch" role="switch" aria-label="Show details on all coffees" onchange="toggleAllInfo(this)"></label>
 			</div>
 

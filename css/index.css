@@ -246,8 +246,8 @@ li a:hover:not(.active) {
 
 /* Toggle — a text label beside a sliding switch. The switch container shares
    the chips' radius: no fill and a primary border, with a square primary thumb
-   inset 3px. When enabled the container fills with primary, the thumb inverts
-   to subdued, and the label goes semibold. */
+   inset 3px. When enabled the container fills with primary and the thumb
+   inverts to subdued. */
 .toggle {
   display: inline-flex;
   align-items: center;
@@ -256,9 +256,6 @@ li a:hover:not(.active) {
   font-size: var(--font-size-sm);
   line-height: 1;
   cursor: pointer;
-}
-.toggle:has(.switch:checked) {
-  font-weight: var(--weight-semibold);
 }
 .switch {
   appearance: none;
