@@ -7,6 +7,9 @@
 	<title>Matt Wright – Design System</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/index.css" type="text/css">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,7 +17,7 @@
 	<style>
 		/* System-page layout helpers. All tokens & components come from css/index.css. */
 		.section-title {
-			font-weight: 600;
+			font-weight: var(--weight-semibold);
 			margin-top: 32px;
 		}
 		.sys-label {
@@ -41,12 +44,15 @@
 			align-items: center;
 			gap: 12px;
 		}
-		.swatch-chip {
+		.swatch-chip,
+		.radius-chip {
 			width: 44px;
 			height: 44px;
 			flex: none;
+			border: 1px solid var(--color-primary-subtle);
+		}
+		.swatch-chip {
 			border-radius: var(--radius-sm);
-			border: 1px solid var(--color-subtle);
 		}
 		.swatch-meta {
 			font-size: var(--font-size-sm);
@@ -73,12 +79,24 @@
 			<p class="section-title">Typography</p>
 			<div class="card">
 				<div class="type-row">
-					<div class="sys-label">Primary — 17px / 27px</div>
+					<div class="sys-label">Primary — 18px / 28px</div>
 					<div>Most of my time spent designing is time spent looking through the lens of first principles thinking.</div>
 				</div>
 				<div class="type-row">
-					<div class="sys-label">Small — 15px / 24px</div>
+					<div class="sys-label">Small — 16px / 24px</div>
 					<div class="text-sm">Most of my time spent designing is time spent looking through the lens of first principles thinking.</div>
+				</div>
+			</div>
+
+			<p class="section-title">Font weight</p>
+			<div class="card">
+				<div class="type-row">
+					<div class="sys-label">Regular — 400</div>
+					<div class="weight-regular">Most of my time spent designing is time spent looking through the lens of first principles thinking.</div>
+				</div>
+				<div class="type-row">
+					<div class="sys-label">Semibold — 600</div>
+					<div class="weight-semibold">Most of my time spent designing is time spent looking through the lens of first principles thinking.</div>
 				</div>
 			</div>
 
@@ -86,24 +104,44 @@
 			<div class="card">
 				<div class="swatches">
 					<div class="swatch">
-						<span class="swatch-chip" style="background: var(--color-text);"></span>
+						<span class="swatch-chip" style="background: var(--color-primary);"></span>
 						<div class="swatch-meta">
-							<div>--color-text</div>
+							<div>--color-primary</div>
 							<div class="muted">#736131 · #D5C69F dark</div>
 						</div>
 					</div>
 					<div class="swatch">
-						<span class="swatch-chip" style="background: var(--color-background);"></span>
+						<span class="swatch-chip" style="background: var(--color-subdued);"></span>
 						<div class="swatch-meta">
-							<div>--color-background</div>
+							<div>--color-subdued</div>
 							<div class="muted">#E0DED7 · #2A2924 dark</div>
 						</div>
 					</div>
 					<div class="swatch">
-						<span class="swatch-chip" style="background: var(--color-subtle);"></span>
+						<span class="swatch-chip" style="background: var(--color-primary-subtle);"></span>
 						<div class="swatch-meta">
-							<div>--color-subtle</div>
-							<div class="muted">text @ 60% — borders</div>
+							<div>--color-primary-subtle</div>
+							<div class="muted">primary @ 60% — borders</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p class="section-title">Radius</p>
+			<div class="card">
+				<div class="swatches">
+					<div class="swatch">
+						<span class="radius-chip" style="border-radius: var(--radius);"></span>
+						<div class="swatch-meta">
+							<div>--radius</div>
+							<div class="muted">6px — cards</div>
+						</div>
+					</div>
+					<div class="swatch">
+						<span class="radius-chip" style="border-radius: var(--radius-sm);"></span>
+						<div class="swatch-meta">
+							<div>--radius-sm</div>
+							<div class="muted">4px — chips, dropdowns</div>
 						</div>
 					</div>
 				</div>
@@ -113,7 +151,7 @@
 			<div class="card">
 				<div class="filters">
 					<div class="chip-wrap">
-						<button class="chip" onclick="toggleDropdown(this)">Example <span class="chev">▾</span></button>
+						<button class="chip" onclick="toggleDropdown(this)">Example <span class="chev">▼</span></button>
 						<div class="dropdown" hidden>
 							<label><input type="checkbox">Option one</label>
 							<label><input type="checkbox" checked>Option two</label>
@@ -139,18 +177,18 @@
 			var dd = wrap.querySelector('.dropdown');
 			var isOpen = !dd.hasAttribute('hidden');
 			document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
 			if (!isOpen) {
 				dd.removeAttribute('hidden');
 				dd.scrollTop = 0;
-				btn.querySelector('.chev').textContent = '▴';
+				btn.querySelector('.chev').textContent = '▲';
 			}
 		}
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
 				document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
 			}
 		});
 	</script>

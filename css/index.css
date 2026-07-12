@@ -3,27 +3,31 @@
    ============================================================ */
 :root {
   /* Color */
-  --color-text: #736131;
-  --color-background: #E0DED7;
-  --color-subtle: color-mix(in srgb, var(--color-text) 60%, transparent);
+  --color-primary: #736131;
+  --color-subdued: #E0DED7;
+  --color-primary-subtle: color-mix(in srgb, var(--color-primary) 60%, transparent);
 
   /* Typography */
   --font-family: "Crimson Text", serif;
-  --font-size: 17px;          /* primary text */
-  --line-height: 27px;
-  --font-size-sm: 15px;       /* small text  */
+  --font-size: 18px;          /* primary text */
+  --line-height: 28px;
+  --font-size-sm: 16px;       /* small text  */
   --line-height-sm: 24px;
 
-  /* Shape */
-  --radius: 6px;
-  --radius-sm: 4px;
+  /* Font weight */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+
+  /* Radius */
+  --radius: 6px;              /* cards */
+  --radius-sm: 4px;           /* chips, dropdowns */
 }
 
 /* Dark mode: only the color tokens change; everything else derives from them */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-text: #D5C69F;
-    --color-background: #2A2924;
+    --color-primary: #D5C69F;
+    --color-subdued: #2A2924;
   }
 }
 
@@ -44,8 +48,8 @@ html {
 body {
   margin-top: 72px;
   margin-bottom: 72px;
-  color: var(--color-text);
-  background-color: var(--color-background);
+  color: var(--color-primary);
+  background-color: var(--color-subdued);
   font-family: var(--font-family);
 }
 
@@ -55,10 +59,16 @@ body {
   margin-right: auto;
 }
 
-/* Small-text token as a utility */
+/* Typography utilities */
 .text-sm {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
+}
+.weight-regular {
+  font-weight: var(--weight-regular);
+}
+.weight-semibold {
+  font-weight: var(--weight-semibold);
 }
 
 
@@ -66,7 +76,7 @@ body {
    LINKS
    ============================================================ */
 a {
-  color: var(--color-text);
+  color: var(--color-primary);
   opacity: 60%;
   text-decoration: none;
 }
@@ -113,7 +123,7 @@ li a:hover:not(.active) {
 
 /* Container */
 .card {
-  border: 1px solid var(--color-subtle);
+  border: 1px solid var(--color-primary-subtle);
   border-radius: var(--radius);
   padding: 16px;
   margin-bottom: 16px;
@@ -133,9 +143,9 @@ li a:hover:not(.active) {
   font-family: inherit;
   font-size: var(--font-size-sm);
   line-height: 1;
-  color: var(--color-text);
-  background: var(--color-background);
-  border: 1px solid var(--color-subtle);
+  color: var(--color-primary);
+  background: var(--color-subdued);
+  border: 1px solid var(--color-primary-subtle);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
   cursor: pointer;
@@ -145,7 +155,7 @@ li a:hover:not(.active) {
   font-size: 11px;
 }
 .chip.active {
-  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
 .dropdown {
@@ -155,8 +165,8 @@ li a:hover:not(.active) {
   z-index: 10;
   max-height: min(200px, calc(100vh - 150px));
   overflow-y: auto;
-  background: var(--color-background);
-  border: 1px solid var(--color-subtle);
+  background: var(--color-subdued);
+  border: 1px solid var(--color-primary-subtle);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
   font-size: var(--font-size-sm);
@@ -171,7 +181,7 @@ li a:hover:not(.active) {
   margin: 8px 0;
 }
 .dropdown::-webkit-scrollbar-thumb {
-  background: var(--color-subtle);
+  background: var(--color-primary-subtle);
   border-radius: 2px;
   border-right: 4px solid transparent;
   background-clip: padding-box;
@@ -182,6 +192,7 @@ li a:hover:not(.active) {
   padding: 3px 0;
   cursor: pointer;
 }
+
 /* Checkbox component — used inside dropdowns and standalone via .checkbox */
 .dropdown input[type="checkbox"],
 .checkbox {
@@ -191,7 +202,7 @@ li a:hover:not(.active) {
   height: 15px;
   flex: none;
   margin: 0 8px 0 0;
-  border: 1px solid var(--color-subtle);
+  border: 1px solid var(--color-primary-subtle);
   border-radius: 3px;
   background: transparent;
   cursor: pointer;
@@ -199,7 +210,7 @@ li a:hover:not(.active) {
 }
 .dropdown input[type="checkbox"]:checked,
 .checkbox:checked {
-  background: var(--color-text);
+  background: var(--color-primary);
 }
 .dropdown input[type="checkbox"]:checked::after,
 .checkbox:checked::after {
@@ -210,7 +221,7 @@ li a:hover:not(.active) {
   transform: translate(-50%, -50%);
   font-size: 11px;
   line-height: 1;
-  color: var(--color-background);
+  color: var(--color-subdued);
 }
 
 
@@ -222,14 +233,14 @@ li a:hover:not(.active) {
 }
 ::-webkit-scrollbar-track {
   border-radius: 8px;
-  background: var(--color-background);
+  background: var(--color-subdued);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-text);
+  background: var(--color-primary);
   opacity: 20%;
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text);
+  background: var(--color-primary);
   opacity: 50%;
 }

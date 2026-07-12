@@ -7,18 +7,23 @@
 	<title>Matt Wright – Home Espresso</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/index.css" type="text/css">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 	<style>
-		/* Espresso-page-specific styles. Design tokens and shared components (card,
-		   chip, dropdown, checkbox, typography, colors) live in css/index.css. */
+		/* Espresso-page-specific styles. Design tokens and shared components live in css/index.css. */
+		.coffee {
+			padding: 12px;
+		}
 		.coffee-name {
-			font-weight: 600;
+			font-weight: var(--weight-semibold);
 		}
 		.fav-star {
-			font-weight: normal;
+			font-weight: var(--weight-regular);
 		}
 		.coffee > p:first-of-type {
 			margin: 0;
@@ -28,7 +33,7 @@
 		}
 		.notes {
 			border-left: 1px solid;
-			padding-left: 16px;
+			padding-left: 8px;
 			opacity: 60%;
 			margin-top: 16px;
 			font-size: var(--font-size-sm);
@@ -38,10 +43,10 @@
 			margin-top: 12px;
 		}
 		.coffee-details {
-			margin: 16px -16px 0;
-			padding: 12px 16px;
-			border-top: 1px solid var(--color-subtle);
-			border-bottom: 1px solid var(--color-subtle);
+			margin: 16px -12px 0;
+			padding: 12px;
+			border-top: 1px solid var(--color-primary-subtle);
+			border-bottom: 1px solid var(--color-primary-subtle);
 			font-size: var(--font-size-sm);
 			line-height: var(--line-height-sm);
 		}
@@ -55,9 +60,9 @@
 		/* Wraps details + notes so a persistent rule sits between the coffee info and
 		   the notes; the details expand out from that same rule when "More info" is clicked. */
 		.expand {
-			margin: 16px -16px 0;
-			padding: 0 16px;
-			border-top: 1px solid var(--color-subtle);
+			margin: 16px -12px 0;
+			padding: 0 12px;
+			border-top: 1px solid var(--color-primary-subtle);
 		}
 		.expand .coffee-details {
 			margin-top: 16px;
@@ -65,7 +70,7 @@
 			border-top: none;
 		}
 		.year {
-			font-weight: 600;
+			font-weight: var(--weight-semibold);
 			margin-top: 32px;
 		}
 	</style>
@@ -80,7 +85,7 @@
 				<button class="chip chip-fav" data-filter="fav" onclick="toggleFav(this)">★ Favorites</button>
 
 				<div class="chip-wrap">
-					<button class="chip" data-group="origin" onclick="toggleDropdown(this)">Origin <span class="chev">▾</span></button>
+					<button class="chip" data-group="origin" onclick="toggleDropdown(this)">Origin <span class="chev">▼</span></button>
 					<div class="dropdown" data-group="origin" hidden>
 						<label><input type="checkbox" value="Brazil" onchange="applyFilters()">Brazil</label>
 						<label><input type="checkbox" value="Burundi" onchange="applyFilters()">Burundi</label>
@@ -99,7 +104,7 @@
 				</div>
 
 				<div class="chip-wrap">
-					<button class="chip" data-group="process" onclick="toggleDropdown(this)">Process <span class="chev">▾</span></button>
+					<button class="chip" data-group="process" onclick="toggleDropdown(this)">Process <span class="chev">▼</span></button>
 					<div class="dropdown" data-group="process" hidden>
 						<label><input type="checkbox" value="Washed" onchange="applyFilters()">Washed</label>
 						<label><input type="checkbox" value="Natural" onchange="applyFilters()">Natural</label>
@@ -113,7 +118,7 @@
 				</div>
 
 				<div class="chip-wrap">
-					<button class="chip" data-group="roaster" onclick="toggleDropdown(this)">Roaster <span class="chev">▾</span></button>
+					<button class="chip" data-group="roaster" onclick="toggleDropdown(this)">Roaster <span class="chev">▼</span></button>
 					<div class="dropdown" data-group="roaster" hidden>
 						<label><input type="checkbox" value="8th &amp; Roast" onchange="applyFilters()">8th &amp; Roast</label>
 						<label><input type="checkbox" value="Airship Coffee" onchange="applyFilters()">Airship Coffee</label>
@@ -149,7 +154,7 @@
 				     Sweet & Caramel: caramel/brown sugar/demerara/sugar cane/honey/molasses/cream/cake.
 				     Spiced & Savory: spice/ginger/clove/cinnamon/pine/cola/lemongrass. -->
 				<div class="chip-wrap">
-					<button class="chip" data-group="cat" onclick="toggleDropdown(this)">Tasting notes <span class="chev">▾</span></button>
+					<button class="chip" data-group="cat" onclick="toggleDropdown(this)">Tasting notes <span class="chev">▼</span></button>
 					<div class="dropdown" data-group="cat" hidden>
 						<label><input type="checkbox" value="choc" onchange="applyFilters()">Chocolatey</label>
 						<label><input type="checkbox" value="fruit" onchange="applyFilters()">Fruity &amp; Jammy</label>
@@ -823,18 +828,18 @@
 			var dd = wrap.querySelector('.dropdown');
 			var isOpen = !dd.hasAttribute('hidden');
 			document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
 			if (!isOpen) {
 				dd.removeAttribute('hidden');
 				dd.scrollTop = 0;
-				btn.querySelector('.chev').textContent = '▴';
+				btn.querySelector('.chev').textContent = '▲';
 			}
 		}
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
 				document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
-				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▼'; });
 			}
 		});
 
