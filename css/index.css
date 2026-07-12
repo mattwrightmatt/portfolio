@@ -153,12 +153,15 @@ li a:hover:not(.active) {
   padding: 6px 10px;
   cursor: pointer;
 }
-/* Selected (has active filters) */
-.chip.active {
+/* Selected (has active filters), or its dropdown is open — both share the
+   selected fill. */
+.chip.active,
+.chip-wrap:has(.chip-menu:not([hidden])) .chip {
   background: var(--color-primary-superSubtle);
 }
 /* Hover + pressed — only where a real pointer exists, so these fills never
-   stick after a tap on touch devices (e.g. tapping a chip to close its menu). */
+   stick after a tap on touch devices (e.g. tapping a chip to close its menu).
+   Pressed matches the selected fill; hover stays distinct. */
 @media (hover: hover) {
   .chip:hover {
     background: var(--color-primary-subtle);
