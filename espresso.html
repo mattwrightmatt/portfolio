@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Matt Wright – Home Espresso</title>
+	<base href="https://mattwright.design/">
+	<meta name="description" content="Designer in Seattle, Washington" />
+	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
+	<link rel="stylesheet" href="css/index.css" type="text/css">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<style>
+		body {
+			font-family: "Crimson Text", serif;
+		}
+		/* Primary text: 2px smaller and 4px tighter line spacing than the base */
+		html {
+			font-size: 17px;
+			line-height: 27px;
+		}
+		/* FILTERS */
+		.filters {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-top: 12px;
+		}
+		.chip-wrap {
+			position: relative;
+		}
+		.chip {
+			font-family: inherit;
+			font-size: 15px;
+			line-height: 1;
+			color: var(--color-text);
+			background: var(--color-background);
+			border: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+			border-radius: 4px;
+			padding: 6px 10px;
+			cursor: pointer;
+		}
+		.chip .chev {
+			margin-left: 6px;
+			font-size: 11px;
+		}
+		.chip.active {
+			background: color-mix(in srgb, var(--color-text) 14%, transparent);
+		}
+		.dropdown {
+			position: absolute;
+			top: calc(100% + 4px);
+			left: 0;
+			z-index: 10;
+			max-height: min(200px, calc(100vh - 150px));
+			overflow-y: auto;
+			background: var(--color-background);
+			border: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+			border-radius: 4px;
+			padding: 8px 12px;
+			font-size: 15px;
+			white-space: nowrap;
+		}
+		/* Custom scrollbar: 5px thumb, 4px inset from the right, 1.5px radius, subdued link color */
+		.dropdown::-webkit-scrollbar {
+			width: 9px;
+		}
+		.dropdown::-webkit-scrollbar-track {
+			background: transparent;
+			margin: 8px 0;
+		}
+		.dropdown::-webkit-scrollbar-thumb {
+			background: color-mix(in srgb, var(--color-text) 60%, transparent);
+			border-radius: 2px;
+			border-right: 4px solid transparent;
+			background-clip: padding-box;
+		}
+		.dropdown label {
+			display: flex;
+			align-items: center;
+			padding: 3px 0;
+			cursor: pointer;
+		}
+		.dropdown input[type="checkbox"] {
+			appearance: none;
+			-webkit-appearance: none;
+			width: 15px;
+			height: 15px;
+			flex: none;
+			margin: 0 8px 0 0;
+			border: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+			border-radius: 3px;
+			background: transparent;
+			cursor: pointer;
+			position: relative;
+		}
+		.dropdown input[type="checkbox"]:checked {
+			background: var(--color-text);
+		}
+		.dropdown input[type="checkbox"]:checked::after {
+			content: "✓";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 11px;
+			line-height: 1;
+			color: var(--color-background);
+		}
+		/* COFFEE CARDS */
+		.more-info-link {
+			font-size: 15px;
+		}
+		.notes {
+			border-left: 1px solid;
+			padding-left: 16px;
+			opacity: 60%;
+			margin-top: 16px;
+			font-size: 15px;
+			line-height: 24px;
+		}
+		.notes + .notes {
+			margin-top: 12px;
+		}
+		.coffee-details {
+			margin: 16px -16px 0;
+			padding: 12px 16px;
+			border-top: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+			border-bottom: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+			font-size: 15px;
+			line-height: 24px;
+		}
+		.coffee-details > div + div {
+			margin-top: 4px;
+		}
+		/* No notes: details is a direct child of .coffee, so drop the bottom divider */
+		.coffee > .coffee-details {
+			border-bottom: none;
+		}
+		/* Wraps details + notes so a persistent rule sits between the coffee info and
+		   the notes; the details expand out from that same rule when "More info" is clicked. */
+		.expand {
+			margin: 16px -16px 0;
+			padding: 0 16px;
+			border-top: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+		}
+		.expand .coffee-details {
+			margin-top: 16px;
+			padding-top: 0;
+			border-top: none;
+		}
+		.year {
+			font-weight: 600;
+			margin-top: 32px;
+		}
+		.coffee {
+			position: relative;
+			border: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
+			border-radius: 6px;
+			padding: 16px;
+			margin-bottom: 16px;
+		}
+		.coffee-name {
+			font-weight: 600;
+		}
+		.fav-star {
+			font-weight: normal;
+		}
+		.coffee > p:first-of-type {
+			margin: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="content">
+		<main><div>
+			<p><a href="/">Home</a> / Espresso</p>
+
+			<div class="filters">
+				<button class="chip chip-fav" data-filter="fav" onclick="toggleFav(this)">★ Favorites</button>
+
+				<div class="chip-wrap">
+					<button class="chip" data-group="origin" onclick="toggleDropdown(this)">Origin <span class="chev">▾</span></button>
+					<div class="dropdown" data-group="origin" hidden>
+						<label><input type="checkbox" value="Brazil" onchange="applyFilters()">Brazil</label>
+						<label><input type="checkbox" value="Burundi" onchange="applyFilters()">Burundi</label>
+						<label><input type="checkbox" value="Colombia" onchange="applyFilters()">Colombia</label>
+						<label><input type="checkbox" value="Costa Rica" onchange="applyFilters()">Costa Rica</label>
+						<label><input type="checkbox" value="Ethiopia" onchange="applyFilters()">Ethiopia</label>
+						<label><input type="checkbox" value="Guatemala" onchange="applyFilters()">Guatemala</label>
+						<label><input type="checkbox" value="Honduras" onchange="applyFilters()">Honduras</label>
+						<label><input type="checkbox" value="India" onchange="applyFilters()">India</label>
+						<label><input type="checkbox" value="Indonesia" onchange="applyFilters()">Indonesia</label>
+						<label><input type="checkbox" value="Kenya" onchange="applyFilters()">Kenya</label>
+						<label><input type="checkbox" value="Mexico" onchange="applyFilters()">Mexico</label>
+						<label><input type="checkbox" value="Myanmar" onchange="applyFilters()">Myanmar</label>
+						<label><input type="checkbox" value="Peru" onchange="applyFilters()">Peru</label>
+					</div>
+				</div>
+
+				<div class="chip-wrap">
+					<button class="chip" data-group="process" onclick="toggleDropdown(this)">Process <span class="chev">▾</span></button>
+					<div class="dropdown" data-group="process" hidden>
+						<label><input type="checkbox" value="Washed" onchange="applyFilters()">Washed</label>
+						<label><input type="checkbox" value="Natural" onchange="applyFilters()">Natural</label>
+						<label><input type="checkbox" value="Anaerobic Natural" onchange="applyFilters()">Anaerobic Natural</label>
+						<label><input type="checkbox" value="Pulped Natural" onchange="applyFilters()">Pulped Natural</label>
+						<label><input type="checkbox" value="Wet Hulled" onchange="applyFilters()">Wet Hulled</label>
+						<label><input type="checkbox" value="Reposado & Washed" onchange="applyFilters()">Reposado &amp; Washed</label>
+						<label><input type="checkbox" value="Co-Ferment" onchange="applyFilters()">Co-Ferment</label>
+						<label><input type="checkbox" value="Blend" onchange="applyFilters()">Blend</label>
+					</div>
+				</div>
+
+				<div class="chip-wrap">
+					<button class="chip" data-group="roaster" onclick="toggleDropdown(this)">Roaster <span class="chev">▾</span></button>
+					<div class="dropdown" data-group="roaster" hidden>
+						<label><input type="checkbox" value="8th &amp; Roast" onchange="applyFilters()">8th &amp; Roast</label>
+						<label><input type="checkbox" value="Airship Coffee" onchange="applyFilters()">Airship Coffee</label>
+						<label><input type="checkbox" value="Atomic Coffee Roasters" onchange="applyFilters()">Atomic Coffee Roasters</label>
+						<label><input type="checkbox" value="Bird Rock Coffee Roasters" onchange="applyFilters()">Bird Rock Coffee Roasters</label>
+						<label><input type="checkbox" value="Brio Coffeeworks" onchange="applyFilters()">Brio Coffeeworks</label>
+						<label><input type="checkbox" value="Cerberus Coffee" onchange="applyFilters()">Cerberus Coffee</label>
+						<label><input type="checkbox" value="Devoción" onchange="applyFilters()">Devoción</label>
+						<label><input type="checkbox" value="Dune Coffee Roasters" onchange="applyFilters()">Dune Coffee Roasters</label>
+						<label><input type="checkbox" value="Feast Coffee &amp; Culture" onchange="applyFilters()">Feast Coffee &amp; Culture</label>
+						<label><input type="checkbox" value="Little Waves" onchange="applyFilters()">Little Waves</label>
+						<label><input type="checkbox" value="Máquina" onchange="applyFilters()">Máquina</label>
+						<label><input type="checkbox" value="Methodical Coffee" onchange="applyFilters()">Methodical Coffee</label>
+						<label><input type="checkbox" value="Naomi Joe" onchange="applyFilters()">Naomi Joe</label>
+						<label><input type="checkbox" value="Olympia Coffee Roasters" onchange="applyFilters()">Olympia Coffee Roasters</label>
+						<label><input type="checkbox" value="Onda Origins" onchange="applyFilters()">Onda Origins</label>
+						<label><input type="checkbox" value="Orcabay Coffee Roasters" onchange="applyFilters()">Orcabay Coffee Roasters</label>
+						<label><input type="checkbox" value="Perc Coffee" onchange="applyFilters()">Perc Coffee</label>
+						<label><input type="checkbox" value="Red Rooster Coffee" onchange="applyFilters()">Red Rooster Coffee</label>
+						<label><input type="checkbox" value="Sightseer Coffee" onchange="applyFilters()">Sightseer Coffee</label>
+						<label><input type="checkbox" value="Sterling Coffee Roasters" onchange="applyFilters()">Sterling Coffee Roasters</label>
+						<label><input type="checkbox" value="Timeless Coffee" onchange="applyFilters()">Timeless Coffee</label>
+						<label><input type="checkbox" value="True North Coffee Roasters" onchange="applyFilters()">True North Coffee Roasters</label>
+					</div>
+				</div>
+
+				<!-- Tasting-note categories: keyword buckets over the roaster's tasting notes.
+				     Chocolatey: chocolate/cocoa/cacao/nutella/fudge/tootsie roll/praline.
+				     Fruity & Jammy: berries/stone fruit/grape/cherry/plum/apple/pear/tropical/jam/wine.
+				     Citrus: lemon/lime/grapefruit/orange/tangerine.
+				     Floral & Tea: floral/rose/lavender/earl grey/black tea.
+				     Nutty: almond/peanut/nougat/praline/banana nut/brittle.
+				     Sweet & Caramel: caramel/brown sugar/demerara/sugar cane/honey/molasses/cream/cake.
+				     Spiced & Savory: spice/ginger/clove/cinnamon/pine/cola/lemongrass. -->
+				<div class="chip-wrap">
+					<button class="chip" data-group="cat" onclick="toggleDropdown(this)">Tasting notes <span class="chev">▾</span></button>
+					<div class="dropdown" data-group="cat" hidden>
+						<label><input type="checkbox" value="choc" onchange="applyFilters()">Chocolatey</label>
+						<label><input type="checkbox" value="fruit" onchange="applyFilters()">Fruity &amp; Jammy</label>
+						<label><input type="checkbox" value="citrus" onchange="applyFilters()">Citrus</label>
+						<label><input type="checkbox" value="floral" onchange="applyFilters()">Floral &amp; Tea</label>
+						<label><input type="checkbox" value="nutty" onchange="applyFilters()">Nutty</label>
+						<label><input type="checkbox" value="sweet" onchange="applyFilters()">Sweet &amp; Caramel</label>
+						<label><input type="checkbox" value="spice" onchange="applyFilters()">Spiced &amp; Savory</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="year-section">
+			<p class="year">2026</p>
+
+			<!-- Coffee entry template: name / process / roaster, then (if there are notes) an
+			     .expand wrapper holding the hidden details + note blocks, then the More info toggle.
+			     Each detail line is its own <div> inside .coffee-details. data-* attributes drive filters. -->
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty">
+			<p><span class="coffee-name">West Guji, Ethiopia</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
+			Sun Dried Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-1')">More info</a></p>
+
+			<div class="coffee-details" id="details-1" hidden><div>Origin: West Guji, Ethiopia</div>
+			<div>Variety: Heirloom</div>
+			<div>Roaster's notes: Stone fruit, blueberry, nougat</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Perc Coffee" data-cat="fruit sweet">
+			<p><span class="coffee-name">Colombia Jhoan Vergara</span> from <a href="https://perccoffee.com/products/colombia-jhoan-vergara">Perc Coffee</a><br>
+			Washed, Advanced Thermal Shock Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-2')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-2" hidden><div>Origin: Finca Las Flores, Jhoan Vergara · Bruselas, Huila, Colombia</div>
+			<div>Elevation: 1750 MASL</div>
+			<div>Variety: Caturra</div>
+			<div>Roaster's notes: “A cup that's juicy and sweet, with a flavor that reminds us of the juice at the bottom of a can of fruit cocktail mixed with agave syrup.”</div></div>
+
+			<div class="notes">Starting off the year strong! Lovely coffee. Got some agave sweetness. Pretty juicy and fruity but nothing too strong</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Guatemala" data-process="Natural" data-roaster="8th &amp; Roast" data-cat="fruit choc sweet">
+			<p><span class="coffee-name">Buena Vista Natural, Guatemala</span> from <a href="https://www.8thandroast.com/products/concepcion-buena-vista-natural-guatemala">8th &amp; Roast</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-3')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-3" hidden><div>Origin: Finca Concepción Buena Vista, Solano Family · San Martín Jilotepeque, Chimaltenango, Guatemala</div>
+			<div>Elevation: 5,900 ft</div>
+			<div>Variety: Red Bourbon</div>
+			<div>Roaster's notes: Caramel Apple, Black Raspberry, Tootsie Roll</div></div>
+
+			<div class="notes">Made a ristretto by accident and it's really nice actually.</div>
+			<div class="notes">Upped temp to 203° and pulled a 60g shot. Hoping it will bring out some of the fruitier notes. I've been struggling w this coffee but I think it hasn't been able to offgas — faintest raspberry note</div>
+			<div class="notes">Finally starting to get some raspberry after raising the temp – oh YES! Got it. I think resting it for longer helped</div>
+			<div class="notes">To me, this one tastes tart like apples and raspberries. A little bit of chocolate mellowness too</div>
+			<div class="notes">Wow! Very tart and juicy as an iced espresso. Raspberry tartness. Also smelled a little like an IPA</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Atomic Coffee Roasters" data-cat="citrus choc sweet">
+			<p><span class="coffee-name">Costa Rica Tarrazú</span> from <a href="https://atomicroastery.com/products/costa-rica-tarrazu">Atomic Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-4')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-4" hidden><div>Origin: Smallholder farms · Tarrazú Valley, Costa Rica</div>
+			<div>Elevation: 1300–1800 MASL</div>
+			<div>Caturra, Catuaí</div>
+			<div>Roaster's notes: “Bright citrus notes upfront, brown sugar in the middle, and a smooth, clean finish.”</div></div>
+
+			<div class="notes">Nice, gentle espresso. I think it's better on espresso than aeropress. Not bitter or acidic, chocolate-forward, heavier body</div>
+			<div class="notes">Last full cup with this one and it's really nice. Subtle sweet orange and chocolate</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Little Waves" data-cat="sweet fruit spice">
+			<p><span class="coffee-name">Bella Vista Mayan Harvest Women's Group, Mexico</span> from <a href="https://littlewaves.coffee">Little Waves</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-5')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-5" hidden><div>Origin: Mayan Harvest Women's Group · Bella Vista, Chiapas, Mexico</div>
+			<div>Variety: Typica, Caturra, Bourbon, Catimor</div>
+			<div>Roaster's notes: Dark caramel, apple cider, sweet cinnamon</div></div>
+
+			<div class="notes">Conical grind turned out a little muddy</div>
+			<div class="notes">I think I'm getting some orange more than apple in here</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Methodical Coffee" data-cat="nutty spice fruit">
+			<p><span class="coffee-name">Costa Rica, La Pastora</span> from <a href="https://methodicalcoffee.com/products/costa-rica-la-pastora">Methodical Coffee</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-6')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-6" hidden><div>Origin: CoopeTarrazú · La Pastora, Tarrazú, Costa Rica</div>
+			<div>Elevation: 1200–1900 MASL</div>
+			<div>Roaster's notes: “Approachable, clean, and classic with a juicy twist — just enough nuttiness to temper the syrupy, plummy sweetness.”</div></div>
+
+			<div class="notes">Having a hard time getting anything out of this one</div>
+			<div class="notes">Just got some nuttiness. It does seem to have a little spiciness of ginger perhaps</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="fruit choc sweet">
+			<p><span class="coffee-name">Wild Forest, Colombia</span> from <a href="https://www.devocion.com/products/coffee-colombia-wildforest">Devoción</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-7')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-7" hidden><div>Origin: Tolima, Colombia</div>
+			<div>Elevation: 1750–1900 MASL</div>
+			<div>Variety: Caturra</div>
+			<div>Roaster's notes: “A balanced, berry-forward blend with notes of tart berries, caramelized sugars, and a cocoa butter mouthfeel.”</div></div>
+
+			<div class="notes">Aeropress at Cavanaugh! Nice fruity tartness and dry on the finish. Raspberries and cherries</div>
+			<div class="notes">Getting cherry this morning. 3:1 shot in about 25s. Dry finish still. Really nice coffee!</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Feast Coffee &amp; Culture" data-cat="sweet nutty citrus">
+			<p><span class="coffee-name">Palmera, Colombia</span> from <a href="https://www.feastcoffee.com">Feast Coffee &amp; Culture</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-8')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-8" hidden><div>Origin: Huila, Colombia</div>
+			<div>Roaster's notes: Molasses, nougat, orange</div></div>
+
+			<div class="notes">Nice orange acidity without being too tart</div>
+			<div class="notes">Makes a lovely cappuccino! Orange is very subtle and sweet</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Honduras" data-process="Washed" data-roaster="Dune Coffee Roasters" data-cat="citrus sweet floral">
+			<p><span class="coffee-name">Urpania Guzmán, Honduras</span> from <a href="https://www.dunecoffee.com/products/honduras-urpania-guzman-pacas">Dune Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-9')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-9" hidden><div>Origin: Urpania Guzmán · El Cedral, Santa Bárbara, Honduras</div>
+			<div>Elevation: 1,500 MASL</div>
+			<div>Variety: Pacas</div>
+			<div>Roaster's notes: “Sweet like orange and brown sugar, with a botanical quality characteristic of coffees grown on the Santa Bárbara mountain.”</div></div>
+
+			<div class="notes">Gentle citrus flavor in a cappuccino</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Brazil|Peru|Ethiopia" data-process="Blend" data-roaster="Cerberus Coffee" data-cat="choc fruit">
+			<p><span class="coffee-name">Wizard Cat Blend</span> from <a href="https://cerberuscoffeeco.com/products/wizard-cat-blend">Cerberus Coffee</a><br>
+			Natural &amp; Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-10')">More info</a></p>
+
+			<div class="coffee-details" id="details-10" hidden><div>Origin: Brazil Rio Brilhante · Peru Perales Huancaruna · Ethiopia Guji Natural</div>
+			<div>Roaster's notes: “Bright fruitiness, a backbone of milk chocolate, and a nice berry aftertaste.”</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="True North Coffee Roasters" data-cat="fruit">
+			<p><span class="coffee-name">Buesaco, Nariño — Colombia</span> from <a href="https://www.drinktruenorth.com">True North Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-11')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-11" hidden><div>Origin: Buesaco, Nariño, Colombia</div>
+			<div>Elevation: ~2,000 MASL</div>
+			<div>Roaster's notes: Strawberry, peach, date</div></div>
+
+			<div class="notes">Pulled a soup shot accidentally and this is TANGY omg. It's like a tangy strawberry tea</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Timeless Coffee" data-cat="fruit sweet">
+			<p><span class="coffee-name">Peru Selva Andina</span> from <a href="https://timelesscoffee.com">Timeless Coffee</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-12')">More info</a></p>
+
+			<div class="coffee-details" id="details-12" hidden><div>Origin: Cajamarca, Peru · Organic</div>
+			<div>2,000+ MASL</div>
+			<div>Roaster's notes: Watermelon, green grape, caramel</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Co-Ferment" data-roaster="Perc Coffee" data-cat="fruit floral sweet">
+			<p><span class="coffee-name">Colombia Young Producers</span> from <a href="https://perccoffee.com/products/colombia-young-producers">Perc Coffee</a><br>
+			Red Fruits Co-Ferment Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-13')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-13" hidden><div>Origin: Sebastián Ramírez · Colombia</div>
+			<div>Roaster's notes: “Intense fruit — think pink Starburst — that softens into elegant florals and finishes with a cake-icing sweetness.”</div></div>
+
+			<div class="notes">I love a co-ferment. Tart red berry</div>
+			<div class="notes">I keep reaching for this one! Raspberry. Nice and sweet</div>
+			</div>
+			</div>
+			</div>
+
+			<div class="year-section">
+			<p class="year">2025</p>
+
+			<div class="coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="fruit sweet">
+			<p><span class="coffee-name">Kiamugumo AB</span> from <a href="https://www.sterling.coffee">Sterling Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-101')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-101" hidden><div>Origin: Kenya</div>
+			<div>Roaster's notes: Berries, Demerara</div></div>
+
+			<div class="notes">201° at 6 bar, 20g in 42g out in 24 sec. Roasted almost 3 weeks ago.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="choc fruit nutty">
+			<p><span class="coffee-name">Toro</span> from <a href="https://www.devocion.com/products/house-blend-coffee-toro">Devoción</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-102')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-102" hidden><div>Origin: Colombia · House blend (Caturra, Típica)</div>
+			<div>Roaster's notes: Cocoa, vanilla, cherry, almond</div></div>
+
+			<div class="notes">Classic, always good.</div>
+			<div class="notes">201° at 6 bar, roasted about 2 weeks ago. Super smooth, hit the tasting notes.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="true" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral">
+			<p><span class="coffee-name">Benti Nenka, Ethiopia</span> <span class="fav-star">★</span> from <a href="https://perccoffee.com">Perc Coffee</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-103')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-103" hidden><div>Origin: Ethiopia</div>
+			<div>Roaster's notes: Blueberry, super fruity</div></div>
+
+			<div class="notes">Smells amazing. Blueberry, super fruity.</div>
+			<div class="notes">198° at 8 bar, 20g in 32g out at 22 sec. Roasted about a week ago. Very sour, a little bitter.</div>
+			<div class="notes">Lime/grapefruit, blueberry, maybe a little rose? Like a sour candy.</div>
+			<div class="notes">I think it's pretty bitter actually. Over extracted? Going to try to back off the grind size slightly next time</div>
+			<div class="notes">Aeropress — 200g water, 20g coffee, medium-coarse. 0–0:45: 50g water, bloom. 0:45: 150g water, put top on. 1–5ish: let it sit. 5: swirl. 5–6: sit. 6–6:30: press. This was pretty good. Muted the blueberry and acidic taste a ton. Smooth</div>
+			<div class="notes">201° at 9 bar, 20g in 31g out in 26 sec. Roasted 10 days ago. Less acidic, getting some almond</div>
+			<div class="notes">Have started playing with blooming the coffee. 10 seconds and 25 seconds. It's super syrupy in texture. Really interesting</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Bird Rock Coffee Roasters" data-cat="fruit sweet">
+			<p><span class="coffee-name">Ethiopia Uraga</span> from <a href="https://birdrockcoffee.com">Bird Rock Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-104')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-104" hidden><div>Origin: Uraga, Ethiopia</div>
+			<div>Roaster's notes: Nectarine, caramel sauce, raspberry</div>
+			<div>Roasted: 12/30/24</div></div>
+
+			<div class="notes">Ristretto 20g in/out in 34 sec at 197°</div>
+			<div class="notes">Overall I didn't feel I could get anything super interesting out of this one. Had one time where I thought I tasted tangerine.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Olympia Coffee Roasters" data-cat="fruit choc">
+			<p><span class="coffee-name">Gotta Natural, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-105')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-105" hidden><div>Origin: Ethiopia</div>
+			<div>Roaster's notes: Grape juice, red wine, chocolate</div>
+			<div>Roasted: 1/3/25</div></div>
+
+			<div class="notes">200° at 8 bar, 45g out. Wow it's wild. Syrupy mouth feel</div>
+			<div class="notes">196° at 8 bar, 45g out in 23s. A bit finer grind with no tamp.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="India" data-process="Pulped Natural" data-roaster="Methodical Coffee" data-cat="spice nutty choc">
+			<p><span class="coffee-name">Hulikere Estate, India</span> from <a href="https://methodicalcoffee.com">Methodical Coffee</a><br>
+			Pulped Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-106')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-106" hidden><div>Origin: Hulikere Estate, India</div>
+			<div>Roaster's notes: Spice, peanut brittle, chocolate</div>
+			<div>Roasted: 1/22/25</div></div>
+
+			<div class="notes">196° at 8 bar, 45g out in 20s. Too fast,</div>
+			<div class="notes">200° 8 bar,</div>
+			<div class="notes">200° 6 bar, 20 in 36 out in 24s. Best yet for sure. Definitely spicy, not getting any fruity notes. Not very sweet. I think the 6 bar helped out here. Nice thicker mouth feel</div>
+			<div class="notes">196° 6 bar, 30 second bloom with a light tamp. Didn't grind fine enough. 20s for 60ish grams out.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="fruit sweet floral">
+			<p><span class="coffee-name">Arlen Humbo, Peru</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-107')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-107" hidden><div>Origin: Peru</div>
+			<div>Roaster's notes: Blueberry, whipped cream, floral</div>
+			<div>Roasted: 2/5</div></div>
+
+			<div class="notes">196° 9 bar, 40g out in 24s. Tart blueberry if it's blueberry, but strong lavender notes. Very floral</div>
+			<div class="notes">55g in 15s with a 20 second bloom. Very floral, not getting blueberry as much. Actually just got some cream notes I think.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit citrus">
+			<p><span class="coffee-name">La Palmera, Colombia</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
+			Anaerobic Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-108')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-108" hidden><div>Origin: Colombia</div>
+			<div>Roaster's notes: Grape, tangerine, red apple</div>
+			<div>Roasted: 2/13</div></div>
+
+			<div class="notes">196° 6 bar, turbo shot 50g out in like 12-15s. Pretty good, a little bitter. Was getting some vegetative flavors. Going to slow the shot tomorrow to see if I can bring out some of the fruitiness.</div>
+			<div class="notes">50g out in 24s</div>
+			<div class="notes">45g out in 25s-ish. Grape, Green apple. Really nice overall. Great mouthfeel, interesting but not overbearing. A little tangy</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit choc">
+			<p><span class="coffee-name">Idido, Ethiopia</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-109')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-109" hidden><div>Origin: Idido, Ethiopia</div>
+			<div>Roaster's notes: Strawberry, grape, dark chocolate</div>
+			<div>Roasted: 02/25</div></div>
+
+			<div class="notes">20g out in 40s</div>
+			<div class="notes">36g out in 30s - still finer than I hoped - definitely got strawberry and dark chocolate</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="choc fruit sweet">
+			<p><span class="coffee-name">San Sebastián Reserva, Colombia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-110')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-110" hidden><div>Origin: Colombia</div>
+			<div>Roaster's notes: Milk chocolate, apple, sugar cane</div>
+			<div>Roasted: 03/04</div></div>
+
+			<div class="notes">Really nice. Subtle.</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus">
+			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-111')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-111" hidden><div>Origin: Ethiopia</div>
+			<div>Roaster's notes: Earl Grey, apricot, lemon</div>
+			<div>Roasted: 3/13</div></div>
+
+			<div class="notes">55g out in 30s. Definitely getting some lemon. Really nice, a bit tart</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Anaerobic Natural" data-roaster="Red Rooster Coffee" data-cat="fruit choc floral">
+			<p><span class="coffee-name">Sakaro, Gedeb District, Ethiopia</span> from <a href="https://redroostercoffee.com">Red Rooster Coffee</a><br>
+			Anaerobic Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-112')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-112" hidden><div>Origin: Gedeb, Ethiopia</div>
+			<div>Roaster's notes: Raspberry tea, Nutella, plum, mixed berries</div>
+			<div>Roasted: 3/17</div></div>
+
+			<div class="notes">50g out in 30s. Smells amazing - raspberry tea, cranberry/red wine. Holy shit this coffee is crazy lol. Quite bitter right now, I think I overextracted. Mulled wine is what I'm getting, and dark chocolate. Like chocolate covered açaí berries.</div>
+			<div class="notes">Turbo shot, 60g in 20ish sec. Definitely more raspberry tea. Has some of the bitterness of tea too</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus">
+			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-113')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-113" hidden><div>Origin: Ethiopia</div>
+			<div>Roaster's notes: Earl Grey, apricot, lemon</div></div>
+
+			<div class="notes">36g out in 25s. Really lovely in a cortado. Getting earl grey and apricot</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Brazil" data-process="Natural" data-roaster="Máquina" data-cat="sweet choc">
+			<p><span class="coffee-name">Groupo de Minas, Brazil</span> from <a href="https://www.maquinacoffee.com">Máquina</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-114')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-114" hidden><div>Origin: Brazil</div>
+			<div>Roaster's notes: Dark caramel, chocolate, creamy</div>
+			<div>Roasted: 4/7</div></div>
+
+			<div class="notes">It's okay. Really wasn't able to pull anything interesting out of this one</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Myanmar" data-process="Natural" data-roaster="Orcabay Coffee Roasters" data-cat="fruit">
+			<p><span class="coffee-name">Myanmar Natural</span> from <a href="https://www.orcabaycoffeebeans.com">Orcabay Coffee Roasters</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-115')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-115" hidden><div>Origin: Myanmar</div>
+			<div>Medium/dark roast · from the local delivery guy</div></div>
+
+			<div class="notes">Having a hard time identifying flavors without tasting notes on the bag 😅</div>
+			<div class="notes">Cherry notes with a milk drink!</div>
+			<div class="notes">For some reason, very hard to pull a shot with this. Not sure if my grinder needs aligning tho</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Airship Coffee" data-cat="choc sweet spice">
+			<p><span class="coffee-name">Lake Toba Caldera, Sumatra</span> from <a href="https://airshipcoffee.com">Airship Coffee</a><br>
+			Wet Hulled Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-116')">More info</a></p>
+
+			<div class="coffee-details" id="details-116" hidden><div>Origin: Southwest Region, Sumatra, Indonesia</div>
+			<div>Roaster's notes: Dark chocolate, pine, brown sugar</div></div>
+			</div>
+
+			<div class="coffee" data-fav="true" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="citrus fruit floral">
+			<p><span class="coffee-name">Bombe, Ethiopia</span> <span class="fav-star">★</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-117')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-117" hidden><div>Origin: Ethiopia</div>
+			<div>Roaster's notes: Lemon, berries, Earl Grey tea</div></div>
+
+			<div class="notes">Wow really lovely. Shot over ice. Sweet lemon and berries and early grey. Best coffee I've had in a while.</div>
+			<div class="notes">I think this one was best iced for me</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Guatemala" data-process="Washed" data-roaster="Onda Origins" data-cat="choc nutty spice">
+			<p><span class="coffee-name">Ivonne Herrera, Guatemala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-118')">More info</a></p>
+
+			<div class="coffee-details" id="details-118" hidden><div>Origin: Las Parásitas, Santa Elena Barillas, Guatemala</div>
+			<div>Roaster's notes: Chocolate, almond brittle, ginger snap</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia|Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit">
+			<p><span class="coffee-name">Punch Bowl</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
+			Natural / Anaerobic Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-119')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-119" hidden><div>Origin: Ethiopia &amp; Colombia</div>
+			<div>Roaster's notes: Natural, fruity, explosive</div></div>
+
+			<div class="notes">Wow it's really lovely as a long black. A bit tart, a little syrupy, darker roast, not too bitter. I pulled this shot a little fast, would be curious if a slower shot will thicken it up. Now that it's cooler it's really lovely - milk chocolate, red berry.</div>
+			<div class="notes">Really liking this coffee, it reminds me of Olympia's Gotta Natural</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Brio Coffeeworks" data-cat="fruit floral">
+			<p><span class="coffee-name">Ethiopia Ardi</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-120')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-120" hidden><div>Origin: Ethiopia</div>
+			<div>Roaster's notes: Strawberry, black tea, tropical</div></div>
+
+			<div class="notes">First shot pulled on the Cremina! Very interesting. The Silvano was giving me strawberry, Cremina so far is hitting all of the notes. The “tropical” note is weird but I totally get it</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="nutty sweet citrus">
+			<p><span class="coffee-name">Mexico Chiapas</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-121')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-121" hidden><div>Origin: Chiapas, Mexico</div>
+			<div>Roaster's notes: Toasted almond, brown sugar, citrus</div></div>
+
+			<div class="notes">Cremina pulled shot. Very subtle brown sugar.</div>
+			<div class="notes">The citrus is very subtle and sweet. Not at all sour</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Burundi" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet fruit floral">
+			<p><span class="coffee-name">Gitwe, Burundi</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-122')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-122" hidden><div>Origin: Burundi</div>
+			<div>Roaster's notes: Brown sugar, pear, tea</div></div>
+
+			<div class="notes">The Cremina did a nice job with this one! A bit tart, will need to try again to see if I find the notes.</div>
+			<div class="notes">Still tart. I think I'm getting pear though. Espresso made on the Cremina</div>
+			<div class="notes">Oooo nice, yep, got some pear. Interesting! Haven't had a coffee w pear notes before</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="true" data-origin="Brazil" data-process="Natural" data-roaster="Onda Origins" data-cat="choc nutty">
+			<p><span class="coffee-name">Kiko Ribeiro, Brazil</span> <span class="fav-star">★</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-123')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-123" hidden><div>Origin: Sítio Palmital, Carmo de Minas, Brazil</div>
+			<div>Roaster's notes: Baking chocolate, praline, banana nut bread</div></div>
+
+			<div class="notes">Definitely getting baking chocolate, smells like banana nut bread</div>
+			<div class="notes">Really nice as a cappuccino! Chocolaty, banana-nutty</div>
+			<div class="notes">Starting to like this one as a daily driver. Mellow but still interesting</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="choc citrus nutty">
+			<p><span class="coffee-name">Finca Santa Ana, Colombia</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-124')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-124" hidden><div>Origin: Colombia</div>
+			<div>Roaster's notes: Hot fudge, tangerine, almond praline</div></div>
+
+			<div class="notes">Really lovely texture. Chocolate tangerine for sure</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Brio Coffeeworks" data-cat="citrus spice">
+			<p><span class="coffee-name">Sumatra Lintong</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
+			Wet Hulled Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-125')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-125" hidden><div>Origin: Lintong, Sumatra, Indonesia</div>
+			<div>Roaster's notes: Grapefruit, cola, lemongrass</div></div>
+
+			<div class="notes">I really like this one. It's dry like red wine but the flavor is very full. Can definitely get the cola</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet choc fruit">
+			<p><span class="coffee-name">Amparo Pajoy</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-126')">More info</a></p>
+
+			<div class="coffee-details" id="details-126" hidden><div>Origin: Colombia</div>
+			<div>Good Food Award winner</div>
+			<div>Roaster's notes: Brown sugar, milk chocolate, apple</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
+			<p><span class="coffee-name">Tusitala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-127')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-127" hidden><div>Rotating seasonal blend</div>
+			<div>Roaster's notes: Cacao nib, cherry, caramelized sugar</div></div>
+
+			<div class="notes">Beautiful, darker roast espresso on the Cremina. Cacao and cherry. Great mouthfeel</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Onda Origins" data-cat="sweet fruit spice floral">
+			<p><span class="coffee-name">Carlos Cadena, Mexico</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
+			Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-128')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-128" hidden><div>Origin: Finca Huehuetepan, Mexico</div>
+			<div>Roaster's notes: Caramel apple, clove, rose water</div></div>
+
+			<div class="notes">The smell is probably the most amazing part about this coffee. Very complex and sweet. Can definitely smell the Carmel Apple</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
+			<p><span class="coffee-name">Tusitala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-129')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-129" hidden><div>Rotating seasonal blend</div>
+			<div>Roaster's notes: Cacao nib, cherry, caramelized sugar</div></div>
+
+			<div class="notes">Lovely, chocolatey, almond-y</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Costa Rica" data-process="Reposado & Washed" data-roaster="Onda Origins" data-cat="fruit choc">
+			<p><span class="coffee-name">Enrique Navarro, Costa Rica</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
+			Reposado &amp; Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-130')">More info</a></p>
+
+			<div class="coffee-details" id="details-130" hidden><div>Origin: Monte Copey, Tarrazú, Costa Rica</div>
+			<div>Roaster's notes: Plum, chocolate, rainier cherry</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Sightseer Coffee" data-cat="fruit floral">
+			<p><span class="coffee-name">Space Cowboy, Yirgacheffe</span> from <a href="https://sightseercoffee.co">Sightseer Coffee</a><br>
+			Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-131')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-131" hidden><div>Origin: Yirgacheffe, Ethiopia</div>
+			<div>Roaster's notes: Blueberry jam, rosé wine, juicy &amp; sweet</div></div>
+
+			<div class="notes">Drier than I expected. Pulled a ristretto shot. Getting Rosé I think</div>
+			<div class="notes">This one is really lovely. More rose wine than blueberry jam IMO - it's dry. Still getting blueberry though I think</div>
+			<div class="notes">Finer grind and about 50g out. Much sweeter and getting blueberry. Really lovely coffee. Some almond notes too</div>
+			</div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty">
+			<p><span class="coffee-name">West Guji, Ethiopia</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
+			Sun Dried Natural Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-132')">More info</a></p>
+
+			<div class="coffee-details" id="details-132" hidden><div>Origin: West Guji, Ethiopia</div>
+			<div>Roaster's notes: Stone fruit, blueberry, nougat</div></div>
+			</div>
+
+			<div class="coffee" data-fav="false" data-origin="Colombia|Brazil" data-process="Blend" data-roaster="Naomi Joe" data-cat="fruit floral">
+			<p><span class="coffee-name">Meadowlark Blend</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
+			Co-Ferment, Pulped Natural &amp; Washed Process<br>
+			<a href="#" class="more-info-link" onclick="return toggleInfo(event, this, 'details-133')">More info</a></p>
+
+			<div class="expand">
+			<div class="coffee-details" id="details-133" hidden><div>Origin: Colombia &amp; Brazil</div>
+			<div>Roaster's notes: Raspberry tart, hibiscus, delicate sweetness</div></div>
+
+			<div class="notes">This one is kinda tricky to pull a good shot from. I just got a good one by filtering out the crema with an aeropress filter to make an americano</div>
+			</div>
+			</div>
+			</div>
+		</div></main>
+
+	</div>
+
+	<script>
+		function toggleInfo(event, link, id) {
+			event.preventDefault();
+			var details = document.getElementById(id);
+			if (details.hasAttribute('hidden')) {
+				details.removeAttribute('hidden');
+				link.textContent = 'Less info';
+			} else {
+				details.setAttribute('hidden', '');
+				link.textContent = 'More info';
+			}
+			return false;
+		}
+
+		function toggleDropdown(btn) {
+			var wrap = btn.parentNode;
+			var dd = wrap.querySelector('.dropdown');
+			var isOpen = !dd.hasAttribute('hidden');
+			document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
+			document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+			if (!isOpen) {
+				dd.removeAttribute('hidden');
+				dd.scrollTop = 0;
+				btn.querySelector('.chev').textContent = '▴';
+			}
+		}
+
+		document.addEventListener('click', function (e) {
+			if (!e.target.closest('.chip-wrap')) {
+				document.querySelectorAll('.dropdown').forEach(function (d) { d.setAttribute('hidden', ''); });
+				document.querySelectorAll('.chip .chev').forEach(function (c) { c.textContent = '▾'; });
+			}
+		});
+
+		function toggleFav(btn) {
+			btn.classList.toggle('active');
+			applyFilters();
+		}
+
+		function getChecked(group) {
+			return Array.prototype.map.call(
+				document.querySelectorAll('.dropdown[data-group="' + group + '"] input:checked'),
+				function (i) { return i.value; }
+			);
+		}
+
+		function setChipActive(group, on) {
+			var chip = document.querySelector('.chip[data-group="' + group + '"]');
+			if (chip) { chip.classList.toggle('active', !!on); }
+		}
+
+		function applyFilters() {
+			var favOn = document.querySelector('.chip-fav').classList.contains('active');
+			var origins = getChecked('origin');
+			var processes = getChecked('process');
+			var roasters = getChecked('roaster');
+			var cats = getChecked('cat');
+
+			setChipActive('origin', origins.length);
+			setChipActive('process', processes.length);
+			setChipActive('roaster', roasters.length);
+			setChipActive('cat', cats.length);
+
+			document.querySelectorAll('.coffee').forEach(function (c) {
+				var show = true;
+				if (favOn && c.dataset.fav !== 'true') show = false;
+				if (origins.length) {
+					var os = (c.dataset.origin || '').split('|');
+					if (!origins.some(function (o) { return os.indexOf(o) > -1; })) show = false;
+				}
+				if (processes.length && processes.indexOf(c.dataset.process) === -1) show = false;
+				if (roasters.length && roasters.indexOf(c.dataset.roaster) === -1) show = false;
+				if (cats.length) {
+					var cs = (c.dataset.cat || '').split(' ');
+					if (!cats.some(function (ct) { return cs.indexOf(ct) > -1; })) show = false;
+				}
+				c.style.display = show ? '' : 'none';
+			});
+
+			document.querySelectorAll('.year-section').forEach(function (s) {
+				var visible = Array.prototype.some.call(s.querySelectorAll('.coffee'), function (c) {
+					return c.style.display !== 'none';
+				});
+				s.style.display = visible ? '' : 'none';
+			});
+		}
+	</script>
+</body>
+</html>
