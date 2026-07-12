@@ -157,13 +157,15 @@ li a:hover:not(.active) {
 .chip.active {
   background: var(--color-primary-superSubtle);
 }
-/* Hover */
-.chip:hover {
-  background: var(--color-primary-subtle);
-}
-/* Pressed */
-.chip:active {
-  background: var(--color-primary-superSubtle);
+/* Hover + pressed — only where a real pointer exists, so these fills never
+   stick after a tap on touch devices (e.g. tapping a chip to close its menu). */
+@media (hover: hover) {
+  .chip:hover {
+    background: var(--color-primary-subtle);
+  }
+  .chip:active {
+    background: var(--color-primary-superSubtle);
+  }
 }
 
 .chip-menu {
@@ -216,10 +218,12 @@ li a:hover:not(.active) {
   cursor: pointer;
   position: relative;
 }
-/* Pressed (unchecked) */
-.chip-menu input[type="checkbox"]:active,
-.checkbox:active {
-  background: var(--color-primary-superSubtle);
+/* Pressed (unchecked) — pointer-only so it can't stick after a tap */
+@media (hover: hover) {
+  .chip-menu input[type="checkbox"]:active,
+  .checkbox:active {
+    background: var(--color-primary-superSubtle);
+  }
 }
 .chip-menu input[type="checkbox"]:checked,
 .checkbox:checked {
@@ -278,8 +282,11 @@ li a:hover:not(.active) {
   background: var(--color-primary);
   transition: left 0.15s ease;
 }
-.switch:active {
-  background: var(--color-primary-superSubtle);
+/* Pressed — pointer-only so it can't stick after a tap */
+@media (hover: hover) {
+  .switch:active {
+    background: var(--color-primary-superSubtle);
+  }
 }
 .switch:checked {
   background: var(--color-primary);
