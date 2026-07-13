@@ -154,10 +154,21 @@
 			rotation[1] = Math.max(-90, Math.min(90, rotation[1] - event.dy * k));
 			render();
 		}));
-		svg.call(d3.zoom().scaleExtent([0.7, 6])
+		// Wheel (desktop) and two-finger pinch (touch) both drive d3.zoom's scale.
+		var zoom = d3.zoom().scaleExtent([0.7, 6])
 			.filter(function (e) { return e.type === 'wheel' || (e.touches && e.touches.length > 1); })
-			.on('zoom', function (event) { zoomK = event.transform.k; render(); }))
-			.on('dblclick.zoom', null);
+			.on('zoom', function (event) { zoomK = event.transform.k; render(); });
+		svg.call(zoom).on('dblclick.zoom', null);
+
+		// On-screen +/− controls so zoom works with a single tap on any device
+		// (mobile pinch can be finicky). scaleBy runs through the same zoom
+		// behavior, keeping its internal transform in sync with pinch/wheel.
+		function zoomBy(f) { svg.transition().duration(180).call(zoom.scaleBy, f); }
+		var controls = d3.select(canvas).append('div').attr('class', 'map-zoom');
+		controls.append('button').attr('type', 'button').attr('class', 'map-zoom-btn')
+			.attr('aria-label', 'Zoom in').text('+').on('click', function () { zoomBy(1.6); });
+		controls.append('button').attr('type', 'button').attr('class', 'map-zoom-btn')
+			.attr('aria-label', 'Zoom out').html('&minus;').on('click', function () { zoomBy(1 / 1.6); });
 
 		S.filterHidden = function (d) { return !d.cards.some(function (c) { return c.style.display !== 'none'; }); };
 		S.render = render;

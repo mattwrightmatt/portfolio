@@ -253,6 +253,43 @@
 			font-weight: var(--weight-semibold);
 			pointer-events: none;
 		}
+		/* Zoom controls — stacked +/− buttons in the corner of the map. */
+		.map-zoom {
+			position: absolute;
+			right: 12px;
+			bottom: 12px;
+			display: flex;
+			flex-direction: column;
+			border: 1px solid var(--color-primary-subtle);
+			border-radius: var(--radius-sm);
+			overflow: hidden;
+			background: var(--color-subdued);
+		}
+		.map-zoom-btn {
+			appearance: none;
+			-webkit-appearance: none;
+			width: 32px;
+			height: 32px;
+			padding: 0;
+			font-family: var(--font-family);
+			font-size: 20px;
+			line-height: 1;
+			color: var(--color-primary);
+			background: transparent;
+			border: none;
+			cursor: pointer;
+		}
+		.map-zoom-btn + .map-zoom-btn {
+			border-top: 1px solid var(--color-primary-subtle);
+		}
+		@media (hover: hover) {
+			.map-zoom-btn:hover {
+				background: var(--color-primary-superSubtle);
+			}
+		}
+		.map-zoom-btn:active {
+			background: var(--color-primary-subtle);
+		}
 		.map-error {
 			padding: 24px;
 			font-size: var(--font-size-sm);
