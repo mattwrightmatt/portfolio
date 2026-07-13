@@ -65,13 +65,177 @@
 		   trap the <p>'s top margin and push it down. */
 		.page-head {
 			display: flex;
-			align-items: center;
+			align-items: baseline;
 			justify-content: space-between;
 			gap: 16px;
 			margin: 1em 0;
 		}
 		.page-head p {
 			margin: 0;
+		}
+
+		/* Settings link + dropdown (holds the Details toggle and the View radios). */
+		.settings-wrap {
+			position: relative;
+		}
+		.settings-link {
+			font-family: inherit;
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			color: var(--color-primary);
+			background: none;
+			border: none;
+			padding: 0;
+			cursor: pointer;
+			opacity: 60%;
+		}
+		.settings-link:hover,
+		.settings-link[aria-expanded="true"] {
+			opacity: 100%;
+		}
+		.settings-menu {
+			position: absolute;
+			top: calc(100% + 8px);
+			right: 0;
+			z-index: 20;
+			min-width: 180px;
+			background: var(--color-subdued);
+			border: 1px solid var(--color-primary-subtle);
+			border-radius: var(--radius-sm);
+			padding: 12px;
+			font-size: var(--font-size-sm);
+		}
+		.settings-section {
+			margin-top: 12px;
+			padding-top: 12px;
+			border-top: 1px solid var(--color-primary-subtle);
+		}
+		.settings-label {
+			font-size: 13px;
+			opacity: 60%;
+			margin-bottom: 8px;
+		}
+		.radio-row {
+			display: flex;
+			align-items: center;
+			cursor: pointer;
+		}
+		.radio-row + .radio-row {
+			margin-top: 8px;
+		}
+
+		/* Map view — a card-framed map that fills the viewport below the filter
+		   row. Its top is set in JS (just under the filters); the page doesn't
+		   scroll while it's shown. */
+		:root[data-view="map"] .year-section {
+			display: none !important;
+		}
+		:root[data-view="map"] body {
+			overflow: hidden;
+		}
+		.map-view {
+			position: fixed;
+			left: 16px;
+			right: 16px;
+			bottom: 16px;
+			top: 200px;
+			border: 1px solid var(--color-primary-subtle);
+			border-radius: var(--radius);
+			overflow: hidden;
+			background: var(--color-subdued);
+		}
+		.coffee-map {
+			display: block;
+		}
+		.coffee-map .map-land {
+			fill: var(--color-primary-superSubtle);
+		}
+		.coffee-map .map-border {
+			fill: none;
+			stroke: var(--color-primary-subtle);
+			stroke-width: 1;
+			vector-effect: non-scaling-stroke;
+		}
+		.coffee-map .map-country-label {
+			fill: var(--color-primary);
+			font-family: var(--font-family);
+			text-anchor: middle;
+			dominant-baseline: middle;
+			paint-order: stroke;
+			stroke: var(--color-subdued);
+			stroke-width: 3px;
+			pointer-events: none;
+		}
+		.coffee-map .map-water-label {
+			fill: var(--color-primary);
+			opacity: 45%;
+			font-family: var(--font-family);
+			font-style: italic;
+			text-anchor: middle;
+			dominant-baseline: middle;
+			pointer-events: none;
+		}
+		.coffee-map .map-pin {
+			cursor: pointer;
+		}
+		.coffee-map .map-pin-hit {
+			fill: transparent;
+		}
+		.coffee-map .map-pin-dot {
+			fill: var(--color-primary);
+			stroke: var(--color-subdued);
+			stroke-width: 1.5px;
+			vector-effect: non-scaling-stroke;
+		}
+		.map-error {
+			padding: 24px;
+			font-size: var(--font-size-sm);
+		}
+
+		/* Coffee card shown as a modal (from a map pin). */
+		.coffee-modal {
+			position: fixed;
+			inset: 0;
+			z-index: 50;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 24px;
+		}
+		.coffee-modal[hidden] {
+			display: none;
+		}
+		.coffee-modal-scrim {
+			position: absolute;
+			inset: 0;
+			background: var(--color-primary-superSubtle);
+		}
+		.coffee-modal-dialog {
+			position: relative;
+			width: 100%;
+			max-width: 480px;
+			max-height: calc(100vh - 48px);
+			overflow-y: auto;
+			background: var(--color-subdued);
+			border: 1px solid var(--color-primary-subtle);
+			border-radius: var(--radius);
+			padding: 12px 16px 16px;
+		}
+		.coffee-modal-close {
+			display: block;
+			text-align: right;
+			font-size: var(--font-size-sm);
+			margin-bottom: 4px;
+		}
+		.coffee-modal-body .card {
+			border: none;
+			border-radius: 0;
+			padding: 0;
+			margin: 0;
+		}
+		.coffee-modal-body .fav-marquee {
+			margin: 0 0 8px;
+			border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 		}
 		.notes {
 			border-left: 1px solid;
@@ -154,7 +318,17 @@
 		<main><div>
 			<div class="page-head">
 				<p><a href="/">Matt Wright</a> / Espresso</p>
-				<label class="toggle"><span>Details</span><input type="checkbox" class="switch" role="switch" aria-label="Show details on all coffees" onchange="toggleAllInfo(this)"></label>
+				<div class="settings-wrap">
+					<button class="settings-link" aria-haspopup="true" aria-expanded="false" onclick="toggleSettings(this)">Settings</button>
+					<div class="settings-menu" hidden>
+						<label class="toggle"><span>Details</span><input type="checkbox" class="switch" role="switch" aria-label="Show details on all coffees" onchange="toggleAllInfo(this)"></label>
+						<div class="settings-section">
+							<div class="settings-label">View</div>
+							<label class="radio-row"><input type="radio" name="view" value="card" class="radio" checked onchange="setView(this.value)">Card</label>
+							<label class="radio-row"><input type="radio" name="view" value="map" class="radio" onchange="setView(this.value)">Map</label>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<div class="filters-wrap">
@@ -971,6 +1145,20 @@
 
 	</div>
 
+	<!-- Map view: filled by js/map.js when View = Map. Fixed, framed like a card,
+	     fills the viewport below the filter row. -->
+	<div class="map-view" hidden aria-hidden="true"></div>
+
+	<!-- Coffee card shown as a modal when a map pin is tapped. -->
+	<div class="coffee-modal" hidden>
+		<div class="coffee-modal-scrim" onclick="closeCoffeeModal()"></div>
+		<div class="coffee-modal-dialog" role="dialog" aria-modal="true" aria-label="Coffee details">
+			<a href="#" class="coffee-modal-close" onclick="return closeCoffeeModal(event)">Close</a>
+			<div class="coffee-modal-body"></div>
+		</div>
+	</div>
+
+	<script src="js/map.js"></script>
 	<script>
 		function toggleAllInfo(input) {
 			var show = input.checked;
@@ -982,6 +1170,63 @@
 				}
 			});
 		}
+
+		/* ---- Settings dropdown ---- */
+		function toggleSettings(btn) {
+			var menu = btn.nextElementSibling;
+			var open = btn.getAttribute('aria-expanded') === 'true';
+			btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+			if (open) { menu.setAttribute('hidden', ''); } else { menu.removeAttribute('hidden'); }
+		}
+		document.addEventListener('click', function (e) {
+			if (!e.target.closest('.settings-wrap')) {
+				var btn = document.querySelector('.settings-link[aria-expanded="true"]');
+				if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.nextElementSibling.setAttribute('hidden', ''); }
+			}
+		});
+
+		/* ---- View switch (Card / Map) ---- */
+		var mapView = document.querySelector('.map-view');
+		function layoutMapView() {
+			if (document.documentElement.getAttribute('data-view') !== 'map') return;
+			var fw = document.querySelector('.filters-wrap').getBoundingClientRect();
+			mapView.style.top = (fw.bottom + 12) + 'px';
+		}
+		function setView(value) {
+			var isMap = value === 'map';
+			document.documentElement.setAttribute('data-view', value);
+			if (isMap) {
+				mapView.removeAttribute('hidden');
+				mapView.setAttribute('aria-hidden', 'false');
+				layoutMapView();
+				if (window.CoffeeMap) CoffeeMap.open(mapView);
+			} else {
+				mapView.setAttribute('hidden', '');
+				mapView.setAttribute('aria-hidden', 'true');
+				closeCoffeeModal();
+			}
+		}
+		window.addEventListener('resize', function () { layoutMapView(); if (window.CoffeeMap) CoffeeMap.resize(); });
+
+		/* ---- Coffee modal (opened from a map pin) ---- */
+		var modal = document.querySelector('.coffee-modal');
+		var modalBody = modal.querySelector('.coffee-modal-body');
+		function openCoffeeModal(card) {
+			var clone = card.cloneNode(true);
+			clone.removeAttribute('style');
+			// show the details in the modal regardless of the Details toggle
+			clone.querySelectorAll('.coffee-details').forEach(function (d) { d.removeAttribute('hidden'); });
+			modalBody.innerHTML = '';
+			modalBody.appendChild(clone);
+			modal.removeAttribute('hidden');
+		}
+		function closeCoffeeModal(event) {
+			if (event) event.preventDefault();
+			modal.setAttribute('hidden', '');
+			modalBody.innerHTML = '';
+			return false;
+		}
+		document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCoffeeModal(); });
 
 		// The menu is position:fixed (so it isn't clipped by the scrolling
 		// .filters row). Anchor it just under its chip, aligned to the chip's
@@ -1091,6 +1336,9 @@
 				});
 				s.style.display = visible ? '' : 'none';
 			});
+
+			// Mirror the filters onto the map pins when Map view is active.
+			if (window.CoffeeMap) CoffeeMap.syncFilter();
 		}
 	</script>
 </body>

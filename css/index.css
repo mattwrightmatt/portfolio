@@ -258,6 +258,38 @@ li a:hover:not(.active) {
   color: var(--color-subdued);
 }
 
+/* Radio — same footprint as the checkbox but round, with a filled dot. */
+.radio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  margin: 0 8px 0 0;
+  border: 1px solid var(--color-primary-subtle);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+@media (hover: hover) {
+  .radio:active { background: var(--color-primary-superSubtle); }
+}
+.radio:checked {
+  border-color: var(--color-primary);
+}
+.radio:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
 /* Toggle — a text label beside a sliding switch. The switch container shares
    the chips' radius: no fill and a primary border, with a square primary thumb
    inset 3px. When enabled the container fills with primary and the thumb
