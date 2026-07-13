@@ -165,17 +165,31 @@
 				<div class="chip-wrap">
 					<button class="chip" data-group="varietal" data-label="Varietal" onclick="toggleChip(this)">Varietal</button>
 					<div class="chip-menu" data-group="varietal" hidden>
+						<label><input type="checkbox" value="74110" onchange="applyFilters()">74110</label>
+						<label><input type="checkbox" value="74112" onchange="applyFilters()">74112</label>
 						<label><input type="checkbox" value="Batian" onchange="applyFilters()">Batian</label>
 						<label><input type="checkbox" value="Bourbon" onchange="applyFilters()">Bourbon</label>
+						<label><input type="checkbox" value="Castillo" onchange="applyFilters()">Castillo</label>
 						<label><input type="checkbox" value="Catimor" onchange="applyFilters()">Catimor</label>
 						<label><input type="checkbox" value="Catuaí" onchange="applyFilters()">Catuaí</label>
 						<label><input type="checkbox" value="Caturra" onchange="applyFilters()">Caturra</label>
+						<label><input type="checkbox" value="Chandragiri" onchange="applyFilters()">Chandragiri</label>
+						<label><input type="checkbox" value="Colombia" onchange="applyFilters()">Colombia</label>
+						<label><input type="checkbox" value="Garnica" onchange="applyFilters()">Garnica</label>
+						<label><input type="checkbox" value="Geisha" onchange="applyFilters()">Geisha</label>
 						<label><input type="checkbox" value="Heirloom" onchange="applyFilters()">Heirloom</label>
+						<label><input type="checkbox" value="Mundo Novo" onchange="applyFilters()">Mundo Novo</label>
 						<label><input type="checkbox" value="Pacas" onchange="applyFilters()">Pacas</label>
+						<label><input type="checkbox" value="Parainema" onchange="applyFilters()">Parainema</label>
 						<label><input type="checkbox" value="Red Bourbon" onchange="applyFilters()">Red Bourbon</label>
 						<label><input type="checkbox" value="Ruiru 11" onchange="applyFilters()">Ruiru 11</label>
+						<label><input type="checkbox" value="Sarchimor" onchange="applyFilters()">Sarchimor</label>
+						<label><input type="checkbox" value="Selection 5B" onchange="applyFilters()">Selection 5B</label>
+						<label><input type="checkbox" value="Selection 795" onchange="applyFilters()">Selection 795</label>
+						<label><input type="checkbox" value="Selection 9" onchange="applyFilters()">Selection 9</label>
 						<label><input type="checkbox" value="SL28" onchange="applyFilters()">SL28</label>
 						<label><input type="checkbox" value="SL34" onchange="applyFilters()">SL34</label>
+						<label><input type="checkbox" value="Tabi" onchange="applyFilters()">Tabi</label>
 						<label><input type="checkbox" value="Typica" onchange="applyFilters()">Typica</label>
 					</div>
 				</div>
@@ -238,8 +252,11 @@
 			<!-- Coffee entry template: name / process / roaster, then the .coffee-details block
 			     (wrapped in .expand when there are notes). Details are hidden by default and
 			     revealed all at once by the page-level Details toggle.
-			     Each detail line is its own <div> inside .coffee-details. data-* attributes drive filters.
-			     Newest at the top within each year group. -->
+			     Each detail line is its own <div> inside .coffee-details, in order:
+			     Origin, Elevation, Variety, (any special line), Roaster's notes.
+			     data-* attributes drive the filters; data-varietal must mirror the Variety line.
+			     Newest at the top within each year group.
+			     How to research + format new entries: .claude/skills/coffee-research/SKILL.md -->
 			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="citrus fruit" data-varietal="SL28|SL34|Batian">
 			<p><span class="coffee-name">Kirinyaga AA, Kenya</span> from <a href="https://www.sterling.coffee">Sterling Coffee Roasters</a><br>
 			Washed Process</p>
@@ -250,13 +267,14 @@
 			<div>Roaster's notes: Grapefruit, plum</div></div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Honduras" data-process="Natural" data-roaster="Alma Coffee" data-cat="fruit">
+			<div class="card coffee" data-fav="false" data-origin="Honduras" data-process="Natural" data-roaster="Alma Coffee" data-cat="fruit" data-varietal="Parainema|Catuaí">
 			<p><span class="coffee-name">Finca La Unica, Honduras</span> from <a href="https://myalmacoffee.com">Alma Coffee</a><br>
 			Natural Process</p>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-16" hidden><div>Origin: Finca La Unica (Leticia) · Copán, Honduras</div>
 			<div>Elevation: 1,400 MASL</div>
+			<div>Variety: Parainema, Catuaí</div>
 			<div>Roaster's notes: Sweet raspberry, cherry, honeycrisp apple</div></div>
 
 			<div class="notes">Have really been enjoying James Hoffman's aeropress recipe with this coffee. Refreshing to find a coffee roasted this light. Very tangy</div>
@@ -295,6 +313,7 @@
 			Sun Dried Natural Process</p>
 
 			<div class="coffee-details" id="details-1" hidden><div>Origin: West Guji, Ethiopia</div>
+			<div>Elevation: 1,900–2,200 MASL</div>
 			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Stone fruit, blueberry, nougat</div></div>
 			</div>
@@ -360,13 +379,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Methodical Coffee" data-cat="nutty spice fruit">
+			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Methodical Coffee" data-cat="nutty spice fruit" data-varietal="Caturra|Catuaí">
 			<p><span class="coffee-name">Costa Rica, La Pastora</span> from <a href="https://methodicalcoffee.com/products/costa-rica-la-pastora">Methodical Coffee</a><br>
 			Washed Process</p>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-6" hidden><div>Origin: CoopeTarrazú · La Pastora, Tarrazú, Costa Rica</div>
 			<div>Elevation: 1200–1900 MASL</div>
+			<div>Variety: Caturra, Catuaí</div>
 			<div>Roaster's notes: “Approachable, clean, and classic with a juicy twist — just enough nuttiness to temper the syrupy, plummy sweetness.”</div></div>
 
 			<div class="notes">Having a hard time getting anything out of this one</div>
@@ -389,12 +409,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Feast Coffee &amp; Culture" data-cat="sweet nutty citrus">
+			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Feast Coffee &amp; Culture" data-cat="sweet nutty citrus" data-varietal="Caturra|Castillo|Colombia">
 			<p><span class="coffee-name">Palmera, Colombia</span> from <a href="https://www.feastcoffee.com">Feast Coffee &amp; Culture</a><br>
 			Washed Process</p>
 
 			<div class="expand">
 			<div class="coffee-details" id="details-8" hidden><div>Origin: Huila, Colombia</div>
+			<div>Elevation: 1,500 MASL</div>
+			<div>Variety: Caturra, Castillo, Colombia</div>
 			<div>Roaster's notes: Molasses, nougat, orange</div></div>
 
 			<div class="notes">Nice orange acidity without being too tart</div>
@@ -441,7 +463,7 @@
 			<p><span class="coffee-name">Peru Selva Andina</span> from <a href="https://timelesscoffee.com">Timeless Coffee</a><br>
 			Washed Process</p>
 
-			<div class="coffee-details" id="details-12" hidden><div>Origin: Cajamarca, Peru · Organic</div>
+			<div class="coffee-details" id="details-12" hidden><div>Origin: Cooperativa Selva Andina · Jaén, Cajamarca, Peru · Organic</div>
 			<div>Elevation: 2,000+ MASL</div>
 			<div>Roaster's notes: Watermelon, green grape, caramel</div></div>
 			</div>
@@ -475,20 +497,24 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty" data-varietal="Heirloom">
 			<p><span class="coffee-name">West Guji, Ethiopia</span> from <a href="https://naomijoecoffee.com">Naomi Joe</a><br>
 			Sun Dried Natural Process</p>
 
 			<div class="coffee-details" id="details-132" hidden><div>Origin: West Guji, Ethiopia</div>
+			<div>Elevation: 1,900–2,200 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Stone fruit, blueberry, nougat</div></div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Sightseer Coffee" data-cat="fruit floral">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Sightseer Coffee" data-cat="fruit floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Space Cowboy, Yirgacheffe</span> from <a href="https://sightseercoffee.co">Sightseer Coffee</a><br>
 			Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-131" hidden><div>Origin: Yirgacheffe, Ethiopia</div>
+			<div class="coffee-details" id="details-131" hidden><div>Origin: Idido · Yirgacheffe, Ethiopia</div>
+			<div>Elevation: 1,900–2,400 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Blueberry jam, rosé wine, juicy &amp; sweet</div></div>
 
 			<div class="notes">Drier than I expected. Pulled a ristretto shot. Getting Rosé I think</div>
@@ -497,11 +523,13 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Reposado & Washed" data-roaster="Onda Origins" data-cat="fruit choc">
+			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Reposado & Washed" data-roaster="Onda Origins" data-cat="fruit choc" data-varietal="Bourbon">
 			<p><span class="coffee-name">Enrique Navarro, Costa Rica</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
 			Reposado &amp; Washed Process</p>
 
 			<div class="coffee-details" id="details-130" hidden><div>Origin: Monte Copey, Tarrazú, Costa Rica</div>
+			<div>Elevation: 2,000 MASL</div>
+			<div>Variety: Bourbon</div>
 			<div>Roaster's notes: Plum, chocolate, rainier cherry</div></div>
 			</div>
 
@@ -516,12 +544,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Onda Origins" data-cat="sweet fruit spice floral">
+			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Onda Origins" data-cat="sweet fruit spice floral" data-varietal="Bourbon|Typica|Mundo Novo|Caturra|Garnica">
 			<p><span class="coffee-name">Carlos Cadena, Mexico</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-128" hidden><div>Origin: Finca Huehuetepan, Mexico</div>
+			<div class="coffee-details" id="details-128" hidden><div>Origin: Finca Huehuetepan · Cosautlán, Veracruz, Mexico</div>
+			<div>Elevation: 1,380 MASL</div>
+			<div>Variety: Bourbon, Typica, Mundo Novo, Caturra, Garnica</div>
 			<div>Roaster's notes: Caramel apple, clove, rose water</div></div>
 
 			<div class="notes">The smell is probably the most amazing part about this coffee. Very complex and sweet. Can definitely smell the Carmel Apple</div>
@@ -543,7 +573,7 @@
 			<p><span class="coffee-name">Amparo Pajoy</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
 			Washed Process</p>
 
-			<div class="coffee-details" id="details-126" hidden><div>Origin: Colombia</div>
+			<div class="coffee-details" id="details-126" hidden><div>Origin: Amparo Pajoy · San Sebastián de la Plata, Huila, Colombia</div>
 			<div>Good Food Award winner</div>
 			<div>Roaster's notes: Brown sugar, milk chocolate, apple</div></div>
 			</div>
@@ -565,7 +595,8 @@
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-124" hidden><div>Origin: Colombia</div>
+			<div class="coffee-details" id="details-124" hidden><div>Origin: Finca Santa Ana · Nariño, Colombia</div>
+			<div>Elevation: 1,960 MASL</div>
 			<div>Roaster's notes: Hot fudge, tangerine, almond praline</div></div>
 
 			<div class="notes">Really lovely texture. Chocolate tangerine for sure</div>
@@ -579,6 +610,7 @@
 
 			<div class="expand">
 			<div class="coffee-details" id="details-123" hidden><div>Origin: Sítio Palmital, Carmo de Minas, Brazil</div>
+			<div>Elevation: 1,200 MASL</div>
 			<div>Roaster's notes: Baking chocolate, praline, banana nut bread</div></div>
 
 			<div class="notes">Definitely getting baking chocolate, smells like banana nut bread</div>
@@ -587,12 +619,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Burundi" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet fruit floral">
+			<div class="card coffee" data-fav="false" data-origin="Burundi" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet fruit floral" data-varietal="Bourbon">
 			<p><span class="coffee-name">Gitwe, Burundi</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-122" hidden><div>Origin: Burundi</div>
+			<div class="coffee-details" id="details-122" hidden><div>Origin: Gitwe Hill · Kayanza, Burundi</div>
+			<div>Elevation: 1,900–2,100 MASL</div>
+			<div>Variety: Bourbon</div>
 			<div>Roaster's notes: Brown sugar, pear, tea</div></div>
 
 			<div class="notes">The Cremina did a nice job with this one! A bit tart, will need to try again to see if I find the notes.</div>
@@ -601,12 +635,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="nutty sweet citrus">
+			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="nutty sweet citrus" data-varietal="Caturra|Catuaí">
 			<p><span class="coffee-name">Mexico Chiapas</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-121" hidden><div>Origin: Chiapas, Mexico</div>
+			<div class="coffee-details" id="details-121" hidden><div>Origin: CESMACH · Sierra Madre, Chiapas, Mexico</div>
+			<div>Elevation: 1,200–1,900 MASL</div>
+			<div>Variety: Caturra, Catuaí</div>
 			<div>Roaster's notes: Toasted almond, brown sugar, citrus</div></div>
 
 			<div class="notes">Cremina pulled shot. Very subtle brown sugar.</div>
@@ -614,12 +650,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Brio Coffeeworks" data-cat="fruit floral">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Brio Coffeeworks" data-cat="fruit floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Ethiopia Ardi</span> from <a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a><br>
 			Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-120" hidden><div>Origin: Ethiopia</div>
+			<div class="coffee-details" id="details-120" hidden><div>Origin: Sidama, Ethiopia</div>
+			<div>Elevation: 1,750–2,050 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Strawberry, black tea, tropical</div></div>
 
 			<div class="notes">First shot pulled on the Cremina! Very interesting. The Silvano was giving me strawberry, Cremina so far is hitting all of the notes. The “tropical” note is weird but I totally get it</div>
@@ -639,11 +677,13 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Guatemala" data-process="Washed" data-roaster="Onda Origins" data-cat="choc nutty spice">
+			<div class="card coffee" data-fav="false" data-origin="Guatemala" data-process="Washed" data-roaster="Onda Origins" data-cat="choc nutty spice" data-varietal="Catuaí|Sarchimor|Caturra">
 			<p><span class="coffee-name">Ivonne Herrera, Guatemala</span> from <a href="https://ondaorigins.com">Onda Origins</a><br>
 			Washed Process</p>
 
 			<div class="coffee-details" id="details-118" hidden><div>Origin: Las Parásitas, Santa Elena Barillas, Guatemala</div>
+			<div>Elevation: 1,500 MASL</div>
+			<div>Variety: Catuaí, Sarchimor, Caturra</div>
 			<div>Roaster's notes: Chocolate, almond brittle, ginger snap</div></div>
 			</div>
 
@@ -653,7 +693,8 @@
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-117" hidden><div>Origin: Ethiopia</div>
+			<div class="coffee-details" id="details-117" hidden><div>Origin: Bensa · Sidama, Ethiopia</div>
+			<div>Elevation: 2,200 MASL</div>
 			<div>Roaster's notes: Lemon, berries, Earl Grey tea</div></div>
 
 			<div class="notes">Wow really lovely. Shot over ice. Sweet lemon and berries and early grey. Best coffee I've had in a while.</div>
@@ -688,31 +729,36 @@
 			Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-114" hidden><div>Origin: Brazil</div>
+			<div class="coffee-details" id="details-114" hidden><div>Origin: Cerrado de Minas, Brazil</div>
+			<div>Elevation: 900–1,100 MASL</div>
 			<div>Roaster's notes: Dark caramel, chocolate, creamy</div></div>
 
 			<div class="notes">It's okay. Really wasn't able to pull anything interesting out of this one</div>
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus" data-varietal="74110|74112">
 			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-113" hidden><div>Origin: Ethiopia</div>
+			<div class="coffee-details" id="details-113" hidden><div>Origin: Yirgacheffe, Ethiopia</div>
+			<div>Elevation: 1,700–2,000 MASL</div>
+			<div>Variety: 74110, 74112</div>
 			<div>Roaster's notes: Earl Grey, apricot, lemon</div></div>
 
 			<div class="notes">36g out in 25s. Really lovely in a cortado. Getting earl grey and apricot</div>
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Anaerobic Natural" data-roaster="Red Rooster Coffee" data-cat="fruit choc floral">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Anaerobic Natural" data-roaster="Red Rooster Coffee" data-cat="fruit choc floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Sakaro, Gedeb District, Ethiopia</span> from <a href="https://redroostercoffee.com">Red Rooster Coffee</a><br>
 			Anaerobic Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-112" hidden><div>Origin: Gedeb, Ethiopia</div>
+			<div class="coffee-details" id="details-112" hidden><div>Origin: Worka Sakaro · Gedeb, Ethiopia</div>
+			<div>Elevation: 2,000–2,200 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Raspberry tea, Nutella, plum, mixed berries</div></div>
 
 			<div class="notes">50g out in 30s. Smells amazing - raspberry tea, cranberry/red wine. Holy shit this coffee is crazy lol. Quite bitter right now, I think I overextracted. Mulled wine is what I'm getting, and dark chocolate. Like chocolate covered açaí berries.</div>
@@ -720,12 +766,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus" data-varietal="74110|74112">
 			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-111" hidden><div>Origin: Ethiopia</div>
+			<div class="coffee-details" id="details-111" hidden><div>Origin: Yirgacheffe, Ethiopia</div>
+			<div>Elevation: 1,700–2,000 MASL</div>
+			<div>Variety: 74110, 74112</div>
 			<div>Roaster's notes: Earl Grey, apricot, lemon</div></div>
 
 			<div class="notes">55g out in 30s. Definitely getting some lemon. Really nice, a bit tart</div>
@@ -737,19 +785,22 @@
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-110" hidden><div>Origin: Colombia</div>
+			<div class="coffee-details" id="details-110" hidden><div>Origin: San Sebastián de la Plata · Huila, Colombia</div>
+			<div>Elevation: 1,700+ MASL</div>
 			<div>Roaster's notes: Milk chocolate, apple, sugar cane</div></div>
 
 			<div class="notes">Really nice. Subtle.</div>
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit choc">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit choc" data-varietal="Heirloom">
 			<p><span class="coffee-name">Idido, Ethiopia</span> from <a href="https://www.dunecoffee.com">Dune Coffee Roasters</a><br>
 			Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-109" hidden><div>Origin: Idido, Ethiopia</div>
+			<div class="coffee-details" id="details-109" hidden><div>Origin: Idido · Yirgacheffe, Ethiopia</div>
+			<div>Elevation: 2,200–2,400 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Strawberry, grape, dark chocolate</div></div>
 
 			<div class="notes">20g out in 40s</div>
@@ -762,7 +813,8 @@
 			Anaerobic Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-108" hidden><div>Origin: Colombia</div>
+			<div class="coffee-details" id="details-108" hidden><div>Origin: Anserma · Caldas, Colombia</div>
+			<div>Elevation: 1,450 MASL</div>
 			<div>Roaster's notes: Grape, tangerine, red apple</div></div>
 
 			<div class="notes">196° 6 bar, turbo shot 50g out in like 12-15s. Pretty good, a little bitter. Was getting some vegetative flavors. Going to slow the shot tomorrow to see if I can bring out some of the fruitiness.</div>
@@ -771,12 +823,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="fruit sweet floral">
+			<div class="card coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="fruit sweet floral" data-varietal="Geisha|Bourbon|Caturra|Tabi">
 			<p><span class="coffee-name">Arlen Humbo, Peru</span> from <a href="https://olympiacoffee.com">Olympia Coffee Roasters</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-107" hidden><div>Origin: Peru</div>
+			<div class="coffee-details" id="details-107" hidden><div>Origin: San Ignacio, Peru</div>
+			<div>Elevation: 1,750 MASL</div>
+			<div>Variety: Geisha, Bourbon, Caturra, Tabi</div>
 			<div>Roaster's notes: Blueberry, whipped cream, floral</div></div>
 
 			<div class="notes">196° 9 bar, 40g out in 24s. Tart blueberry if it's blueberry, but strong lavender notes. Very floral</div>
@@ -784,12 +838,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="India" data-process="Pulped Natural" data-roaster="Methodical Coffee" data-cat="spice nutty choc">
+			<div class="card coffee" data-fav="false" data-origin="India" data-process="Pulped Natural" data-roaster="Methodical Coffee" data-cat="spice nutty choc" data-varietal="Selection 795|Selection 9|Selection 5B|Chandragiri">
 			<p><span class="coffee-name">Hulikere Estate, India</span> from <a href="https://methodicalcoffee.com">Methodical Coffee</a><br>
 			Pulped Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-106" hidden><div>Origin: Hulikere Estate, India</div>
+			<div class="coffee-details" id="details-106" hidden><div>Origin: Chikmagalur · Karnataka, India</div>
+			<div>Elevation: 1,100–1,370 MASL</div>
+			<div>Variety: Selection 795, Selection 9, Selection 5B, Chandragiri</div>
 			<div>Roaster's notes: Spice, peanut brittle, chocolate</div></div>
 
 			<div class="notes">196° at 8 bar, 45g out in 20s. Too fast,</div>
@@ -804,7 +860,8 @@
 			Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-105" hidden><div>Origin: Ethiopia</div>
+			<div class="coffee-details" id="details-105" hidden><div>Origin: Shantawene · Bensa, Sidama, Ethiopia</div>
+			<div>Elevation: 2,120–2,210 MASL</div>
 			<div>Roaster's notes: Grape juice, red wine, chocolate</div></div>
 
 			<div class="notes">200° at 8 bar, 45g out. Wow it's wild. Syrupy mouth feel</div>
@@ -812,12 +869,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Bird Rock Coffee Roasters" data-cat="fruit sweet">
+			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Bird Rock Coffee Roasters" data-cat="fruit sweet" data-varietal="Heirloom">
 			<p><span class="coffee-name">Ethiopia Uraga</span> from <a href="https://birdrockcoffee.com">Bird Rock Coffee Roasters</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-104" hidden><div>Origin: Uraga, Ethiopia</div>
+			<div class="coffee-details" id="details-104" hidden><div>Origin: Uraga Raro · Guji, Ethiopia</div>
+			<div>Elevation: ~2,000 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Nectarine, caramel sauce, raspberry</div></div>
 
 			<div class="notes">Ristretto 20g in/out in 34 sec at 197°</div>
@@ -825,13 +884,15 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral">
+			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral" data-varietal="Heirloom">
 			<div class="fav-marquee" role="img" aria-label="One of my favorites from 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span></div></div>
 			<p><span class="coffee-name">Benti Nenka, Ethiopia</span> from <a href="https://perccoffee.com">Perc Coffee</a><br>
 			Natural Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-103" hidden><div>Origin: Ethiopia</div>
+			<div class="coffee-details" id="details-103" hidden><div>Origin: Hambela Wamena · Guji, Ethiopia</div>
+			<div>Elevation: 1,900–2,250 MASL</div>
+			<div>Variety: Heirloom</div>
 			<div>Roaster's notes: Blueberry, super fruity</div></div>
 
 			<div class="notes">Smells amazing. Blueberry, super fruity.</div>
@@ -844,12 +905,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="choc fruit nutty">
+			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="choc fruit nutty" data-varietal="Caturra|Typica">
 			<p><span class="coffee-name">Toro</span> from <a href="https://www.devocion.com/products/house-blend-coffee-toro">Devoción</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-102" hidden><div>Origin: Colombia · House blend (Caturra, Típica)</div>
+			<div class="coffee-details" id="details-102" hidden><div>Origin: Colombia · House blend</div>
+			<div>Elevation: 1,400–1,900 MASL</div>
+			<div>Variety: Caturra, Typica</div>
 			<div>Roaster's notes: Cocoa, vanilla, cherry, almond</div></div>
 
 			<div class="notes">Classic, always good.</div>
@@ -857,12 +920,14 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="fruit sweet">
+			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="fruit sweet" data-varietal="SL28|SL34|Ruiru 11|Batian">
 			<p><span class="coffee-name">Kiamugumo AB</span> from <a href="https://www.sterling.coffee">Sterling Coffee Roasters</a><br>
 			Washed Process</p>
 
 			<div class="expand">
-			<div class="coffee-details" id="details-101" hidden><div>Origin: Kenya</div>
+			<div class="coffee-details" id="details-101" hidden><div>Origin: Kiamugumo Factory · Kirinyaga, Kenya</div>
+			<div>Elevation: 1,650 MASL</div>
+			<div>Variety: SL28, SL34, Ruiru 11, Batian</div>
 			<div>Roaster's notes: Berries, Demerara</div></div>
 
 			<div class="notes">201° at 6 bar, 20g in 42g out in 24 sec. Roasted almost 3 weeks ago.</div>
