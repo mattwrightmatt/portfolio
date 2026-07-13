@@ -175,23 +175,15 @@
 		.map-panel[hidden] {
 			display: none;
 		}
-		.map-panel-body .card {
-			border: none;
-			border-radius: 0;
-			padding: 0;
-			margin: 0;
+		/* Panel cards match the card view: their full border, radius, padding and
+		   marquee bleed all come from the shared .card / .coffee / .fav-marquee
+		   rules. Just drop the trailing margin on the last one. */
+		.map-panel-body .card:last-child {
+			margin-bottom: 0;
 		}
-		.map-panel-body .card + .card {
-			margin-top: 20px;
-			padding-top: 20px;
-			border-top: 1px solid var(--color-primary-subtle);
-		}
-		.map-panel-body .fav-marquee {
-			margin: 0 0 8px;
-			border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-		}
-		/* Close: inline right after the coffee name, baseline-aligned, 12px gap. */
+		/* Close: right-aligned on the coffee name's first line. */
 		.map-panel-close {
+			float: right;
 			margin-left: 12px;
 			font-size: var(--font-size-sm);
 			white-space: nowrap;

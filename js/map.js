@@ -148,21 +148,31 @@
 			});
 		}
 
-		svg.call(d3.drag().on('drag', function (event) {
-			var k = 74 / (baseScale * zoomK);
-			rotation[0] += event.dx * k;
-			rotation[1] = Math.max(-90, Math.min(90, rotation[1] - event.dy * k));
-			render();
-		}));
-		// Wheel (desktop) and two-finger pinch (touch) both drive d3.zoom's scale.
+		// One d3.zoom drives both rotation and scale, so touch gestures never have
+		// to fight two competing behaviors (the old drag + zoom split let pinch get
+		// swallowed by the drag). A pointer/touch drag pans, and we read that pan
+		// translation as a rotation delta; wheel and two-finger pinch change the
+		// scale. Wheel and programmatic (button) zooms carry no drag, so they skip
+		// the rotation delta and only change scale.
+		var tx = 0, ty = 0;
 		var zoom = d3.zoom().scaleExtent([0.7, 6])
-			.filter(function (e) { return e.type === 'wheel' || (e.touches && e.touches.length > 1); })
-			.on('zoom', function (event) { zoomK = event.transform.k; render(); });
+			.on('start', function (event) { tx = event.transform.x; ty = event.transform.y; })
+			.on('zoom', function (event) {
+				var t = event.transform, se = event.sourceEvent;
+				zoomK = t.k;
+				if (se && se.type !== 'wheel') {
+					var k = 74 / (baseScale * zoomK);
+					rotation[0] += (t.x - tx) * k;
+					rotation[1] = Math.max(-90, Math.min(90, rotation[1] - (t.y - ty) * k));
+				}
+				tx = t.x; ty = t.y;
+				render();
+			});
 		svg.call(zoom).on('dblclick.zoom', null);
 
-		// On-screen +/− controls so zoom works with a single tap on any device
-		// (mobile pinch can be finicky). scaleBy runs through the same zoom
-		// behavior, keeping its internal transform in sync with pinch/wheel.
+		// On-screen +/− controls so zoom works with a single tap on any device.
+		// scaleBy runs through the same behavior (its sourceEvent is null, so it
+		// only changes scale), keeping the transform in sync with pinch/wheel.
 		function zoomBy(f) { svg.transition().duration(180).call(zoom.scaleBy, f); }
 		var controls = d3.select(canvas).append('div').attr('class', 'map-zoom');
 		controls.append('button').attr('type', 'button').attr('class', 'map-zoom-btn')
