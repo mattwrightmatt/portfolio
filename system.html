@@ -209,12 +209,18 @@
 			}
 		}
 
-		function repositionOpenMenu() {
+		window.addEventListener('resize', function () {
 			var open = document.querySelector('.chip-menu:not([hidden])');
 			if (open) positionMenu(open);
-		}
-		window.addEventListener('resize', repositionOpenMenu);
-		window.addEventListener('scroll', repositionOpenMenu, true);
+		});
+		// Close an open menu on any scroll of the page or the chip row (but not
+		// when scrolling within the menu's own list).
+		window.addEventListener('scroll', function (e) {
+			var open = document.querySelector('.chip-menu:not([hidden])');
+			if (open && e.target !== open) {
+				open.setAttribute('hidden', '');
+			}
+		}, true);
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {

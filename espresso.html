@@ -21,14 +21,16 @@
 		}
 		/* Marquee banner across the top of a favorite coffee card. Flush to the
 		   card's top and side edges (negative margins cancel the card padding),
-		   top corners rounded to match the card, bottom corners square so it
-		   reads as a header ribbon, with the title sitting 12px below it. */
+		   bottom corners square so it reads as a header ribbon, with the title
+		   sitting 12px below it. Top corners use the card's radius minus its 1px
+		   border, so the banner nests exactly inside the border instead of
+		   leaving a sliver of page background showing at the corner. */
 		.fav-marquee {
 			margin: -12px -12px 8px;
 			overflow: hidden;
 			background: var(--color-primary);
 			color: var(--color-subdued);
-			border-radius: var(--radius) var(--radius) 0 0;
+			border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
 			font-size: var(--font-size-sm);
 			line-height: 1;
 			white-space: nowrap;
@@ -125,6 +127,13 @@
 		}
 		.filters {
 			padding-left: 24px;
+		}
+		/* 60px of trailing space so the last chip can be scrolled fully clear of
+		   the right-edge fade. A flex spacer (not padding-right, which iOS Safari
+		   drops from a flex scroll container's scroll width). */
+		.filters::after {
+			content: "";
+			flex: 0 0 60px;
 		}
 		/* Fade the right edge to the background so it reads as "more, scroll →". */
 		.filters-wrap::after {
@@ -1002,13 +1011,19 @@
 			}
 		}
 
-		// Keep an open menu glued to its chip as the page or the chip row scrolls.
-		function repositionOpenMenu() {
+		// Reposition an open menu when the viewport resizes.
+		window.addEventListener('resize', function () {
 			var open = document.querySelector('.chip-menu:not([hidden])');
 			if (open) positionMenu(open);
-		}
-		window.addEventListener('resize', repositionOpenMenu);
-		window.addEventListener('scroll', repositionOpenMenu, true);
+		});
+		// Close an open menu on any scroll of the page or the chip row (but not
+		// when scrolling within the menu's own list).
+		window.addEventListener('scroll', function (e) {
+			var open = document.querySelector('.chip-menu:not([hidden])');
+			if (open && e.target !== open) {
+				open.setAttribute('hidden', '');
+			}
+		}, true);
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
