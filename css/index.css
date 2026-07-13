@@ -133,11 +133,23 @@ li a:hover:not(.active) {
 }
 
 /* Filter chip + its menu */
+/* Chips sit on one row that scrolls horizontally rather than wrapping, so an
+   active-filter count "(2)" growing a chip can never reshuffle rows or push
+   the page wider. On wide screens they all fit, so no scrollbar appears. */
 .filters {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 8px;
   margin-top: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filters::-webkit-scrollbar {
+  display: none;
+}
+.filters > * {
+  flex: 0 0 auto;
 }
 .chip-wrap {
   position: relative;
@@ -171,10 +183,11 @@ li a:hover:not(.active) {
   }
 }
 
+/* Fixed (not absolute) so it escapes the horizontally-scrolling .filters
+   overflow instead of being clipped by it. Its top/left are set in JS,
+   anchored under the chip and kept within the content column. */
 .chip-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
+  position: fixed;
   z-index: 10;
   box-sizing: border-box;
   max-height: min(200px, calc(100vh - 150px));

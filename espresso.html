@@ -950,22 +950,20 @@
 			});
 		}
 
-		// Keep an open menu within the content column so it never pushes the page
-		// wider on small viewports: left-aligned to its chip by default, shifted
-		// left only as far as needed so its right edge stays on the page.
+		// The menu is position:fixed (so it isn't clipped by the scrolling
+		// .filters row). Anchor it just under its chip, aligned to the chip's
+		// left, but keep it within the content column so it never runs off-page.
 		function positionMenu(menu) {
-			menu.style.left = '0px';
 			menu.style.maxWidth = '';
+			var chip = menu.parentNode.getBoundingClientRect();
 			var cRect = document.querySelector('.content').getBoundingClientRect();
 			if (menu.offsetWidth > cRect.width) {
 				menu.style.maxWidth = cRect.width + 'px';
 			}
-			var overflowRight = menu.getBoundingClientRect().right - cRect.right;
-			if (overflowRight > 0) {
-				var wrapLeft = menu.parentNode.getBoundingClientRect().left;
-				var newLeft = Math.max(-overflowRight, cRect.left - wrapLeft);
-				menu.style.left = newLeft + 'px';
-			}
+			var left = Math.min(chip.left, cRect.right - menu.offsetWidth);
+			left = Math.max(left, cRect.left);
+			menu.style.left = left + 'px';
+			menu.style.top = (chip.bottom + 4) + 'px';
 		}
 
 		function toggleChip(btn) {
@@ -980,10 +978,13 @@
 			}
 		}
 
-		window.addEventListener('resize', function () {
+		// Keep an open menu glued to its chip as the page or the chip row scrolls.
+		function repositionOpenMenu() {
 			var open = document.querySelector('.chip-menu:not([hidden])');
 			if (open) positionMenu(open);
-		});
+		}
+		window.addEventListener('resize', repositionOpenMenu);
+		window.addEventListener('scroll', repositionOpenMenu, true);
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
