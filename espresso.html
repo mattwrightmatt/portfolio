@@ -115,6 +115,28 @@
 			font-weight: var(--weight-semibold);
 			margin-top: 32px;
 		}
+		/* Let the filter row bleed past the content column to the viewport edges
+		   so chips scroll off-screen instead of clipping at the column. The
+		   negative margin equals the page inset (html 16px + body 8px); the
+		   matching padding keeps the first chip aligned with the content. */
+		.filters-wrap {
+			position: relative;
+			margin: 0 -24px;
+		}
+		.filters {
+			padding-left: 24px;
+		}
+		/* Fade the right edge to the background so it reads as "more, scroll →". */
+		.filters-wrap::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			width: 16px;
+			background: linear-gradient(to right, transparent, var(--color-subdued));
+			pointer-events: none;
+		}
 	</style>
 </head>
 
@@ -126,6 +148,7 @@
 				<label class="toggle"><span>Details</span><input type="checkbox" class="switch" role="switch" aria-label="Show details on all coffees" onchange="toggleAllInfo(this)"></label>
 			</div>
 
+			<div class="filters-wrap">
 			<div class="filters">
 				<button class="chip chip-fav" data-filter="fav" onclick="toggleFav(this)">★ Favorites</button>
 
@@ -244,6 +267,7 @@
 						<label><input type="checkbox" value="spice" onchange="applyFilters()">Spiced &amp; Savory</label>
 					</div>
 				</div>
+			</div>
 			</div>
 
 			<div class="year-section">
