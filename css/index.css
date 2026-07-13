@@ -46,6 +46,8 @@ html {
   overflow-y: scroll;
   /* Drop the default grey tap flash; pressed states are styled per component. */
   -webkit-tap-highlight-color: transparent;
+  /* Keep scrolling and pinch-zoom, but disable double-tap-to-zoom site-wide. */
+  touch-action: manipulation;
 }
 
 body {

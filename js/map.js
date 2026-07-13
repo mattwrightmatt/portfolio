@@ -160,15 +160,51 @@
 		// centre is nudged so the point under the gesture stays put. Programmatic
 		// (button) zooms have no focal point, so they zoom about the middle.
 		var tx = 0, ty = 0;
+		// Drag inertia: track the latest rotational velocity (deg/ms) so the globe
+		// keeps spinning briefly after you let go, easing to a stop.
+		var vLon = 0, vLat = 0, moveT = 0, spinRAF = null, wasDrag = false;
+		function stopSpin() { if (spinRAF) { cancelAnimationFrame(spinRAF); spinRAF = null; } }
+		function spin(prev) {
+			var now = performance.now(), dt = Math.min(now - prev, 50);
+			rotation[0] += vLon * dt;
+			rotation[1] = Math.max(-90, Math.min(90, rotation[1] + vLat * dt));
+			var decay = Math.exp(-dt / 300); // eases to a stop in roughly a second
+			vLon *= decay; vLat *= decay;
+			render();
+			if (Math.abs(vLon) > 0.003 || Math.abs(vLat) > 0.003) {
+				spinRAF = requestAnimationFrame(function () { spin(now); });
+			} else { spinRAF = null; }
+		}
 		var zoom = d3.zoom().scaleExtent([0.7, 16])
-			.on('start', function (event) { tx = event.transform.x; ty = event.transform.y; })
+			.on('start', function (event) {
+				stopSpin(); vLon = vLat = 0; wasDrag = false;
+				moveT = performance.now(); tx = event.transform.x; ty = event.transform.y;
+			})
+			.on('end', function () {
+				// Spin on release only if the flick was recent (not a hold-then-lift).
+				if (wasDrag && performance.now() - moveT < 90 && (Math.abs(vLon) > 0.003 || Math.abs(vLat) > 0.003)) {
+					spinRAF = requestAnimationFrame(function () { spin(performance.now()); });
+				}
+			})
 			.on('zoom', function (event) {
 				var t = event.transform, se = event.sourceEvent;
 				var drag = se && se.type !== 'wheel' && !(se.touches && se.touches.length > 1);
 				if (drag) {
 					var kf = 74 / (baseScale * zoomK);
-					rotation[0] += (t.x - tx) * kf;
-					rotation[1] = Math.max(-90, Math.min(90, rotation[1] - (t.y - ty) * kf));
+					var dLon = (t.x - tx) * kf, dLat = -(t.y - ty) * kf;
+					rotation[0] += dLon;
+					rotation[1] = Math.max(-90, Math.min(90, rotation[1] + dLat));
+					var now = performance.now(), dt = now - moveT;
+					if (dt > 0) {
+						// Blend toward the instantaneous velocity so a flick reads cleanly.
+						var f = Math.min(dt / 40, 1), cap = 0.15;
+						vLon += (dLon / dt - vLon) * f;
+						vLat += (dLat / dt - vLat) * f;
+						vLon = Math.max(-cap, Math.min(cap, vLon));
+						vLat = Math.max(-cap, Math.min(cap, vLat));
+						moveT = now;
+					}
+					wasDrag = true;
 				} else {
 					// Focal point (canvas coords): cursor, or pinch centroid; centre for buttons.
 					var fx = cx, fy = cy, pts = se ? d3.pointers(se, canvas) : [];
