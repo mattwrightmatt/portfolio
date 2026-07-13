@@ -104,7 +104,9 @@
 
 		var projection = d3.geoOrthographic().rotate([-12, -6]);
 		var path = d3.geoPath(projection);
-		var rotation = [-12, -6], baseScale = 1, zoomK = 1;
+		// cx/cy: canvas centre; ox/oy: globe-centre offset so zoom can move the
+		// pinched/pointed spot toward the middle (zoom-to-focal-point).
+		var rotation = [-12, -6], baseScale = 1, zoomK = 1, cx = 0, cy = 0, ox = 0, oy = 0;
 
 		gLand.selectAll('path').data(countries).join('path').attr('class', 'map-land').attr('vector-effect', 'non-scaling-stroke');
 		var labelSel = gLabels.selectAll('text').data(countries).join('text').attr('class', 'map-country-label').text(function (f) { return f.properties.name; });
@@ -124,11 +126,13 @@
 		function render() {
 			var w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
 			baseScale = Math.min(w, h) / 2 - 4;
-			var scale = baseScale * zoomK, cx = w / 2, cy = h / 2;
+			var scale = baseScale * zoomK;
+			cx = w / 2; cy = h / 2;
+			var gx = cx + ox, gy = cy + oy;
 			svg.attr('width', w).attr('height', h);
-			projection.scale(scale).translate([cx, cy]).rotate(rotation);
-			sphere.attr('cx', cx).attr('cy', cy).attr('r', scale);
-			globeShade.attr('cx', cx).attr('cy', cy).attr('r', scale);
+			projection.scale(scale).translate([gx, gy]).rotate(rotation);
+			sphere.attr('cx', gx).attr('cy', gy).attr('r', scale);
+			globeShade.attr('cx', gx).attr('cy', gy).attr('r', scale);
 			gLand.selectAll('path').attr('d', path);
 			borderPath.attr('d', path(borders));
 			var z = zoomK;
@@ -150,20 +154,38 @@
 
 		// One d3.zoom drives both rotation and scale, so touch gestures never have
 		// to fight two competing behaviors (the old drag + zoom split let pinch get
-		// swallowed by the drag). A pointer/touch drag pans, and we read that pan
-		// translation as a rotation delta; wheel and two-finger pinch change the
-		// scale. Wheel and programmatic (button) zooms carry no drag, so they skip
-		// the rotation delta and only change scale.
+		// swallowed by the drag). A single-pointer drag rotates the globe (the pan
+		// translation is read as a rotation delta). Wheel and two-finger pinch
+		// change the scale and zoom toward the cursor / pinch centroid: the globe
+		// centre is nudged so the point under the gesture stays put. Programmatic
+		// (button) zooms have no focal point, so they zoom about the middle.
 		var tx = 0, ty = 0;
-		var zoom = d3.zoom().scaleExtent([0.7, 6])
+		var zoom = d3.zoom().scaleExtent([0.7, 16])
 			.on('start', function (event) { tx = event.transform.x; ty = event.transform.y; })
 			.on('zoom', function (event) {
 				var t = event.transform, se = event.sourceEvent;
-				zoomK = t.k;
-				if (se && se.type !== 'wheel') {
-					var k = 74 / (baseScale * zoomK);
-					rotation[0] += (t.x - tx) * k;
-					rotation[1] = Math.max(-90, Math.min(90, rotation[1] - (t.y - ty) * k));
+				var drag = se && se.type !== 'wheel' && !(se.touches && se.touches.length > 1);
+				if (drag) {
+					var kf = 74 / (baseScale * zoomK);
+					rotation[0] += (t.x - tx) * kf;
+					rotation[1] = Math.max(-90, Math.min(90, rotation[1] - (t.y - ty) * kf));
+				} else {
+					// Focal point (canvas coords): cursor, or pinch centroid; centre for buttons.
+					var fx = cx, fy = cy, pts = se ? d3.pointers(se, canvas) : [];
+					if (pts.length) {
+						fx = 0; fy = 0;
+						pts.forEach(function (q) { fx += q[0]; fy += q[1]; });
+						fx /= pts.length; fy /= pts.length;
+					}
+					// Keep the focal point fixed as scale changes by r (rotation held).
+					var r = t.k / zoomK;
+					ox = fx + r * (cx + ox - fx) - cx;
+					oy = fy + r * (cy + oy - fy) - cy;
+					zoomK = t.k;
+					// Bound the offset so the globe stays in view and re-centres on zoom-out.
+					var m = baseScale * (zoomK - 1);
+					ox = Math.max(-m, Math.min(m, ox));
+					oy = Math.max(-m, Math.min(m, oy));
 				}
 				tx = t.x; ty = t.y;
 				render();
