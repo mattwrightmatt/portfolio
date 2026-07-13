@@ -80,14 +80,17 @@
 			(c.dataset.origin || '').split('|').forEach(function (o) { if (o) coffeeCountry[o.trim()] = true; });
 		});
 
-		// Cluster coffees that share a growing region.
+		// Base points — coffees at the same growing region always share one marker
+		// (they project to the same spot and can never be pulled apart). These are
+		// then clustered by on-screen proximity every render (see render()), so
+		// they split into pins as you zoom in and re-merge as you zoom out.
 		var groups = {};
 		document.querySelectorAll('.coffee').forEach(function (card) {
 			var c = coordFor(card); if (!c) return;
 			var key = c[0].toFixed(2) + ',' + c[1].toFixed(2);
 			(groups[key] = groups[key] || { coord: c, cards: [] }).cards.push(card);
 		});
-		var markers = Object.keys(groups).map(function (k) { return groups[k]; });
+		var points = Object.keys(groups).map(function (k) { return groups[k]; });
 
 		var svg = d3.select(canvas).append('svg').attr('class', 'coffee-map');
 		var defs = svg.append('defs');
@@ -111,17 +114,59 @@
 		gLand.selectAll('path').data(countries).join('path').attr('class', 'map-land').attr('vector-effect', 'non-scaling-stroke');
 		var labelSel = gLabels.selectAll('text').data(countries).join('text').attr('class', 'map-country-label').text(function (f) { return f.properties.name; });
 
-		var markerSel = gMarkers.selectAll('g').data(markers).join('g').attr('class', 'map-marker')
-			.on('click', function (event, d) { event.stopPropagation(); if (window.openCoffeePanel) window.openCoffeePanel(d.cards); });
-		markerSel.each(function (d) {
-			var g = d3.select(this), n = d.cards.length;
-			g.append('circle').attr('class', 'map-pin-hit').attr('r', 15);
-			g.append('circle').attr('class', n > 1 ? 'map-cluster' : 'map-pin').attr('r', n > 1 ? 9 : 5);
-			if (n > 1) g.append('text').attr('class', 'map-cluster-count').attr('text-anchor', 'middle')
-				.attr('dominant-baseline', 'central').style('font-size', (n > 9 ? 8 : 10) + 'px').text(n);
-		});
-
 		function front(coord) { return d3.geoDistance(coord, [-rotation[0], -rotation[1]]) < Math.PI / 2 - 0.02; }
+		function shown(card) { return card.style.display !== 'none'; }
+
+		// Smallest gap (px) between two marker centres for them to stay separate;
+		// closer than this and they merge into one cluster so nothing overlaps.
+		var CLUSTER_GAP = 30;
+		function drawMarkers() {
+			// Project every front-facing base point (only its currently-visible cards).
+			var vis = [];
+			points.forEach(function (pt) {
+				if (!front(pt.coord)) return;
+				var cards = pt.cards.filter(shown);
+				if (!cards.length) return;
+				var p = projection(pt.coord);
+				vis.push({ x: p[0], y: p[1], cards: cards });
+			});
+			// Greedily merge points that would overlap into clusters (centroid-based).
+			var clusters = [];
+			vis.forEach(function (v) {
+				var best = null, bestD = CLUSTER_GAP;
+				for (var i = 0; i < clusters.length; i++) {
+					var c = clusters[i], d = Math.hypot(c.x - v.x, c.y - v.y);
+					if (d < bestD) { bestD = d; best = c; }
+				}
+				if (best) {
+					best.pts.push(v); best.n += v.cards.length;
+					best.sx += v.x; best.sy += v.y;
+					best.x = best.sx / best.pts.length; best.y = best.sy / best.pts.length;
+				} else {
+					clusters.push({ x: v.x, y: v.y, sx: v.x, sy: v.y, n: v.cards.length, pts: [v] });
+				}
+			});
+			var sel = gMarkers.selectAll('g.map-marker').data(clusters);
+			sel.exit().remove();
+			var ent = sel.enter().append('g').attr('class', 'map-marker');
+			ent.append('circle').attr('class', 'map-pin-hit').attr('r', 15);
+			ent.append('circle').attr('class', 'map-dot');
+			ent.append('text').attr('class', 'map-cluster-count').attr('text-anchor', 'middle').attr('dominant-baseline', 'central');
+			ent.on('click', function (event, c) {
+				event.stopPropagation();
+				var cards = [];
+				c.pts.forEach(function (v) { v.cards.forEach(function (cd) { cards.push(cd); }); });
+				if (window.openCoffeePanel) window.openCoffeePanel(cards);
+			});
+			ent.merge(sel).attr('transform', function (c) { return 'translate(' + c.x + ',' + c.y + ')'; })
+				.each(function (c) {
+					var g = d3.select(this), multi = c.n > 1;
+					g.select('.map-dot').attr('class', 'map-dot ' + (multi ? 'map-cluster' : 'map-pin')).attr('r', multi ? 9 : 5);
+					var txt = g.select('.map-cluster-count');
+					if (multi) txt.style('display', null).style('font-size', (c.n > 9 ? 8 : 10) + 'px').text(c.n);
+					else txt.style('display', 'none');
+				});
+		}
 
 		function render() {
 			var w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
@@ -143,13 +188,7 @@
 				var p = projection(f._c);
 				el.style('display', null).attr('x', p[0]).attr('y', p[1]);
 			});
-			markerSel.each(function (d) {
-				var el = d3.select(this);
-				if (!front(d.coord)) { el.style('display', 'none'); return; }
-				var p = projection(d.coord);
-				el.style('display', S.filterHidden && S.filterHidden(d) ? 'none' : null)
-					.attr('transform', 'translate(' + p[0] + ',' + p[1] + ')');
-			});
+			drawMarkers();
 		}
 
 		// One d3.zoom drives both rotation and scale, so touch gestures never have
@@ -238,9 +277,8 @@
 		controls.append('button').attr('type', 'button').attr('class', 'map-zoom-btn')
 			.attr('aria-label', 'Zoom out').html('&minus;').on('click', function () { zoomBy(1 / 1.6); });
 
-		S.filterHidden = function (d) { return !d.cards.some(function (c) { return c.style.display !== 'none'; }); };
 		S.render = render;
-		S.syncFilter = function () { markerSel.style('display', function (d) { return S.filterHidden(d) ? 'none' : null; }); render(); };
+		S.syncFilter = function () { render(); };
 		S.built = true;
 		render();
 	}
