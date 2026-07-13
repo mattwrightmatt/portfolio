@@ -950,6 +950,24 @@
 			});
 		}
 
+		// Keep an open menu within the content column so it never pushes the page
+		// wider on small viewports: left-aligned to its chip by default, shifted
+		// left only as far as needed so its right edge stays on the page.
+		function positionMenu(menu) {
+			menu.style.left = '0px';
+			menu.style.maxWidth = '';
+			var cRect = document.querySelector('.content').getBoundingClientRect();
+			if (menu.offsetWidth > cRect.width) {
+				menu.style.maxWidth = cRect.width + 'px';
+			}
+			var overflowRight = menu.getBoundingClientRect().right - cRect.right;
+			if (overflowRight > 0) {
+				var wrapLeft = menu.parentNode.getBoundingClientRect().left;
+				var newLeft = Math.max(-overflowRight, cRect.left - wrapLeft);
+				menu.style.left = newLeft + 'px';
+			}
+		}
+
 		function toggleChip(btn) {
 			var wrap = btn.parentNode;
 			var menu = wrap.querySelector('.chip-menu');
@@ -958,8 +976,14 @@
 			if (!isOpen) {
 				menu.removeAttribute('hidden');
 				menu.scrollTop = 0;
+				positionMenu(menu);
 			}
 		}
+
+		window.addEventListener('resize', function () {
+			var open = document.querySelector('.chip-menu:not([hidden])');
+			if (open) positionMenu(open);
+		});
 
 		document.addEventListener('click', function (e) {
 			if (!e.target.closest('.chip-wrap')) {
