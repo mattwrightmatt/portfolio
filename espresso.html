@@ -130,15 +130,16 @@
 		:root[data-view="map"] .year-section {
 			display: none !important;
 		}
-		:root[data-view="map"] body {
-			overflow: hidden;
-		}
+		/* With the coffee list hidden, the page content is short enough not to
+		   scroll on its own — so no overflow clipping is needed (and it would
+		   otherwise clip the full-bleed filter row). */
 		.map-view {
 			position: fixed;
 			left: 16px;
 			right: 16px;
 			bottom: 16px;
-			top: 200px;
+			top: 200px;   /* left/right/top are set precisely in JS to the content column */
+			z-index: 5;
 			border: 1px solid var(--color-primary-subtle);
 			border-radius: var(--radius);
 			overflow: hidden;
@@ -1190,7 +1191,12 @@
 		function layoutMapView() {
 			if (document.documentElement.getAttribute('data-view') !== 'map') return;
 			var fw = document.querySelector('.filters-wrap').getBoundingClientRect();
+			var c = document.querySelector('.content').getBoundingClientRect();
+			var docW = document.documentElement.clientWidth;
+			// Match the content column: left edge of the title, right edge of Settings.
 			mapView.style.top = (fw.bottom + 12) + 'px';
+			mapView.style.left = c.left + 'px';
+			mapView.style.right = (docW - c.right) + 'px';
 		}
 		function setView(value) {
 			var isMap = value === 'map';
