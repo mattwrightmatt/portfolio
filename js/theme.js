@@ -43,9 +43,19 @@
 	}
 
 	var root = document.documentElement;
+	// Keep the browser chrome (iOS Safari's top bar etc.) in sync with the page
+	// background. Without this, viewport-fit=cover pages don't tint it to match.
+	var themeMeta = document.querySelector('meta[name="theme-color"]');
+	if (!themeMeta) {
+		themeMeta = document.createElement('meta');
+		themeMeta.setAttribute('name', 'theme-color');
+		document.head.appendChild(themeMeta);
+	}
 	function apply(dark) {
+		var subdued = dark ? background : foreground;
 		root.style.setProperty('--color-primary', dark ? foreground : background);
-		root.style.setProperty('--color-subdued', dark ? background : foreground);
+		root.style.setProperty('--color-subdued', subdued);
+		themeMeta.setAttribute('content', subdued);
 	}
 	var mq = window.matchMedia('(prefers-color-scheme: dark)');
 	apply(mq.matches);
