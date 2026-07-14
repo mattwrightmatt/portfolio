@@ -12,8 +12,6 @@
 	<script src="js/randoma11y.js"></script>
 	<script src="js/theme.js"></script>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-
 	<style>
 		/* Espresso-page-specific styles. Design tokens and shared components live in css/index.css. */
 		.coffee {
@@ -116,13 +114,11 @@
 		:root[data-view="map"] .content .filters {
 			pointer-events: auto;
 		}
-		/* Dot matrix as the whole-page background in map mode. With viewport-fit=cover
-		   the body background propagates to the full screen, safe areas included, so
-		   it never cuts off at the top or bottom. */
-		:root[data-view="map"] body {
-			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
-			background-size: 6px 6px;
-		}
+		/* The map layer paints its own background — a subdued base plus the primary
+		   dot matrix — rather than relying on the <body> background (which in map
+		   mode is only as tall as the short header, so it can't reach behind the
+		   status bar / toolbar). Because this element is a fixed 100lvh layer, the
+		   dots fill the entire physical screen with no top/bottom seam. */
 		.map-view {
 			position: fixed;
 			top: 0;
@@ -134,6 +130,9 @@
 			height: 100vh;
 			height: 100lvh;
 			z-index: 0;
+			background-color: var(--color-subdued);
+			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
+			background-size: 6px 6px;
 		}
 		.map-view[hidden] {
 			display: none;
