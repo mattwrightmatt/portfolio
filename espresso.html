@@ -98,10 +98,10 @@
 			opacity: 100%;
 		}
 
-		/* Map view — the globe is a full-viewport background (the dot matrix fills
-		   the whole page) that lives BEHIND the header and filter bar. The header
-		   and filters float on top, kept legible by a progressive blur behind them.
-		   Tapping a pin opens the coffee(s) in a centred modal. */
+		/* Map view — the globe is a full-viewport layer that lives BEHIND the
+		   header and filter bar. The header and filters float on top, kept legible
+		   by a progressive blur behind them. Tapping a pin opens the coffee(s) in a
+		   centred modal. */
 		:root[data-view="map"] .year-section {
 			display: none !important;
 		}
@@ -130,8 +130,9 @@
 		:root[data-view="map"] .content .filters {
 			pointer-events: auto;
 		}
-		/* The map layer itself is transparent — the canvas provides the base
-		   colour; the globe's sphere is opaque and occludes it. */
+		/* The map layer itself is transparent — the page canvas provides the base
+		   colour; the globe's sphere is opaque and occludes it. The globe SVG is
+		   rendered straight into this layer (no wrapper). */
 		.map-view {
 			position: fixed;
 			top: 0;
@@ -143,10 +144,6 @@
 		}
 		.map-view[hidden] {
 			display: none;
-		}
-		.map-canvas {
-			position: absolute;
-			inset: 0;
 		}
 		/* Progressive blur behind the header/filters: stacked backdrop-blur layers,
 		   each masked to a shorter band from the top, so blur is strong up top and
@@ -286,12 +283,18 @@
 			display: block;
 			cursor: grab;
 			touch-action: none;
+			/* Only the globe itself is grabbable. pointer-events is inherited, so
+			   turning it off on the SVG lets the transparent area around the disc
+			   fall through — drags there don't rotate. The painted globe pieces
+			   (sphere + markers) opt back in below. */
+			pointer-events: none;
 		}
 		.coffee-map:active {
 			cursor: grabbing;
 		}
 		.coffee-map .map-sphere {
 			fill: var(--color-subdued);
+			pointer-events: auto;
 		}
 		/* Subtle raised land — a faint primary shadow reads as gentle elevation. */
 		.coffee-map .map-lands {
@@ -321,6 +324,7 @@
 		}
 		.coffee-map .map-marker {
 			cursor: pointer;
+			pointer-events: auto;
 		}
 		.coffee-map .map-pin-hit {
 			fill: transparent;
@@ -1340,11 +1344,9 @@
 	</div>
 
 	<!-- Map view: a full-viewport interactive globe (js/map.js) that sits behind
-	     the header + filters, with the dot matrix as the whole-page background.
+	     the header + filters, drawn straight onto the page background.
 	     Tapping a pin opens its coffee(s) in a centred modal. -->
-	<div class="map-view" hidden aria-hidden="true">
-		<div class="map-canvas"></div>
-	</div>
+	<div class="map-view" hidden aria-hidden="true"></div>
 	<div class="map-blur" hidden aria-hidden="true"><div></div><div></div><div></div></div>
 	<div class="map-modal" hidden aria-hidden="true">
 		<div class="map-modal-scrim"></div>
@@ -1368,7 +1370,6 @@
 
 		/* ---- View switch (Map / List) — top-right toggle, defaults to Map ---- */
 		var mapView = document.querySelector('.map-view');
-		var mapCanvas = mapView.querySelector('.map-canvas');
 		var mapBlur = document.querySelector('.map-blur');
 		var mapModal = document.querySelector('.map-modal');
 		var panelBody = mapModal.querySelector('.map-panel-body');
@@ -1392,7 +1393,7 @@
 				mapView.removeAttribute('hidden'); mapView.setAttribute('aria-hidden', 'false');
 				mapBlur.removeAttribute('hidden');
 				layoutMapView();
-				if (window.CoffeeMap) CoffeeMap.open(mapCanvas);
+				if (window.CoffeeMap) CoffeeMap.open(mapView);
 			} else {
 				closeCoffeePanel();
 				mapView.setAttribute('hidden', ''); mapView.setAttribute('aria-hidden', 'true');
