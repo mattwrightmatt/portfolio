@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- viewport-fit=cover: the map view's edge pixels are land/dots, so iOS
+	     Safari's canvas-colour chrome fill can never match them (list view
+	     matches by nature — its edges are the plain background). The map must
+	     actually render under the translucent bars. env() safe-area padding
+	     below keeps the layout identical to the other pages. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 	<title>Matt Wright – Home Espresso</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
@@ -186,7 +191,8 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			padding: 16px;
+			/* Keep the card inside the safe areas now the page draws under the bars. */
+			padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
 		}
 		.map-modal[hidden] {
 			display: none;
@@ -230,7 +236,7 @@
 		.map-modal-close {
 			position: absolute;
 			left: 50%;
-			bottom: max(24px, env(safe-area-inset-bottom));
+			bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 			transform: translateX(-50%);
 			z-index: 3;
 			padding: 6px 18px;
@@ -245,7 +251,8 @@
 			z-index: 1;
 			width: 100%;
 			max-width: 640px;
-			max-height: calc(100dvh - 32px);
+			/* Never taller than the modal's padded (safe) area — can't leave the screen. */
+			max-height: 100%;
 			overflow-y: auto;
 		}
 		/* Multiple cards: leave the cards 16px narrower (still left-aligned) with a
@@ -330,11 +337,12 @@
 			font-weight: var(--weight-semibold);
 			pointer-events: none;
 		}
-		/* Zoom controls — stacked +/− buttons in the bottom-right corner. */
+		/* Zoom controls — stacked +/− buttons in the bottom-right corner, lifted
+		   clear of the home indicator / toolbar now the page draws under them. */
 		.map-zoom {
 			position: absolute;
 			right: 16px;
-			bottom: max(24px, env(safe-area-inset-bottom));
+			bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 			display: flex;
 			flex-direction: column;
 			border: 1px solid var(--color-primary-subtle);
