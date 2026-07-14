@@ -15,6 +15,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 	<style>
+		/* Dot grid: the same 6px radial-gradient pattern the espresso map paints on
+		   its page canvas, applied here as system.html's background. Dots are
+		   --color-primary at 50%, so they follow the session theme. */
+		body {
+			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
+			background-size: 6px 6px;
+		}
 		/* System-page layout helpers. All tokens & components come from css/index.css. */
 		.section-title {
 			font-weight: var(--weight-semibold);
