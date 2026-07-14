@@ -130,25 +130,26 @@
 		:root[data-view="map"] .content .filters {
 			pointer-events: auto;
 		}
-		/* The map layer paints its own background — a subdued base plus the primary
-		   dot matrix — rather than relying on the <body> background (which in map
-		   mode is only as tall as the short header, so it can't reach behind the
-		   status bar / toolbar). Because this element is a fixed 100lvh layer, the
-		   dots fill the entire physical screen with no top/bottom seam. */
+		/* The dot matrix is painted on the BODY background — the page canvas. The
+		   canvas is the one surface browsers always paint across the entire
+		   physical screen (under the status bar, toolbar, and window chrome),
+		   which is exactly why the other pages look seamless: their edges are
+		   canvas. Putting the dots anywhere deeper (e.g. on the fixed map layer)
+		   leaves them at the mercy of how each browser insets fixed content. */
+		:root[data-view="map"] body {
+			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
+			background-size: 6px 6px;
+		}
+		/* The map layer itself is transparent — the canvas provides the base
+		   colour and dots; the globe's sphere is opaque and occludes them. */
 		.map-view {
 			position: fixed;
 			top: 0;
 			left: 0;
 			right: 0;
-			/* Largest viewport height so the globe fills the whole physical screen,
-			   extending behind both the status bar and the bottom browser toolbar
-			   (like the home page's background) rather than stopping at their edges. */
 			height: 100vh;
 			height: 100lvh;
 			z-index: 0;
-			background-color: var(--color-subdued);
-			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
-			background-size: 6px 6px;
 		}
 		.map-view[hidden] {
 			display: none;
