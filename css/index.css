@@ -47,7 +47,11 @@ html {
   font-family: var(--font-family);
   font-size: var(--font-size);
   line-height: var(--line-height);
-  overflow-y: scroll;
+  /* NB: no overflow rule on the root. Forcing `overflow-y: scroll` reserved an
+     empty styled scrollbar track on non-scrolling views (clipping the espresso
+     map at the right edge), and a root overflow rule changes how iOS Safari
+     treats the document edges. Every content page is tall enough to scroll, so
+     the scrollbar is present on them anyway — no layout shift in practice. */
   /* Drop the default grey tap flash; pressed states are styled per component. */
   -webkit-tap-highlight-color: transparent;
   /* Keep scrolling and pinch-zoom, but disable double-tap-to-zoom site-wide. */
