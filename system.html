@@ -18,11 +18,18 @@
 		/* Dot grid: the same 6px radial-gradient pattern the espresso map paints on
 		   its page canvas, applied here as system.html's background. Dots are
 		   --color-primary at 50%, so they follow the session theme. */
-		body {
+		/* Dedicated fixed layer for the pattern instead of `background-attachment:
+		   fixed`, which iOS Safari renders unreliably during momentum scrolling. A
+		   fixed, full-viewport pseudo-element behind the content stays rock-steady
+		   as the page scrolls over it. */
+		body::before {
+			content: "";
+			position: fixed;
+			inset: 0;
+			z-index: -1;
 			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
 			background-size: 6px 6px;
-			/* Pin the pattern to the viewport so it stays put as the page scrolls. */
-			background-attachment: fixed;
+			pointer-events: none;
 		}
 		/* System-page layout helpers. All tokens & components come from css/index.css. */
 		.section-title {
