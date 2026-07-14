@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<!-- viewport-fit=cover: the map view's edge pixels are land/dots, so iOS
-	     Safari's canvas-colour chrome fill can never match them (list view
-	     matches by nature — its edges are the plain background). The map must
-	     actually render under the translucent bars. env() safe-area padding
-	     below keeps the layout identical to the other pages. -->
+	<!-- viewport-fit=cover: the map view's edge pixels are land, so iOS Safari's
+	     canvas-colour chrome fill can never match them (list view matches by
+	     nature — its edges are the plain background). The map must actually render
+	     under the translucent bars. env() safe-area padding below keeps the
+	     layout identical to the other pages. -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 	<title>Matt Wright – Home Espresso</title>
@@ -130,18 +130,8 @@
 		:root[data-view="map"] .content .filters {
 			pointer-events: auto;
 		}
-		/* The dot matrix is painted on the BODY background — the page canvas. The
-		   canvas is the one surface browsers always paint across the entire
-		   physical screen (under the status bar, toolbar, and window chrome),
-		   which is exactly why the other pages look seamless: their edges are
-		   canvas. Putting the dots anywhere deeper (e.g. on the fixed map layer)
-		   leaves them at the mercy of how each browser insets fixed content. */
-		:root[data-view="map"] body {
-			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
-			background-size: 6px 6px;
-		}
 		/* The map layer itself is transparent — the canvas provides the base
-		   colour and dots; the globe's sphere is opaque and occludes them. */
+		   colour; the globe's sphere is opaque and occludes it. */
 		.map-view {
 			position: fixed;
 			top: 0;
