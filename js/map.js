@@ -249,31 +249,34 @@
 			render();
 			if (Math.abs(vLon) > 0.003 || Math.abs(vLat) > 0.003) {
 				spinRAF = requestAnimationFrame(function () { spin(now); });
-			} else { spinRAF = null; bumpIdle(); }
+			} else { spinRAF = null; }
 		}
 		// Idle auto-rotation: after a few seconds with no interaction, drift east
 			// at ~1 rpm (the way the Earth turns) until the next gesture.
-			var idleRAF = null, idleTimer = null, idleT = 0;
+			var idleRAF = null, idleTimer = null, idleStopped = false, idleT = 0;
 			function idleStep() {
-				if (!canvas.clientWidth) { idleRAF = null; return; }  // map hidden
+				if (idleStopped || !canvas.clientWidth) { idleRAF = null; return; }  // stopped for good / map hidden
 				var now = performance.now();
 				rotation[0] += 0.006 * (now - idleT);  // 0.006 deg/ms = 360°/60s = 1 rpm
 				idleT = now;
 				render();
 				idleRAF = requestAnimationFrame(idleStep);
 			}
-			function startIdle() { if (idleRAF) return; idleT = performance.now(); idleRAF = requestAnimationFrame(idleStep); }
+			function startIdle() { if (idleStopped || idleRAF) return; idleT = performance.now(); idleRAF = requestAnimationFrame(idleStep); }
 			function stopIdle() { if (idleRAF) { cancelAnimationFrame(idleRAF); idleRAF = null; } }
+			// The first real interaction kills idle spin permanently (until reload).
+			function killIdle() { idleStopped = true; if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } stopIdle(); }
+			// Schedule the initial spin (a no-op once killed).
 			function bumpIdle() {
-				stopIdle();
+				if (idleStopped) return;
 				if (idleTimer) clearTimeout(idleTimer);
-				idleTimer = setTimeout(startIdle, 3500);
+				idleTimer = setTimeout(startIdle, 2500);
 			}
 
 			var MAX_Z = 64;
 		var zoom = d3.zoom().scaleExtent([0.7, MAX_Z])
 			.on('start', function (event) {
-				stopSpin(); stopIdle(); vLon = vLat = 0; wasDrag = false;
+				stopSpin(); killIdle(); vLon = vLat = 0; wasDrag = false;
 				moveT = performance.now(); tx = event.transform.x; ty = event.transform.y;
 			})
 			.on('end', function () {
@@ -342,7 +345,7 @@
 		var animRAF = null;
 		function syncZoom() { svg.node().__zoom = d3.zoomIdentity.scale(zoomK); }
 		function animateTo(rot, zK, oX, oY, ms) {
-			stopSpin(); stopIdle(); if (animRAF) cancelAnimationFrame(animRAF);
+			stopSpin(); killIdle(); if (animRAF) cancelAnimationFrame(animRAF);
 			var r0 = rotation.slice(), z0 = zoomK, x0 = ox, y0 = oy, t0 = performance.now();
 			var dLon = (((rot[0] - r0[0]) % 360) + 540) % 360 - 180, dLat = rot[1] - r0[1];
 			function stepA() {
@@ -354,7 +357,7 @@
 				ox = x0 + (oX - x0) * e; oy = y0 + (oY - y0) * e;
 				render();
 				if (p < 1) animRAF = requestAnimationFrame(stepA);
-				else { animRAF = null; syncZoom(); bumpIdle(); }
+				else { animRAF = null; syncZoom(); }
 			}
 			animRAF = requestAnimationFrame(stepA);
 		}
@@ -369,7 +372,7 @@
 				var cards = [];
 				c.pts.forEach(function (v) { v.cards.forEach(function (cd) { cards.push(cd); }); });
 				S.selectedCards = cards;
-				bumpIdle();
+				killIdle();
 				render();
 				if (window.openCoffeePanel) window.openCoffeePanel(cards);
 			} else {
