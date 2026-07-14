@@ -94,10 +94,20 @@
 
 		var svg = d3.select(canvas).append('svg').attr('class', 'coffee-map');
 		var defs = svg.append('defs');
+		// Halftone dot pattern for the darker field around the globe.
+		var pat = defs.append('pattern').attr('id', 'halftone')
+			.attr('width', 6).attr('height', 6).attr('patternUnits', 'userSpaceOnUse');
+		pat.append('circle').attr('class', 'map-halftone-dot').attr('cx', 3).attr('cy', 3).attr('r', 1.1);
+		// Globe fill: solid in the middle, fading to transparent at the rim so the
+		// sphere melts into the surrounding dots instead of ending on a hard edge.
+		var fill = defs.append('radialGradient').attr('id', 'globeFill').attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
+		fill.append('stop').attr('offset', '80%').attr('stop-color', 'var(--color-subdued)').attr('stop-opacity', 1);
+		fill.append('stop').attr('offset', '100%').attr('stop-color', 'var(--color-subdued)').attr('stop-opacity', 0);
 		var shade = defs.append('radialGradient').attr('id', 'globeShade').attr('cx', '50%').attr('cy', '42%').attr('r', '60%');
 		shade.append('stop').attr('offset', '55%').attr('stop-color', 'var(--color-primary)').attr('stop-opacity', 0);
 		shade.append('stop').attr('offset', '100%').attr('stop-color', 'var(--color-primary)').attr('stop-opacity', 0.14);
 
+		var halftone = svg.append('rect').attr('class', 'map-halftone').attr('fill', 'url(#halftone)').style('pointer-events', 'none');
 		var sphere = svg.append('circle').attr('class', 'map-sphere');
 		var gLand = svg.append('g').attr('class', 'map-lands');
 		var borderPath = svg.append('path').attr('class', 'map-border');
@@ -119,7 +129,17 @@
 
 		// Smallest gap (px) between two marker centres for them to stay separate;
 		// closer than this and they merge into one cluster so nothing overlaps.
-		var CLUSTER_GAP = 30;
+		var CLUSTER_GAP = 34;
+		// Teardrop pin (rounded top, pointy bottom) with its tip at the anchor.
+		var TEARDROP = 'M0,0 C-4.4,-8 -8,-11.5 -8,-18 a8,8 0 1,1 16,0 C8,-11.5 4.4,-8 0,0 Z';
+
+		function sameCoord(a, b) { return a[0] === b[0] && a[1] === b[1]; }
+		function clusterGeo(c) {
+			var lon = 0, lat = 0;
+			c.pts.forEach(function (v) { lon += v.coord[0]; lat += v.coord[1]; });
+			return [lon / c.pts.length, lat / c.pts.length];
+		}
+
 		function drawMarkers() {
 			// Project every front-facing base point (only its currently-visible cards).
 			var vis = [];
@@ -128,40 +148,49 @@
 				var cards = pt.cards.filter(shown);
 				if (!cards.length) return;
 				var p = projection(pt.coord);
-				vis.push({ x: p[0], y: p[1], cards: cards });
+				vis.push({ x: p[0], y: p[1], coord: pt.coord, cards: cards });
 			});
-			// Greedily merge points that would overlap into clusters (centroid-based).
-			var clusters = [];
-			vis.forEach(function (v) {
-				var best = null, bestD = CLUSTER_GAP;
+			// Agglomerative clustering: start one cluster per point, then repeatedly
+			// merge the closest pair while they'd overlap. On termination every
+			// cluster is at least CLUSTER_GAP from the rest, so nothing overlaps and
+			// each stays tappable. Zooming spreads points apart → clusters split.
+			var clusters = vis.map(function (v) { return { x: v.x, y: v.y, n: v.cards.length, pts: [v] }; });
+			var merging = true;
+			while (merging && clusters.length > 1) {
+				merging = false;
+				var bi = -1, bj = -1, bd = CLUSTER_GAP;
 				for (var i = 0; i < clusters.length; i++) {
-					var c = clusters[i], d = Math.hypot(c.x - v.x, c.y - v.y);
-					if (d < bestD) { bestD = d; best = c; }
+					for (var j = i + 1; j < clusters.length; j++) {
+						var d = Math.hypot(clusters[i].x - clusters[j].x, clusters[i].y - clusters[j].y);
+						if (d < bd) { bd = d; bi = i; bj = j; }
+					}
 				}
-				if (best) {
-					best.pts.push(v); best.n += v.cards.length;
-					best.sx += v.x; best.sy += v.y;
-					best.x = best.sx / best.pts.length; best.y = best.sy / best.pts.length;
-				} else {
-					clusters.push({ x: v.x, y: v.y, sx: v.x, sy: v.y, n: v.cards.length, pts: [v] });
+				if (bi > -1) {
+					var a = clusters[bi], b = clusters[bj], na = a.n, nb = b.n;
+					a.x = (a.x * na + b.x * nb) / (na + nb);
+					a.y = (a.y * na + b.y * nb) / (na + nb);
+					a.n = na + nb; a.pts = a.pts.concat(b.pts);
+					clusters.splice(bj, 1);
+					merging = true;
 				}
-			});
+			}
+			var selCards = S.selectedCards;
 			var sel = gMarkers.selectAll('g.map-marker').data(clusters);
 			sel.exit().remove();
 			var ent = sel.enter().append('g').attr('class', 'map-marker');
-			ent.append('circle').attr('class', 'map-pin-hit').attr('r', 15);
+			ent.append('circle').attr('class', 'map-pin-hit').attr('r', 16);
+			ent.append('path').attr('class', 'map-pin-teardrop').attr('d', TEARDROP);
 			ent.append('circle').attr('class', 'map-dot');
 			ent.append('text').attr('class', 'map-cluster-count').attr('text-anchor', 'middle').attr('dominant-baseline', 'central');
-			ent.on('click', function (event, c) {
-				event.stopPropagation();
-				var cards = [];
-				c.pts.forEach(function (v) { v.cards.forEach(function (cd) { cards.push(cd); }); });
-				if (window.openCoffeePanel) window.openCoffeePanel(cards);
-			});
+			ent.on('click', function (event, c) { event.stopPropagation(); tapCluster(c); });
 			ent.merge(sel).attr('transform', function (c) { return 'translate(' + c.x + ',' + c.y + ')'; })
 				.each(function (c) {
 					var g = d3.select(this), multi = c.n > 1;
-					g.select('.map-dot').attr('class', 'map-dot ' + (multi ? 'map-cluster' : 'map-pin')).attr('r', multi ? 9 : 5);
+					var isSel = selCards && c.pts.some(function (v) { return v.cards.some(function (cd) { return selCards.indexOf(cd) > -1; }); });
+					var teardrop = isSel && !multi;
+					g.select('.map-pin-teardrop').style('display', teardrop ? null : 'none');
+					g.select('.map-dot').style('display', teardrop ? 'none' : null)
+						.attr('class', 'map-dot ' + (multi ? 'map-cluster' : 'map-pin')).attr('r', multi ? 9 : 5);
 					var txt = g.select('.map-cluster-count');
 					if (multi) txt.style('display', null).style('font-size', (c.n > 9 ? 8 : 10) + 'px').text(c.n);
 					else txt.style('display', 'none');
@@ -175,6 +204,7 @@
 			cx = w / 2; cy = h / 2;
 			var gx = cx + ox, gy = cy + oy;
 			svg.attr('width', w).attr('height', h);
+			halftone.attr('width', w).attr('height', h);
 			projection.scale(scale).translate([gx, gy]).rotate(rotation);
 			sphere.attr('cx', gx).attr('cy', gy).attr('r', scale);
 			globeShade.attr('cx', gx).attr('cy', gy).attr('r', scale);
@@ -214,7 +244,8 @@
 				spinRAF = requestAnimationFrame(function () { spin(now); });
 			} else { spinRAF = null; }
 		}
-		var zoom = d3.zoom().scaleExtent([0.7, 16])
+		var MAX_Z = 64;
+		var zoom = d3.zoom().scaleExtent([0.7, MAX_Z])
 			.on('start', function (event) {
 				stopSpin(); vLon = vLat = 0; wasDrag = false;
 				moveT = performance.now(); tx = event.transform.x; ty = event.transform.y;
@@ -277,8 +308,53 @@
 		controls.append('button').attr('type', 'button').attr('class', 'map-zoom-btn')
 			.attr('aria-label', 'Zoom out').html('&minus;').on('click', function () { zoomBy(1 / 1.6); });
 
+		// Smoothly fly to a rotation / zoom / offset (used by tap-to-zoom and
+		// centring a tapped pin). Keeps d3.zoom's stored scale in sync at the end.
+		var animRAF = null;
+		function syncZoom() { svg.node().__zoom = d3.zoomIdentity.scale(zoomK); }
+		function animateTo(rot, zK, oX, oY, ms) {
+			stopSpin(); if (animRAF) cancelAnimationFrame(animRAF);
+			var r0 = rotation.slice(), z0 = zoomK, x0 = ox, y0 = oy, t0 = performance.now();
+			var dLon = (((rot[0] - r0[0]) % 360) + 540) % 360 - 180, dLat = rot[1] - r0[1];
+			function stepA() {
+				var p = Math.min((performance.now() - t0) / ms, 1);
+				var e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+				rotation[0] = r0[0] + dLon * e;
+				rotation[1] = Math.max(-90, Math.min(90, r0[1] + dLat * e));
+				zoomK = z0 + (zK - z0) * e;
+				ox = x0 + (oX - x0) * e; oy = y0 + (oY - y0) * e;
+				render();
+				if (p < 1) animRAF = requestAnimationFrame(stepA);
+				else { animRAF = null; syncZoom(); }
+			}
+			animRAF = requestAnimationFrame(stepA);
+		}
+
+		// Tapping a marker: a single pin (or a cluster that can't be split — all its
+		// coffees share one spot, or we're already at max zoom) opens its coffees as
+		// a list and centres itself. Any other cluster zooms in on itself so it
+		// breaks apart, so repeated taps drill down until a leaf is reached.
+		function tapCluster(c) {
+			var identical = c.pts.every(function (v) { return sameCoord(v.coord, c.pts[0].coord); });
+			if (c.n === 1 || identical || zoomK >= MAX_Z - 0.5) {
+				var cards = [];
+				c.pts.forEach(function (v) { v.cards.forEach(function (cd) { cards.push(cd); }); });
+				S.selectedCards = cards;
+				var g = c.n === 1 ? c.pts[0].coord : clusterGeo(c);
+				if (window.openCoffeePanel) window.openCoffeePanel(cards);
+				// Centre the tapped marker once the panel has resized the map to half height.
+				requestAnimationFrame(function () {
+					requestAnimationFrame(function () { animateTo([-g[0], -g[1]], zoomK, 0, 0, 420); });
+				});
+			} else {
+				var gc = clusterGeo(c);
+				animateTo([-gc[0], -gc[1]], Math.min(MAX_Z, zoomK * 2.4), 0, 0, 480);
+			}
+		}
+
 		S.render = render;
 		S.syncFilter = function () { render(); };
+		S.deselect = function () { S.selectedCards = null; render(); };
 		S.built = true;
 		render();
 	}
@@ -292,6 +368,7 @@
 			}).catch(function (err) { canvas.innerHTML = '<p class="map-error">Couldn’t load the map.</p>'; throw err; });
 		},
 		resize: function () { if (S.built) S.render(); },
-		syncFilter: function () { if (S.built && S.syncFilter) S.syncFilter(); }
+		syncFilter: function () { if (S.built && S.syncFilter) S.syncFilter(); },
+		deselect: function () { if (S.built && S.deselect) S.deselect(); }
 	};
 })();

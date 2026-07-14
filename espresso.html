@@ -133,60 +133,61 @@
 		/* With the coffee list hidden, the page content is short enough not to
 		   scroll on its own — so no overflow clipping is needed (and it would
 		   otherwise clip the full-bleed filter row). */
+		/* The map is a fixed overlay. With no card open it fills the area below the
+		   filters (top/left/right/bottom set in JS to the content column). When a
+		   pin is tapped it shrinks to the top half (height set in JS) and the cards
+		   flow in normal document order below, overflowing off the bottom of the
+		   page. */
 		.map-view {
 			position: fixed;
 			left: 16px;
 			right: 16px;
 			bottom: 16px;
-			top: 200px;   /* left/right/top are set precisely in JS to the content column */
+			top: 200px;   /* top/left/right/height set precisely in JS */
 			z-index: 5;
-			display: flex;
-			flex-direction: column;
-			border-radius: var(--radius);
-			overflow: hidden;
 			background: var(--color-subdued);
 		}
 		.map-view[hidden] {
 			display: none;
 		}
+		:root[data-card="open"] .map-view {
+			border-bottom: 1px solid var(--color-primary-subtle);
+		}
 		.map-canvas {
 			position: relative;
-			flex: 2;
-			min-height: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: var(--radius);
 			overflow: hidden;
 		}
-		/* Inner shadow that fades the globe into the background at the edges, so
-		   it appears to fade away as you zoom in — in place of a border. */
-		.map-canvas::after {
-			content: "";
-			position: absolute;
-			inset: 0;
-			pointer-events: none;
-			box-shadow: inset 0 0 12px 6px var(--color-subdued);
+		/* Cards flow below the fixed map, aligned to the content column, and run
+		   off the bottom of the page (the page scrolls). */
+		.map-cards {
+			max-width: 640px;
+			margin: 0 auto;
+			padding-bottom: 72px;
 		}
-		/* Card panel (1/3) that appears when a pin is tapped; map is the other 2/3. */
-		.map-panel {
-			flex: 1;
-			min-height: 0;
-			overflow-y: auto;
-			padding: 12px 16px 16px;
-			border-top: 1px solid var(--color-primary-subtle);
-		}
-		.map-panel[hidden] {
+		.map-cards[hidden] {
 			display: none;
 		}
-		/* Panel cards match the card view: their full border, radius, padding and
-		   marquee bleed all come from the shared .card / .coffee / .fav-marquee
-		   rules. Just drop the trailing margin on the last one. */
 		.map-panel-body .card:last-child {
 			margin-bottom: 0;
 		}
-		/* Close: right-aligned on the coffee name's first line. */
+		/* Close: centred on the rule dividing the map from the cards, with a
+		   background so the rule doesn't run through it. */
 		.map-panel-close {
-			float: right;
-			margin-left: 12px;
+			position: absolute;
+			left: 50%;
+			bottom: 0;
+			transform: translate(-50%, 50%);
+			padding: 2px 14px;
+			background: var(--color-subdued);
 			font-size: var(--font-size-sm);
 			white-space: nowrap;
+			z-index: 6;
+		}
+		.map-panel-close[hidden] {
+			display: none;
 		}
 		/* Interactive globe */
 		.coffee-map {
@@ -198,7 +199,13 @@
 			cursor: grabbing;
 		}
 		.coffee-map .map-sphere {
-			fill: var(--color-subdued);
+			fill: url(#globeFill);
+		}
+		/* Halftone field around the globe — primary dots simulating a darker
+		   backdrop that the globe fades into at its rim. */
+		.coffee-map .map-halftone-dot {
+			fill: var(--color-primary);
+			opacity: 0.5;
 		}
 		/* Subtle raised land — a faint primary shadow reads as gentle elevation. */
 		.coffee-map .map-lands {
@@ -233,7 +240,8 @@
 			fill: transparent;
 		}
 		.coffee-map .map-pin,
-		.coffee-map .map-cluster {
+		.coffee-map .map-cluster,
+		.coffee-map .map-pin-teardrop {
 			fill: var(--color-primary);
 			stroke: var(--color-subdued);
 			stroke-width: 1.5px;
@@ -1244,14 +1252,15 @@
 
 	</div>
 
-	<!-- Map view: an interactive globe (js/map.js) plus a card panel that slides
-	     up when a pin is tapped (2/3 map, 1/3 card). Fills the content column
-	     below the filter row. -->
+	<!-- Map view: an interactive globe (js/map.js). Tapping a pin opens its
+	     coffees as cards that flow below the map (top-half / bottom-half split),
+	     with a Close link centred on the dividing rule. -->
 	<div class="map-view" hidden aria-hidden="true">
 		<div class="map-canvas"></div>
-		<div class="map-panel" hidden>
-			<div class="map-panel-body"></div>
-		</div>
+		<a href="#" class="map-panel-close" hidden>Close</a>
+	</div>
+	<div class="map-cards" hidden>
+		<div class="map-panel-body"></div>
 	</div>
 
 	<script src="js/map.js"></script>
@@ -1284,15 +1293,36 @@
 		/* ---- View switch (Card / Map) ---- */
 		var mapView = document.querySelector('.map-view');
 		var mapCanvas = mapView.querySelector('.map-canvas');
+		var mapCards = document.querySelector('.map-cards');
+		var closeLink = mapView.querySelector('.map-panel-close');
+		closeLink.addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
+		function cardOpen() { return document.documentElement.getAttribute('data-card') === 'open'; }
+		// Drop the cards just below the map's bottom edge (the dividing rule).
+		function positionCards(dividerY) {
+			mapCards.style.marginTop = '0px';
+			var natTop = mapCards.getBoundingClientRect().top;
+			mapCards.style.marginTop = Math.max(0, dividerY + 12 - natTop) + 'px';
+		}
 		function layoutMapView() {
 			if (document.documentElement.getAttribute('data-view') !== 'map') return;
 			var fw = document.querySelector('.filters-wrap').getBoundingClientRect();
 			var c = document.querySelector('.content').getBoundingClientRect();
 			var docW = document.documentElement.clientWidth;
+			var top = fw.bottom + 12;
 			// Match the content column: left edge of the title, right edge of Settings.
-			mapView.style.top = (fw.bottom + 12) + 'px';
+			mapView.style.top = top + 'px';
 			mapView.style.left = c.left + 'px';
 			mapView.style.right = (docW - c.right) + 'px';
+			if (cardOpen()) {
+				// Top half map / bottom half cards, split from the space below filters.
+				var h = Math.round((window.innerHeight - top - 16) / 2);
+				mapView.style.height = h + 'px';
+				mapView.style.bottom = 'auto';
+				positionCards(top + h);
+			} else {
+				mapView.style.height = 'auto';
+				mapView.style.bottom = '16px';
+			}
 		}
 		function setView(value) {
 			var isMap = value === 'map';
@@ -1317,33 +1347,31 @@
 			}
 		});
 
-		/* ---- Coffee card panel (opened from a map pin; 2/3 map, 1/3 card) ---- */
-		var panel = mapView.querySelector('.map-panel');
-		var panelBody = panel.querySelector('.map-panel-body');
+		/* ---- Coffee cards (opened from a map pin; top-half map, cards below) ---- */
+		var panelBody = mapCards.querySelector('.map-panel-body');
 		function openCoffeePanel(cards) {
 			panelBody.innerHTML = '';
-			cards.forEach(function (card, i) {
+			cards.forEach(function (card) {
 				var clone = card.cloneNode(true);
 				clone.removeAttribute('style');
 				clone.querySelectorAll('.coffee-details').forEach(function (d) { d.removeAttribute('hidden'); });
-				if (i === 0) {
-					var name = clone.querySelector('.coffee-name');
-					if (name) {
-						var close = document.createElement('a');
-						close.href = '#'; close.className = 'map-panel-close'; close.textContent = 'Close';
-						close.onclick = function (e) { e.preventDefault(); closeCoffeePanel(); return false; };
-						name.insertAdjacentElement('afterend', close);
-					}
-				}
 				panelBody.appendChild(clone);
 			});
-			panel.removeAttribute('hidden');
-			panelBody.scrollTop = 0;
+			document.documentElement.setAttribute('data-card', 'open');
+			mapCards.removeAttribute('hidden');
+			closeLink.removeAttribute('hidden');
+			window.scrollTo(0, 0);
+			layoutMapView();
 			requestAnimationFrame(function () { if (window.CoffeeMap) CoffeeMap.resize(); });
 		}
 		function closeCoffeePanel() {
-			panel.setAttribute('hidden', '');
+			document.documentElement.removeAttribute('data-card');
+			mapCards.setAttribute('hidden', '');
+			mapCards.style.marginTop = '';
+			closeLink.setAttribute('hidden', '');
 			panelBody.innerHTML = '';
+			if (window.CoffeeMap && CoffeeMap.deselect) CoffeeMap.deselect();
+			layoutMapView();
 			requestAnimationFrame(function () { if (window.CoffeeMap) CoffeeMap.resize(); });
 		}
 		document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCoffeePanel(); });
