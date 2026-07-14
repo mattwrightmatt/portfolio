@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<!-- viewport-fit=cover lets the fixed map layer render underneath iOS Safari's
-	     translucent status bar and toolbar (they show the real page content), which
-	     is the only way a full-bleed map can be seamless top-to-bottom. Safe-area
-	     env() padding keeps the layout identical to the other pages. -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>Matt Wright – Home Espresso</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
@@ -145,12 +141,9 @@
 			position: absolute;
 			inset: 0;
 		}
-		/* Progressive blur behind the header/filters so the chips stay readable
-		   over the zoomed globe. Built from stacked BANDS of decreasing blur
-		   (strong at the top, none by the bottom) instead of gradient-masked
-		   layers: Safari doesn't reliably apply mask-image to backdrop-filter,
-		   which rendered the masks as hard-edged full-width blur rectangles (the
-		   "clipped" band). Small steps between bands read as a smooth fade.
+		/* Progressive blur behind the header/filters: stacked backdrop-blur layers,
+		   each masked to a shorter band from the top, so blur is strong up top and
+		   fades to none lower down — the chips stay readable over the zoomed globe.
 		   Height is set in JS to cover the filter row. */
 		.map-blur {
 			position: fixed;
@@ -165,14 +158,24 @@
 		}
 		.map-blur > div {
 			position: absolute;
-			left: 0;
-			right: 0;
+			inset: 0;
 		}
-		.map-blur > div:nth-child(1) { top: 0;   height: 40%; -webkit-backdrop-filter: blur(6px);    backdrop-filter: blur(6px); }
-		.map-blur > div:nth-child(2) { top: 40%; height: 20%; -webkit-backdrop-filter: blur(4px);    backdrop-filter: blur(4px); }
-		.map-blur > div:nth-child(3) { top: 60%; height: 16%; -webkit-backdrop-filter: blur(2.5px);  backdrop-filter: blur(2.5px); }
-		.map-blur > div:nth-child(4) { top: 76%; height: 13%; -webkit-backdrop-filter: blur(1.5px);  backdrop-filter: blur(1.5px); }
-		.map-blur > div:nth-child(5) { top: 89%; height: 11%; -webkit-backdrop-filter: blur(0.75px); backdrop-filter: blur(0.75px); }
+		.map-blur > div:nth-child(1) {
+			-webkit-backdrop-filter: blur(1px);
+			backdrop-filter: blur(1px);
+		}
+		.map-blur > div:nth-child(2) {
+			-webkit-backdrop-filter: blur(3px);
+			backdrop-filter: blur(3px);
+			-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+			mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+		}
+		.map-blur > div:nth-child(3) {
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 32%, transparent 62%);
+			mask-image: linear-gradient(to bottom, #000 0%, #000 32%, transparent 62%);
+		}
 		/* Coffee modal (opened from a pin): a centred card, or a scrolling stack
 		   for a cluster. It never runs off the top of the screen — a tall stack
 		   caps at the viewport height and scrolls internally. */
@@ -183,8 +186,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			/* Keep the card inside the safe areas when the page draws under the bars. */
-			padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
+			padding: 16px;
 		}
 		.map-modal[hidden] {
 			display: none;
@@ -198,9 +200,7 @@
 			backdrop-filter: blur(3px);
 		}
 		/* Progressive blur along the bottom of the scrim so the Close pill stays
-		   legible over card content behind it — strong at the bottom, fading up.
-		   Stepped maskless bands (same Safari mask+backdrop-filter workaround as
-		   .map-blur). */
+		   legible over card content behind it — strong at the bottom, fading up. */
 		.map-modal-fade {
 			position: absolute;
 			left: 0;
@@ -212,18 +212,25 @@
 		}
 		.map-modal-fade > div {
 			position: absolute;
-			left: 0;
-			right: 0;
+			inset: 0;
 		}
-		.map-modal-fade > div:nth-child(1) { bottom: 0;   height: 35%; -webkit-backdrop-filter: blur(8px);   backdrop-filter: blur(8px); }
-		.map-modal-fade > div:nth-child(2) { bottom: 35%; height: 25%; -webkit-backdrop-filter: blur(4px);   backdrop-filter: blur(4px); }
-		.map-modal-fade > div:nth-child(3) { bottom: 60%; height: 22%; -webkit-backdrop-filter: blur(2px);   backdrop-filter: blur(2px); }
-		.map-modal-fade > div:nth-child(4) { bottom: 82%; height: 18%; -webkit-backdrop-filter: blur(1px);   backdrop-filter: blur(1px); }
+		.map-modal-fade > div:nth-child(1) {
+			-webkit-backdrop-filter: blur(4px);
+			backdrop-filter: blur(4px);
+			-webkit-mask-image: linear-gradient(to top, #000 0%, #000 45%, transparent 100%);
+			mask-image: linear-gradient(to top, #000 0%, #000 45%, transparent 100%);
+		}
+		.map-modal-fade > div:nth-child(2) {
+			-webkit-backdrop-filter: blur(12px);
+			backdrop-filter: blur(12px);
+			-webkit-mask-image: linear-gradient(to top, #000 0%, transparent 55%);
+			mask-image: linear-gradient(to top, #000 0%, transparent 55%);
+		}
 		/* Close pill — centred at the bottom of the screen, above the blur. */
 		.map-modal-close {
 			position: absolute;
 			left: 50%;
-			bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+			bottom: max(24px, env(safe-area-inset-bottom));
 			transform: translateX(-50%);
 			z-index: 3;
 			padding: 6px 18px;
@@ -238,8 +245,7 @@
 			z-index: 1;
 			width: 100%;
 			max-width: 640px;
-			/* Never taller than the modal's padded area (so never off-screen). */
-			max-height: 100%;
+			max-height: calc(100dvh - 32px);
 			overflow-y: auto;
 		}
 		/* Multiple cards: leave the cards 16px narrower (still left-aligned) with a
@@ -324,12 +330,11 @@
 			font-weight: var(--weight-semibold);
 			pointer-events: none;
 		}
-		/* Zoom controls — stacked +/− buttons in the bottom-right corner, lifted
-		   clear of the home indicator / toolbar when the page draws under them. */
+		/* Zoom controls — stacked +/− buttons in the bottom-right corner. */
 		.map-zoom {
 			position: absolute;
 			right: 16px;
-			bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+			bottom: max(24px, env(safe-area-inset-bottom));
 			display: flex;
 			flex-direction: column;
 			border: 1px solid var(--color-primary-subtle);
@@ -439,11 +444,15 @@
 			background: linear-gradient(to right, transparent, var(--color-subdued));
 			pointer-events: none;
 		}
-		/* In map mode the chips sit over the globe — no edge fade at all (a colour
-		   gradient would paint over the map, and Safari can't mask a backdrop
-		   blur). The chips simply scroll off the edge. */
+		/* In map mode the chips sit over the globe, so fade the right edge with a
+		   progressive blur instead of a background colour. */
 		:root[data-view="map"] .filters-wrap::after {
-			display: none;
+			width: 48px;
+			background: none;
+			-webkit-backdrop-filter: blur(4px);
+			backdrop-filter: blur(4px);
+			-webkit-mask-image: linear-gradient(to right, transparent 0%, #000 100%);
+			mask-image: linear-gradient(to right, transparent 0%, #000 100%);
 		}
 	</style>
 </head>
@@ -1326,10 +1335,10 @@
 	<div class="map-view" hidden aria-hidden="true">
 		<div class="map-canvas"></div>
 	</div>
-	<div class="map-blur" hidden aria-hidden="true"><div></div><div></div><div></div><div></div><div></div></div>
+	<div class="map-blur" hidden aria-hidden="true"><div></div><div></div><div></div></div>
 	<div class="map-modal" hidden aria-hidden="true">
 		<div class="map-modal-scrim"></div>
-		<div class="map-modal-fade"><div></div><div></div><div></div><div></div></div>
+		<div class="map-modal-fade"><div></div><div></div></div>
 		<a href="#" class="map-modal-close">Close</a>
 		<div class="map-modal-card"><div class="map-panel-body"></div></div>
 	</div>

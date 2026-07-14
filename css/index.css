@@ -56,12 +56,9 @@ html {
 
 body {
   /* The page gutter (was html 10/16/16 margin + body 72/8/72 margin). Kept
-     identical so every page's layout is unchanged: top 82, sides 24, bottom 88.
-     The env() terms are 0 everywhere except pages using viewport-fit=cover
-     (espresso's map), where they offset the content by the safe areas so it
-     sits exactly where it does on the other pages. */
+     identical so every page's layout is unchanged: top 82, sides 24, bottom 88. */
   margin: 0;
-  padding: calc(82px + env(safe-area-inset-top, 0px)) 24px calc(88px + env(safe-area-inset-bottom, 0px));
+  padding: 82px 24px 88px;
   color: var(--color-primary);
   background-color: var(--color-subdued);
   font-family: var(--font-family);
