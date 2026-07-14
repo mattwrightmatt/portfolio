@@ -43,19 +43,14 @@
 	}
 
 	var root = document.documentElement;
-	// Keep the browser chrome (iOS Safari's top bar etc.) in sync with the page
-	// background. Without this, viewport-fit=cover pages don't tint it to match.
-	var themeMeta = document.querySelector('meta[name="theme-color"]');
-	if (!themeMeta) {
-		themeMeta = document.createElement('meta');
-		themeMeta.setAttribute('name', 'theme-color');
-		document.head.appendChild(themeMeta);
-	}
+	// NB: intentionally NO <meta name="theme-color">. On the espresso map
+	// (viewport-fit=cover) a solid theme-color paints an opaque band over the
+	// status bar that can't match the globe/dots underneath — a visible seam.
+	// Leaving it unset lets iOS keep the status bar translucent so the real page
+	// content shows through, edge to edge.
 	function apply(dark) {
-		var subdued = dark ? background : foreground;
 		root.style.setProperty('--color-primary', dark ? foreground : background);
-		root.style.setProperty('--color-subdued', subdued);
-		themeMeta.setAttribute('content', subdued);
+		root.style.setProperty('--color-subdued', dark ? background : foreground);
 	}
 	var mq = window.matchMedia('(prefers-color-scheme: dark)');
 	apply(mq.matches);
