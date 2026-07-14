@@ -21,6 +21,8 @@
 		body {
 			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
 			background-size: 6px 6px;
+			/* Pin the pattern to the viewport so it stays put as the page scrolls. */
+			background-attachment: fixed;
 		}
 		/* System-page layout helpers. All tokens & components come from css/index.css. */
 		.section-title {
