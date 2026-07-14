@@ -217,14 +217,32 @@
 			-webkit-backdrop-filter: blur(3px);
 			backdrop-filter: blur(3px);
 		}
-		.map-modal-close {
-			position: relative;
-			padding: 4px 14px;
+		/* X dismiss — floats at the top-right of the screen, above the scrim, and
+		   closes the whole modal. */
+		.map-modal-x {
+			position: absolute;
+			top: max(16px, env(safe-area-inset-top));
+			right: 16px;
+			z-index: 2;
+			width: 36px;
+			height: 36px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0;
+			color: var(--color-primary);
 			background: var(--color-subdued);
 			border: 1px solid var(--color-primary-subtle);
-			border-radius: var(--radius-sm);
-			font-size: var(--font-size-sm);
-			white-space: nowrap;
+			border-radius: 50%;
+			cursor: pointer;
+		}
+		@media (hover: hover) {
+			.map-modal-x:hover {
+				background: var(--color-primary-superSubtle);
+			}
+		}
+		.map-modal-x:active {
+			background: var(--color-primary-subtle);
 		}
 		.map-modal-card {
 			position: relative;
@@ -1308,7 +1326,9 @@
 	<div class="map-blur" hidden aria-hidden="true"><div></div><div></div><div></div></div>
 	<div class="map-modal" hidden aria-hidden="true">
 		<div class="map-modal-scrim"></div>
-		<a href="#" class="map-modal-close">Close</a>
+		<button type="button" class="map-modal-x" aria-label="Close">
+			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+		</button>
 		<div class="map-modal-card"><div class="map-panel-body"></div></div>
 	</div>
 
@@ -1345,7 +1365,7 @@
 		var mapBlur = document.querySelector('.map-blur');
 		var mapModal = document.querySelector('.map-modal');
 		var panelBody = mapModal.querySelector('.map-panel-body');
-		mapModal.querySelector('.map-modal-close').addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
+		mapModal.querySelector('.map-modal-x').addEventListener('click', closeCoffeePanel);
 		mapModal.querySelector('.map-modal-scrim').addEventListener('click', closeCoffeePanel);
 
 		// Size the progressive-blur strip to cover the header + filter row.
