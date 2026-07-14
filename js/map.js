@@ -218,12 +218,14 @@
 			gLand.selectAll('path').attr('d', path);
 			borderPath.attr('d', path(borders));
 			var z = zoomK;
+			// Labels grow slightly as you zoom in (from 9px, capped at 15px).
+			var lblSize = Math.min(9 + (z - 1) * 0.5, 15) + 'px';
 			labelSel.each(function (f) {
 				var el = d3.select(this);
 				var vis = front(f._c) && (z >= 2.6 || (z >= 1.5 && coffeeCountry[f.properties.name]));
 				if (!vis) { el.style('display', 'none'); return; }
 				var p = projection(f._c);
-				el.style('display', null).attr('x', p[0]).attr('y', p[1]);
+				el.style('display', null).style('font-size', lblSize).attr('x', p[0]).attr('y', p[1]);
 			});
 			drawMarkers();
 		}
