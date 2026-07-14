@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- viewport-fit=cover so the layout viewport spans the full physical screen.
+	     Without it, iOS holds `position: fixed` layers inside an inset layout
+	     viewport, so the fixed dot grid stops short of the top/bottom edges. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 	<title>Matt Wright – Design System</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
@@ -11,8 +14,6 @@
 	<!-- Session colour theme: randoma11y picks one accessible pair per load. -->
 	<script src="js/randoma11y.js"></script>
 	<script src="js/theme.js"></script>
-
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 	<style>
 		/* Dot grid: the same 6px radial-gradient pattern the espresso map paints on
@@ -25,7 +26,14 @@
 		body::before {
 			content: "";
 			position: fixed;
-			inset: 0;
+			/* Bleed past every edge (and past the safe-area insets) so the tiled
+			   pattern reaches the true screen edges under the iOS status bar,
+			   toolbar, and home indicator. With viewport-fit=cover the fixed layer
+			   spans the screen; the negative insets add headroom so nothing clips. */
+			top: calc(-1 * env(safe-area-inset-top, 0px));
+			right: calc(-1 * env(safe-area-inset-right, 0px));
+			bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+			left: calc(-1 * env(safe-area-inset-left, 0px));
 			z-index: -1;
 			background-image: radial-gradient(color-mix(in srgb, var(--color-primary) 50%, transparent) 0.5px, transparent 0.6px);
 			background-size: 6px 6px;
