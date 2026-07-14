@@ -97,7 +97,7 @@
 		// Halftone dot pattern for the darker field around the globe.
 		var pat = defs.append('pattern').attr('id', 'halftone')
 			.attr('width', 6).attr('height', 6).attr('patternUnits', 'userSpaceOnUse');
-		pat.append('circle').attr('class', 'map-halftone-dot').attr('cx', 3).attr('cy', 3).attr('r', 1);
+		pat.append('circle').attr('class', 'map-halftone-dot').attr('cx', 3).attr('cy', 3).attr('r', 0.5);
 		// Globe fill: solid in the middle, fading to transparent at the rim so the
 		// sphere melts into the surrounding dots instead of ending on a hard edge.
 		var fill = defs.append('radialGradient').attr('id', 'globeFill').attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
@@ -132,13 +132,6 @@
 		var CLUSTER_GAP = 34;
 		// Teardrop pin (rounded top, pointy bottom) with its tip at the anchor.
 		var TEARDROP = 'M0,0 C-4.4,-8 -8,-11.5 -8,-18 a8,8 0 1,1 16,0 C8,-11.5 4.4,-8 0,0 Z';
-
-		function sameCoord(a, b) { return a[0] === b[0] && a[1] === b[1]; }
-		function clusterGeo(c) {
-			var lon = 0, lat = 0;
-			c.pts.forEach(function (v) { lon += v.coord[0]; lat += v.coord[1]; });
-			return [lon / c.pts.length, lat / c.pts.length];
-		}
 
 		function drawMarkers() {
 			// Project every front-facing base point (only its currently-visible cards).
@@ -308,48 +301,14 @@
 		controls.append('button').attr('type', 'button').attr('class', 'map-zoom-btn')
 			.attr('aria-label', 'Zoom out').html('&minus;').on('click', function () { zoomBy(1 / 1.6); });
 
-		// Smoothly fly to a rotation / zoom / offset (used by tap-to-zoom and
-		// centring a tapped pin). Keeps d3.zoom's stored scale in sync at the end.
-		var animRAF = null;
-		function syncZoom() { svg.node().__zoom = d3.zoomIdentity.scale(zoomK); }
-		function animateTo(rot, zK, oX, oY, ms) {
-			stopSpin(); if (animRAF) cancelAnimationFrame(animRAF);
-			var r0 = rotation.slice(), z0 = zoomK, x0 = ox, y0 = oy, t0 = performance.now();
-			var dLon = (((rot[0] - r0[0]) % 360) + 540) % 360 - 180, dLat = rot[1] - r0[1];
-			function stepA() {
-				var p = Math.min((performance.now() - t0) / ms, 1);
-				var e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-				rotation[0] = r0[0] + dLon * e;
-				rotation[1] = Math.max(-90, Math.min(90, r0[1] + dLat * e));
-				zoomK = z0 + (zK - z0) * e;
-				ox = x0 + (oX - x0) * e; oy = y0 + (oY - y0) * e;
-				render();
-				if (p < 1) animRAF = requestAnimationFrame(stepA);
-				else { animRAF = null; syncZoom(); }
-			}
-			animRAF = requestAnimationFrame(stepA);
-		}
-
-		// Tapping a marker: a single pin (or a cluster that can't be split — all its
-		// coffees share one spot, or we're already at max zoom) opens its coffees as
-		// a list and centres itself. Any other cluster zooms in on itself so it
-		// breaks apart, so repeated taps drill down until a leaf is reached.
+		// Tapping a marker opens its coffee(s) in a modal — one card if the marker
+		// is a single coffee, a scrolling stack if it's a cluster.
 		function tapCluster(c) {
-			var identical = c.pts.every(function (v) { return sameCoord(v.coord, c.pts[0].coord); });
-			if (c.n === 1 || identical || zoomK >= MAX_Z - 0.5) {
-				var cards = [];
-				c.pts.forEach(function (v) { v.cards.forEach(function (cd) { cards.push(cd); }); });
-				S.selectedCards = cards;
-				var g = c.n === 1 ? c.pts[0].coord : clusterGeo(c);
-				if (window.openCoffeePanel) window.openCoffeePanel(cards);
-				// Centre the tapped marker once the panel has resized the map to half height.
-				requestAnimationFrame(function () {
-					requestAnimationFrame(function () { animateTo([-g[0], -g[1]], zoomK, 0, 0, 420); });
-				});
-			} else {
-				var gc = clusterGeo(c);
-				animateTo([-gc[0], -gc[1]], Math.min(MAX_Z, zoomK * 2.4), 0, 0, 480);
-			}
+			var cards = [];
+			c.pts.forEach(function (v) { v.cards.forEach(function (cd) { cards.push(cd); }); });
+			S.selectedCards = cards;
+			render();
+			if (window.openCoffeePanel) window.openCoffeePanel(cards);
 		}
 
 		S.render = render;

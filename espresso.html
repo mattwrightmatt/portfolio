@@ -124,70 +124,117 @@
 			margin-top: 8px;
 		}
 
-		/* Map view — a card-framed map that fills the viewport below the filter
-		   row. Its top is set in JS (just under the filters); the page doesn't
-		   scroll while it's shown. */
+		/* Map view — the globe is a full-viewport background (the dot matrix fills
+		   the whole page) that lives BEHIND the header and filter bar. The header
+		   and filters float on top, kept legible by a progressive blur behind them.
+		   Tapping a pin opens the coffee(s) in a centred modal. */
 		:root[data-view="map"] .year-section {
 			display: none !important;
 		}
-		/* With the coffee list hidden, the page content is short enough not to
-		   scroll on its own — so no overflow clipping is needed (and it would
-		   otherwise clip the full-bleed filter row). */
-		/* The map is a fixed overlay. With no card open it fills the area below the
-		   filters (top/left/right/bottom set in JS to the content column). When a
-		   pin is tapped it shrinks to the top half (height set in JS) and the cards
-		   flow in normal document order below, overflowing off the bottom of the
-		   page. */
+		/* Header + filters float above the globe; empty areas let globe drags
+		   through, only the interactive bits capture. */
+		:root[data-view="map"] .content {
+			position: relative;
+			z-index: 2;
+			pointer-events: none;
+		}
+		:root[data-view="map"] .content a,
+		:root[data-view="map"] .content button,
+		:root[data-view="map"] .content input,
+		:root[data-view="map"] .content label,
+		:root[data-view="map"] .content .filters,
+		:root[data-view="map"] .content .settings-menu {
+			pointer-events: auto;
+		}
 		.map-view {
 			position: fixed;
-			left: 16px;
-			right: 16px;
-			bottom: 16px;
-			top: 200px;   /* top/left/right/height set precisely in JS */
-			z-index: 5;
-			background: var(--color-subdued);
+			inset: 0;
+			z-index: 0;
 		}
 		.map-view[hidden] {
 			display: none;
 		}
-		:root[data-card="open"] .map-view {
-			border-bottom: 1px solid var(--color-primary-subtle);
-		}
 		.map-canvas {
+			position: absolute;
+			inset: 0;
+		}
+		/* Progressive blur behind the header/filters: stacked backdrop-blur layers,
+		   each masked to a shorter band from the top, so blur is strong up top and
+		   fades to none lower down — the chips stay readable over the zoomed globe.
+		   Height is set in JS to cover the filter row. */
+		.map-blur {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 1;
+			pointer-events: none;
+		}
+		.map-blur[hidden] {
+			display: none;
+		}
+		.map-blur > div {
+			position: absolute;
+			inset: 0;
+		}
+		.map-blur > div:nth-child(1) {
+			-webkit-backdrop-filter: blur(1px);
+			backdrop-filter: blur(1px);
+		}
+		.map-blur > div:nth-child(2) {
+			-webkit-backdrop-filter: blur(3px);
+			backdrop-filter: blur(3px);
+			-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+			mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+		}
+		.map-blur > div:nth-child(3) {
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 32%, transparent 62%);
+			mask-image: linear-gradient(to bottom, #000 0%, #000 32%, transparent 62%);
+		}
+		/* Coffee modal (opened from a pin): a centred card, or a scrolling stack
+		   for a cluster. It never runs off the top of the screen — a tall stack
+		   caps at the viewport height and scrolls internally. */
+		.map-modal {
+			position: fixed;
+			inset: 0;
+			z-index: 10;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			padding: 16px;
+		}
+		.map-modal[hidden] {
+			display: none;
+		}
+		.map-modal-scrim {
+			position: absolute;
+			inset: 0;
+			background: color-mix(in srgb, var(--color-subdued) 55%, transparent);
+			-webkit-backdrop-filter: blur(3px);
+			backdrop-filter: blur(3px);
+		}
+		.map-modal-close {
+			position: relative;
+			padding: 4px 14px;
+			background: var(--color-subdued);
+			border: 1px solid var(--color-primary-subtle);
+			border-radius: var(--radius-sm);
+			font-size: var(--font-size-sm);
+			white-space: nowrap;
+		}
+		.map-modal-card {
 			position: relative;
 			width: 100%;
-			height: 100%;
-			border-radius: var(--radius);
-			overflow: hidden;
-		}
-		/* Cards flow below the fixed map, aligned to the content column, and run
-		   off the bottom of the page (the page scrolls). */
-		.map-cards {
 			max-width: 640px;
-			margin: 0 auto;
-			padding-bottom: 72px;
-		}
-		.map-cards[hidden] {
-			display: none;
+			max-height: calc(100dvh - 96px);
+			overflow-y: auto;
 		}
 		.map-panel-body .card:last-child {
 			margin-bottom: 0;
-		}
-		/* Close: centred on the rule dividing the map from the cards, with a
-		   background so the rule doesn't run through it. */
-		.map-panel-close {
-			position: absolute;
-			left: 50%;
-			bottom: 0;
-			transform: translate(-50%, 50%);
-			padding: 2px 14px;
-			background: var(--color-subdued);
-			font-size: var(--font-size-sm);
-			white-space: nowrap;
-			z-index: 6;
-		}
-		.map-panel-close[hidden] {
-			display: none;
 		}
 		/* Interactive globe */
 		.coffee-map {
@@ -205,7 +252,7 @@
 		   backdrop that the globe fades into at its rim. */
 		.coffee-map .map-halftone-dot {
 			fill: var(--color-primary);
-			opacity: 0.85;
+			opacity: 0.5;
 		}
 		/* Subtle raised land — a faint primary shadow reads as gentle elevation. */
 		.coffee-map .map-lands {
@@ -253,11 +300,11 @@
 			font-weight: var(--weight-semibold);
 			pointer-events: none;
 		}
-		/* Zoom controls — stacked +/− buttons in the corner of the map. */
+		/* Zoom controls — stacked +/− buttons in the bottom-right corner. */
 		.map-zoom {
 			position: absolute;
-			right: 12px;
-			bottom: 12px;
+			right: 16px;
+			bottom: max(24px, env(safe-area-inset-bottom));
 			display: flex;
 			flex-direction: column;
 			border: 1px solid var(--color-primary-subtle);
@@ -1252,15 +1299,17 @@
 
 	</div>
 
-	<!-- Map view: an interactive globe (js/map.js). Tapping a pin opens its
-	     coffees as cards that flow below the map (top-half / bottom-half split),
-	     with a Close link centred on the dividing rule. -->
+	<!-- Map view: a full-viewport interactive globe (js/map.js) that sits behind
+	     the header + filters, with the dot matrix as the whole-page background.
+	     Tapping a pin opens its coffee(s) in a centred modal. -->
 	<div class="map-view" hidden aria-hidden="true">
 		<div class="map-canvas"></div>
-		<a href="#" class="map-panel-close" hidden>Close</a>
 	</div>
-	<div class="map-cards" hidden>
-		<div class="map-panel-body"></div>
+	<div class="map-blur" hidden aria-hidden="true"><div></div><div></div><div></div></div>
+	<div class="map-modal" hidden aria-hidden="true">
+		<div class="map-modal-scrim"></div>
+		<a href="#" class="map-modal-close">Close</a>
+		<div class="map-modal-card"><div class="map-panel-body"></div></div>
 	</div>
 
 	<script src="js/map.js"></script>
@@ -1293,49 +1342,30 @@
 		/* ---- View switch (Card / Map) ---- */
 		var mapView = document.querySelector('.map-view');
 		var mapCanvas = mapView.querySelector('.map-canvas');
-		var mapCards = document.querySelector('.map-cards');
-		var closeLink = mapView.querySelector('.map-panel-close');
-		closeLink.addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
-		function cardOpen() { return document.documentElement.getAttribute('data-card') === 'open'; }
-		// Drop the cards just below the map's bottom edge (the dividing rule).
-		function positionCards(dividerY) {
-			mapCards.style.marginTop = '0px';
-			var natTop = mapCards.getBoundingClientRect().top;
-			mapCards.style.marginTop = Math.max(0, dividerY + 12 - natTop) + 'px';
-		}
+		var mapBlur = document.querySelector('.map-blur');
+		var mapModal = document.querySelector('.map-modal');
+		var panelBody = mapModal.querySelector('.map-panel-body');
+		mapModal.querySelector('.map-modal-close').addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
+		mapModal.querySelector('.map-modal-scrim').addEventListener('click', closeCoffeePanel);
+
+		// Size the progressive-blur strip to cover the header + filter row.
 		function layoutMapView() {
 			if (document.documentElement.getAttribute('data-view') !== 'map') return;
 			var fw = document.querySelector('.filters-wrap').getBoundingClientRect();
-			var c = document.querySelector('.content').getBoundingClientRect();
-			var docW = document.documentElement.clientWidth;
-			var top = fw.bottom + 12;
-			// Match the content column: left edge of the title, right edge of Settings.
-			mapView.style.top = top + 'px';
-			mapView.style.left = c.left + 'px';
-			mapView.style.right = (docW - c.right) + 'px';
-			if (cardOpen()) {
-				// Top half map / bottom half cards, split from the space below filters.
-				var h = Math.round((window.innerHeight - top - 16) / 2);
-				mapView.style.height = h + 'px';
-				mapView.style.bottom = 'auto';
-				positionCards(top + h);
-			} else {
-				mapView.style.height = 'auto';
-				mapView.style.bottom = '16px';
-			}
+			mapBlur.style.height = Math.round(fw.bottom + 10) + 'px';
 		}
 		function setView(value) {
 			var isMap = value === 'map';
 			document.documentElement.setAttribute('data-view', value);
 			if (isMap) {
-				mapView.removeAttribute('hidden');
-				mapView.setAttribute('aria-hidden', 'false');
+				mapView.removeAttribute('hidden'); mapView.setAttribute('aria-hidden', 'false');
+				mapBlur.removeAttribute('hidden');
 				layoutMapView();
 				if (window.CoffeeMap) CoffeeMap.open(mapCanvas);
 			} else {
-				mapView.setAttribute('hidden', '');
-				mapView.setAttribute('aria-hidden', 'true');
 				closeCoffeePanel();
+				mapView.setAttribute('hidden', ''); mapView.setAttribute('aria-hidden', 'true');
+				mapBlur.setAttribute('hidden', '');
 			}
 		}
 		window.addEventListener('resize', function () { layoutMapView(); if (window.CoffeeMap) CoffeeMap.resize(); });
@@ -1347,8 +1377,7 @@
 			}
 		});
 
-		/* ---- Coffee cards (opened from a map pin; top-half map, cards below) ---- */
-		var panelBody = mapCards.querySelector('.map-panel-body');
+		/* ---- Coffee modal (opened from a map pin) ---- */
 		function openCoffeePanel(cards) {
 			panelBody.innerHTML = '';
 			cards.forEach(function (card) {
@@ -1357,22 +1386,15 @@
 				clone.querySelectorAll('.coffee-details').forEach(function (d) { d.removeAttribute('hidden'); });
 				panelBody.appendChild(clone);
 			});
-			document.documentElement.setAttribute('data-card', 'open');
-			mapCards.removeAttribute('hidden');
-			closeLink.removeAttribute('hidden');
-			window.scrollTo(0, 0);
-			layoutMapView();
-			requestAnimationFrame(function () { if (window.CoffeeMap) CoffeeMap.resize(); });
+			mapModal.removeAttribute('hidden');
+			mapModal.setAttribute('aria-hidden', 'false');
+			mapModal.querySelector('.map-modal-card').scrollTop = 0;
 		}
 		function closeCoffeePanel() {
-			document.documentElement.removeAttribute('data-card');
-			mapCards.setAttribute('hidden', '');
-			mapCards.style.marginTop = '';
-			closeLink.setAttribute('hidden', '');
+			mapModal.setAttribute('hidden', '');
+			mapModal.setAttribute('aria-hidden', 'true');
 			panelBody.innerHTML = '';
 			if (window.CoffeeMap && CoffeeMap.deselect) CoffeeMap.deselect();
-			layoutMapView();
-			requestAnimationFrame(function () { if (window.CoffeeMap) CoffeeMap.resize(); });
 		}
 		document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCoffeePanel(); });
 
