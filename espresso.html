@@ -105,6 +105,17 @@
 		:root[data-view="map"] .year-section {
 			display: none !important;
 		}
+		/* Map view: LOCK the viewport (app-shell pattern). Safari clips fixed
+		   layers on pages whose document scroll state is ambiguous; the fix is to
+		   make <html> and <body> exactly the screen size with no document-level
+		   scrolling, and scroll only inside dedicated containers (the modal's card
+		   stack, the chip row). List view stays a normal scrolling document. */
+		:root[data-view="map"],
+		:root[data-view="map"] body {
+			height: 100%;
+			overflow: hidden;
+			box-sizing: border-box;
+		}
 		/* Header + filters float above the globe; empty areas let globe drags
 		   through, only the interactive bits capture. */
 		:root[data-view="map"] .content {
