@@ -100,6 +100,15 @@
 		:root[data-view="map"] .year-section {
 			display: none !important;
 		}
+		/* The base stylesheet forces a page scrollbar (html { overflow-y: scroll })
+		   to avoid layout shift between pages. In map view nothing scrolls, so on
+		   browsers with classic scrollbars (desktop Safari) that leaves an EMPTY
+		   styled track down the right edge — and the fixed map stops at the layout
+		   viewport, left of it, clipping the globe. No scrolling here, so no
+		   reserved gutter: let the map span the full window width. */
+		:root[data-view="map"] {
+			overflow-y: auto;
+		}
 		/* Header + filters float above the globe; empty areas let globe drags
 		   through, only the interactive bits capture. */
 		:root[data-view="map"] .content {
