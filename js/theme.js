@@ -11,8 +11,9 @@
 	if (!window.randoma11y) return;
 	var pair;
 	try {
-		// WCAG 2.1 ratio (symmetric) so both light and dark stay legible after the swap.
-		pair = window.randoma11y({ algorithm: 'WCAG21', threshold: 4.5 });
+		// WCAG 2.1 ratio (symmetric) at AAA (7:1) — extra headroom since the UI
+		// leans on primary at reduced opacity in lots of places.
+		pair = window.randoma11y({ algorithm: 'WCAG21', threshold: 7 });
 	} catch (e) { return; }
 	if (!pair || !pair.colors) return;
 	// Treat the darker of the accessible pair as the "background" anchor: it becomes
