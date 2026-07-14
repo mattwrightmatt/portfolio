@@ -37,8 +37,12 @@
    BASE
    ============================================================ */
 html {
-  margin: 16px;
-  margin-top: 10px;
+  /* No margin on the root element. iOS Safari positions `position: fixed`
+     elements relative to the root's *content* box, so a root margin would inset
+     the espresso map's full-screen fixed layers from the true screen edges
+     (leaving a strip behind the status bar). The page gutter lives on <body>
+     instead — see its padding below. */
+  margin: 0;
   padding: 0;
   font-family: var(--font-family);
   font-size: var(--font-size);
@@ -51,8 +55,10 @@ html {
 }
 
 body {
-  margin-top: 72px;
-  margin-bottom: 72px;
+  /* The page gutter (was html 10/16/16 margin + body 72/8/72 margin). Kept
+     identical so every page's layout is unchanged: top 82, sides 24, bottom 88. */
+  margin: 0;
+  padding: 82px 24px 88px;
   color: var(--color-primary);
   background-color: var(--color-subdued);
   font-family: var(--font-family);
