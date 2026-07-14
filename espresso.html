@@ -148,7 +148,11 @@
 		}
 		.map-view {
 			position: fixed;
-			inset: 0;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 100vh;
+			height: 100lvh;   /* cover the largest viewport so the dots reach the true bottom */
 			z-index: 0;
 		}
 		.map-view[hidden] {
@@ -243,6 +247,16 @@
 		}
 		.map-modal-x:active {
 			background: var(--color-primary-subtle);
+		}
+		/* Close pill — centred just above the card(s). */
+		.map-modal-close {
+			position: relative;
+			padding: 4px 14px;
+			background: var(--color-subdued);
+			border: 1px solid var(--color-primary-subtle);
+			border-radius: var(--radius-sm);
+			font-size: var(--font-size-sm);
+			white-space: nowrap;
 		}
 		.map-modal-card {
 			position: relative;
@@ -1329,6 +1343,7 @@
 		<button type="button" class="map-modal-x" aria-label="Close">
 			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 		</button>
+		<a href="#" class="map-modal-close">Close</a>
 		<div class="map-modal-card"><div class="map-panel-body"></div></div>
 	</div>
 
@@ -1366,13 +1381,16 @@
 		var mapModal = document.querySelector('.map-modal');
 		var panelBody = mapModal.querySelector('.map-panel-body');
 		mapModal.querySelector('.map-modal-x').addEventListener('click', closeCoffeePanel);
+		mapModal.querySelector('.map-modal-close').addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
 		mapModal.querySelector('.map-modal-scrim').addEventListener('click', closeCoffeePanel);
 
-		// Size the progressive-blur strip to cover the header + filter row.
+		// Size the progressive-blur strip to cover the header + filter row, and tell
+		// the map to centre the globe in the area below the filters.
 		function layoutMapView() {
 			if (document.documentElement.getAttribute('data-view') !== 'map') return;
 			var fw = document.querySelector('.filters-wrap').getBoundingClientRect();
 			mapBlur.style.height = Math.round(fw.bottom + 10) + 'px';
+			if (window.CoffeeMap && CoffeeMap.setInset) CoffeeMap.setInset(fw.bottom + 8);
 		}
 		function setView(value) {
 			var isMap = value === 'map';

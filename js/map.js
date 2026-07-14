@@ -199,9 +199,12 @@
 
 		function render() {
 			var w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
-			baseScale = Math.min(w, h) / 2 - 4;
+			// Centre the globe horizontally on the page and vertically within the
+			// area below the filters (inset set from the page); size it to fit there.
+			var inset = S.topInset || 0;
+			baseScale = Math.min(w, h - inset) / 2 - 4;
 			var scale = baseScale * zoomK;
-			cx = w / 2; cy = h / 2;
+			cx = w / 2; cy = inset + (h - inset) / 2;
 			var gx = cx + ox, gy = cy + oy;
 			svg.attr('width', w).attr('height', h);
 			halftone.attr('width', w).attr('height', h);
@@ -288,8 +291,9 @@
 					ox = fx + r * (cx + ox - fx) - cx;
 					oy = fy + r * (cy + oy - fy) - cy;
 					zoomK = t.k;
-					// Bound the offset so the globe stays in view and re-centres on zoom-out.
-					var m = baseScale * (zoomK - 1);
+					// Bound the offset so the globe stays in view and re-centres on
+					// zoom-out (never negative, or it would shove the globe sideways).
+					var m = baseScale * Math.max(0, zoomK - 1);
 					ox = Math.max(-m, Math.min(m, ox));
 					oy = Math.max(-m, Math.min(m, oy));
 				}
@@ -365,6 +369,7 @@
 		},
 		resize: function () { if (S.built) S.render(); },
 		syncFilter: function () { if (S.built && S.syncFilter) S.syncFilter(); },
-		deselect: function () { if (S.built && S.deselect) S.deselect(); }
+		deselect: function () { if (S.built && S.deselect) S.deselect(); },
+		setInset: function (px) { S.topInset = px; if (S.built) S.render(); }
 	};
 })();
