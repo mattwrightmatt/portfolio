@@ -302,6 +302,24 @@
 			max-height: calc(100dvh - 32px);
 			overflow-y: auto;
 		}
+		/* Multiple cards: leave the cards 16px narrower (still left-aligned) with a
+		   permanent 4px scrollbar in the gap — just the bar, no track fill. */
+		.map-modal-card.multi {
+			overflow-y: scroll;
+			padding-right: 16px;
+			scrollbar-width: thin;
+			scrollbar-color: var(--color-primary-subtle) transparent;
+		}
+		.map-modal-card.multi::-webkit-scrollbar {
+			width: 4px;
+		}
+		.map-modal-card.multi::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		.map-modal-card.multi::-webkit-scrollbar-thumb {
+			background: var(--color-primary-subtle);
+			border-radius: 2px;
+		}
 		.map-panel-body {
 			padding-bottom: 64px;
 		}
@@ -1469,9 +1487,11 @@
 				clone.querySelectorAll('.coffee-details').forEach(function (d) { d.removeAttribute('hidden'); });
 				panelBody.appendChild(clone);
 			});
+			var card = mapModal.querySelector('.map-modal-card');
+			card.classList.toggle('multi', cards.length > 1);
 			mapModal.removeAttribute('hidden');
 			mapModal.setAttribute('aria-hidden', 'false');
-			mapModal.querySelector('.map-modal-card').scrollTop = 0;
+			card.scrollTop = 0;
 		}
 		function closeCoffeePanel() {
 			mapModal.setAttribute('hidden', '');
