@@ -77,11 +77,9 @@
 			margin: 0;
 		}
 
-		/* Settings link + dropdown (holds the Details toggle and the View radios). */
-		.settings-wrap {
-			position: relative;
-		}
-		.settings-link {
+		/* Top-right view toggle — a plain text link that switches between the map
+		   and list views (its label is the destination). */
+		.view-toggle {
 			font-family: inherit;
 			font-size: var(--font-size);
 			line-height: var(--line-height);
@@ -91,46 +89,10 @@
 			padding: 0;
 			cursor: pointer;
 			opacity: 60%;
+			white-space: nowrap;
 		}
-		.settings-link:hover,
-		.settings-link[aria-expanded="true"] {
+		.view-toggle:hover {
 			opacity: 100%;
-		}
-		.settings-menu {
-			position: absolute;
-			top: calc(100% + 8px);
-			right: 0;
-			z-index: 20;
-			min-width: 180px;
-			background: var(--color-subdued);
-			border: 1px solid var(--color-primary-subtle);
-			border-radius: var(--radius-sm);
-			padding: 12px;
-			font-size: var(--font-size-sm);
-		}
-		.settings-section {
-			margin-top: 12px;
-			padding-top: 12px;
-			border-top: 1px solid var(--color-primary-subtle);
-		}
-		/* When it's the only section (Details toggle removed), drop the divider. */
-		.settings-section:first-child {
-			margin-top: 0;
-			padding-top: 0;
-			border-top: none;
-		}
-		.settings-label {
-			font-size: 13px;
-			opacity: 60%;
-			margin-bottom: 8px;
-		}
-		.radio-row {
-			display: flex;
-			align-items: center;
-			cursor: pointer;
-		}
-		.radio-row + .radio-row {
-			margin-top: 8px;
 		}
 
 		/* Map view — the globe is a full-viewport background (the dot matrix fills
@@ -151,8 +113,7 @@
 		:root[data-view="map"] .content button,
 		:root[data-view="map"] .content input,
 		:root[data-view="map"] .content label,
-		:root[data-view="map"] .content .filters,
-		:root[data-view="map"] .content .settings-menu {
+		:root[data-view="map"] .content .filters {
 			pointer-events: auto;
 		}
 		/* Dot matrix as the whole-page background in map mode. With viewport-fit=cover
@@ -262,32 +223,6 @@
 			backdrop-filter: blur(12px);
 			-webkit-mask-image: linear-gradient(to top, #000 0%, transparent 55%);
 			mask-image: linear-gradient(to top, #000 0%, transparent 55%);
-		}
-		/* X dismiss — floats at the top-right of the screen, above the scrim. */
-		.map-modal-x {
-			position: absolute;
-			top: max(16px, env(safe-area-inset-top));
-			right: 16px;
-			z-index: 3;
-			width: 36px;
-			height: 36px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 0;
-			color: var(--color-primary);
-			background: var(--color-subdued);
-			border: 1px solid var(--color-primary-subtle);
-			border-radius: 50%;
-			cursor: pointer;
-		}
-		@media (hover: hover) {
-			.map-modal-x:hover {
-				background: var(--color-primary-superSubtle);
-			}
-		}
-		.map-modal-x:active {
-			background: var(--color-primary-subtle);
 		}
 		/* Close pill — centred at the bottom of the screen, above the blur. */
 		.map-modal-close {
@@ -525,17 +460,7 @@
 		<main><div>
 			<div class="page-head">
 				<p><a href="/">Matt Wright</a> / Espresso</p>
-				<div class="settings-wrap">
-					<button class="settings-link" aria-haspopup="true" aria-expanded="false" onclick="toggleSettings(this)">Settings</button>
-					<div class="settings-menu" hidden>
-<!-- Details toggle removed from the UI (details always show); toggleAllInfo() is kept in case it returns. -->
-						<div class="settings-section">
-							<div class="settings-label">View</div>
-							<label class="radio-row"><input type="radio" name="view" value="card" class="radio" checked onchange="setView(this.value)">Card</label>
-							<label class="radio-row"><input type="radio" name="view" value="map" class="radio" onchange="setView(this.value)">Map</label>
-						</div>
-					</div>
-				</div>
+				<button class="view-toggle" type="button" onclick="toggleView()">List view</button>
 			</div>
 
 			<div class="filters-wrap">
@@ -1412,9 +1337,6 @@
 	<div class="map-modal" hidden aria-hidden="true">
 		<div class="map-modal-scrim"></div>
 		<div class="map-modal-fade"><div></div><div></div></div>
-		<button type="button" class="map-modal-x" aria-label="Close">
-			<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-		</button>
 		<a href="#" class="map-modal-close">Close</a>
 		<div class="map-modal-card"><div class="map-panel-body"></div></div>
 	</div>
@@ -1432,27 +1354,13 @@
 			});
 		}
 
-		/* ---- Settings dropdown ---- */
-		function toggleSettings(btn) {
-			var menu = btn.nextElementSibling;
-			var open = btn.getAttribute('aria-expanded') === 'true';
-			btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-			if (open) { menu.setAttribute('hidden', ''); } else { menu.removeAttribute('hidden'); }
-		}
-		document.addEventListener('click', function (e) {
-			if (!e.target.closest('.settings-wrap')) {
-				var btn = document.querySelector('.settings-link[aria-expanded="true"]');
-				if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.nextElementSibling.setAttribute('hidden', ''); }
-			}
-		});
-
-		/* ---- View switch (Card / Map) ---- */
+		/* ---- View switch (Map / List) — top-right toggle, defaults to Map ---- */
 		var mapView = document.querySelector('.map-view');
 		var mapCanvas = mapView.querySelector('.map-canvas');
 		var mapBlur = document.querySelector('.map-blur');
 		var mapModal = document.querySelector('.map-modal');
 		var panelBody = mapModal.querySelector('.map-panel-body');
-		mapModal.querySelector('.map-modal-x').addEventListener('click', closeCoffeePanel);
+		var viewToggle = document.querySelector('.view-toggle');
 		mapModal.querySelector('.map-modal-close').addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
 		mapModal.querySelector('.map-modal-scrim').addEventListener('click', closeCoffeePanel);
 
@@ -1464,9 +1372,10 @@
 			mapBlur.style.height = Math.round(fw.bottom + 10) + 'px';
 			if (window.CoffeeMap && CoffeeMap.setInset) CoffeeMap.setInset(fw.bottom + 8);
 		}
-		function setView(value) {
-			var isMap = value === 'map';
-			document.documentElement.setAttribute('data-view', value);
+		function applyView(view) {
+			var isMap = view === 'map';
+			document.documentElement.setAttribute('data-view', isMap ? 'map' : 'list');
+			viewToggle.textContent = isMap ? 'List view' : 'Map view';
 			if (isMap) {
 				mapView.removeAttribute('hidden'); mapView.setAttribute('aria-hidden', 'false');
 				mapBlur.removeAttribute('hidden');
@@ -1478,14 +1387,12 @@
 				mapBlur.setAttribute('hidden', '');
 			}
 		}
+		function toggleView() {
+			applyView(document.documentElement.getAttribute('data-view') === 'map' ? 'list' : 'map');
+		}
 		window.addEventListener('resize', function () { layoutMapView(); if (window.CoffeeMap) CoffeeMap.resize(); });
-
-		// Preload the map (d3 + world data) on idle so tapping Map is instant.
-		window.addEventListener('load', function () {
-			if (window.CoffeeMap && CoffeeMap.preload) {
-				(window.requestIdleCallback || function (f) { setTimeout(f, 400); })(function () { CoffeeMap.preload(); });
-			}
-		});
+		// Default to the map view whenever the page loads.
+		applyView('map');
 
 		/* ---- Coffee modal (opened from a map pin) ---- */
 		function openCoffeePanel(cards) {
@@ -1501,11 +1408,20 @@
 			mapModal.removeAttribute('hidden');
 			mapModal.setAttribute('aria-hidden', 'false');
 			card.scrollTop = 0;
+			bgInert(true);
+		}
+		// Make everything behind the scrim non-interactive while a modal is open.
+		function bgInert(on) {
+			[document.querySelector('.content'), mapView, mapBlur].forEach(function (el) {
+				if (!el) return;
+				if (on) { el.setAttribute('inert', ''); } else { el.removeAttribute('inert'); }
+			});
 		}
 		function closeCoffeePanel() {
 			mapModal.setAttribute('hidden', '');
 			mapModal.setAttribute('aria-hidden', 'true');
 			panelBody.innerHTML = '';
+			bgInert(false);
 			if (window.CoffeeMap && CoffeeMap.deselect) CoffeeMap.deselect();
 		}
 		document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCoffeePanel(); });
