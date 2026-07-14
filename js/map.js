@@ -266,11 +266,11 @@
 			function stopIdle() { if (idleRAF) { cancelAnimationFrame(idleRAF); idleRAF = null; } }
 			// The first real interaction kills idle spin permanently (until reload).
 			function killIdle() { idleStopped = true; if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } stopIdle(); }
-			// Schedule the initial spin (a no-op once killed).
+			// Start the initial spin right away (a no-op once killed).
 			function bumpIdle() {
 				if (idleStopped) return;
 				if (idleTimer) clearTimeout(idleTimer);
-				idleTimer = setTimeout(startIdle, 2500);
+				startIdle();
 			}
 
 			var MAX_Z = 64;
