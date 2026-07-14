@@ -97,7 +97,7 @@
 		// Halftone dot pattern for the darker field around the globe.
 		var pat = defs.append('pattern').attr('id', 'halftone')
 			.attr('width', 6).attr('height', 6).attr('patternUnits', 'userSpaceOnUse');
-		pat.append('circle').attr('class', 'map-halftone-dot').attr('cx', 3).attr('cy', 3).attr('r', 1.1);
+		pat.append('circle').attr('class', 'map-halftone-dot').attr('cx', 3).attr('cy', 3).attr('r', 1);
 		// Globe fill: solid in the middle, fading to transparent at the rim so the
 		// sphere melts into the surrounding dots instead of ending on a hard edge.
 		var fill = defs.append('radialGradient').attr('id', 'globeFill').attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
