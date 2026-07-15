@@ -1377,10 +1377,21 @@
 		mapModal.querySelector('.map-modal-close').addEventListener('click', function (e) { e.preventDefault(); closeCoffeePanel(); });
 		mapModal.querySelector('.map-modal-scrim').addEventListener('click', closeCoffeePanel);
 
-		// Size the progressive-blur strip to cover the header + filter row, and tell
-		// the map to centre the globe in the area below the filters.
+		// Size the map layer to the *visible* viewport, then size the blur strip and
+		// tell the map to centre the globe in the area below the filters.
+		//
+		// The globe is sized/centred from the map layer's height (map.js render()
+		// reads clientHeight). If that's the full 100lvh — the LARGE viewport, i.e.
+		// the screen with Safari's toolbars hidden — the canvas is taller than
+		// what's actually on screen, so the globe centres too low and its bottom
+		// (plus the zoom buttons pinned to the layer's bottom) slip behind the
+		// toolbar. visualViewport.height is the genuinely visible height; setting it
+		// here fits the globe and lifts the buttons above the toolbar at once.
+		// window.innerHeight is the fallback where visualViewport is unsupported.
 		function layoutMapView() {
 			if (document.documentElement.getAttribute('data-view') !== 'map') return;
+			var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+			mapView.style.height = Math.round(vh) + 'px';
 			var fw = document.querySelector('.filters-wrap').getBoundingClientRect();
 			mapBlur.style.height = Math.round(fw.bottom + 10) + 'px';
 			if (window.CoffeeMap && CoffeeMap.setInset) CoffeeMap.setInset(fw.bottom + 8);
@@ -1404,6 +1415,12 @@
 			applyView(document.documentElement.getAttribute('data-view') === 'map' ? 'list' : 'map');
 		}
 		window.addEventListener('resize', function () { layoutMapView(); if (window.CoffeeMap) CoffeeMap.resize(); });
+		// Safari's toolbar showing/hiding (and other chrome/keyboard transitions)
+		// resizes the visible area and fires on visualViewport — often WITHOUT a
+		// window 'resize' — so re-fit the globe from there too.
+		if (window.visualViewport) {
+			window.visualViewport.addEventListener('resize', function () { layoutMapView(); if (window.CoffeeMap) CoffeeMap.resize(); });
+		}
 		// Default to the map view whenever the page loads.
 		applyView('map');
 
