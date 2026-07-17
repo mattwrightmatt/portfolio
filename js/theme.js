@@ -8,11 +8,12 @@
      light:  --color-primary = background,  --color-subdued = foreground
      dark:   --color-primary = foreground,  --color-subdued = background
 
-   The choice is session-wide: both the on/off flag and the chosen pair live in
-   sessionStorage, so once enabled it stays enabled (and identical) while
-   navigating between pages, and applies before first paint on each page (no
-   flash). It resets to the original default theme on a fresh visit ("launch"),
-   and the toggle control itself only appears on the home page.
+   Each time the toggle is switched on it picks a fresh pair, but that pair is
+   then session-wide: both the on/off flag and the chosen pair live in
+   sessionStorage, so it stays identical while navigating between pages and
+   applies before first paint on each page (no flash). It resets to the original
+   default theme on a fresh visit ("launch"), and the toggle control itself only
+   appears on the home page.
 
    Exposes window.siteTheme = { enable, disable, isEnabled } for that toggle. */
 (function () {
@@ -48,15 +49,23 @@
 	var mq = window.matchMedia('(prefers-color-scheme: dark)');
 	var mqBound = false;
 
-	// Reuse this session's colours if we already picked them, otherwise generate a
-	// fresh accessible pair and remember it. Returns false if unavailable.
-	function ensurePair() {
+	// Load this session's stored pair (picked when the toggle was switched on).
+	// Used on every page load so navigating between pages keeps the same colours.
+	// Returns false if there's nothing stored.
+	function loadPair() {
 		if (background) return true;
 		try {
 			var saved = JSON.parse(sessionStorage.getItem(PAIR_KEY));
 			if (saved && saved.length === 2) { background = saved[0]; foreground = saved[1]; return true; }
 		} catch (e) { /* ignore */ }
+		return false;
+	}
 
+	// Pick a brand-new accessible pair and store it for the rest of the session.
+	// Called every time the toggle is switched on, so each press gives fresh
+	// colours; the stored value is what other pages then reuse via loadPair().
+	// Returns false if randoma11y is unavailable.
+	function generatePair() {
 		if (!window.randoma11y) return false;
 		var pair;
 		try {
@@ -97,7 +106,7 @@
 	}
 
 	function enable() {
-		if (!ensurePair()) return false;   // randoma11y unavailable → stay on default
+		if (!generatePair()) return false; // fresh colours every time it's switched on
 		try { sessionStorage.setItem(ENABLED_KEY, '1'); } catch (e) { /* ignore */ }
 		apply(mq.matches);
 		bindMq();
@@ -121,7 +130,9 @@
 
 	// Apply immediately (before first paint) only if this session has opted in, so
 	// the original default theme shows on launch and whenever the toggle is off.
-	if (isEnabled() && ensurePair()) {
+	// Reuse the stored pair so navigating between pages keeps the same colours;
+	// only fall back to generating if the flag is set but nothing was stored.
+	if (isEnabled() && (loadPair() || generatePair())) {
 		apply(mq.matches);
 		bindMq();
 	} else {
