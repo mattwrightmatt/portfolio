@@ -62,8 +62,6 @@ body {
   max-width: 640px;
   margin-left: auto;
   margin-right: auto;
-  /* Positioning context for the home-page colour toggle. */
-  position: relative;
 }
 
 /* Typography utilities */
@@ -346,13 +344,23 @@ li a:hover:not(.active) {
   background: var(--color-subdued);
 }
 
-/* Home-page colour toggle — pinned to the content column's right edge, centred
-   on the "Matt Wright" header's first text line (24px switch on a 28px line). */
-.theme-toggle {
-  position: absolute;
-  top: 2px;
-  right: 0;
-  z-index: 20;
+/* Home-page title row — the "Matt Wright" header and the colour toggle share a
+   flex row so the toggle stays beside the title (pushed to the content's right
+   edge) at every width, wrapping to the right of the title on mobile rather than
+   stacking above it. Zeroing the header's margins keeps the original spacing:
+   the row sits where the title used to, and the next paragraph's own top margin
+   provides the gap below. */
+.intro-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.intro-header p {
+  margin: 0;
+}
+.intro-header .theme-toggle {
+  flex: none;
 }
 
 

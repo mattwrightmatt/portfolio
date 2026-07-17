@@ -7,22 +7,26 @@
 	<title>Matt Wright – About</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="stylesheet" href="css/index.css" type="text/css">
-	<!-- Session colour theme: randoma11y picks one accessible pair per load. -->
-	<script src="js/randoma11y.js"></script>
-	<script src="js/theme.js"></script>
+	<link rel="stylesheet" href="css/index.css?v=3" type="text/css">
+	<!-- Session colour theme: off by default; the home-page toggle opts in.
+	     ?v bumps force clients past cached copies of these shared assets. -->
+	<script src="js/randoma11y.js?v=3"></script>
+	<script src="js/theme.js?v=3"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body>
 	<div class="content">
-		<!-- Site-wide colour toggle (control lives on the home page only). Off by
-		     default → original theme; on → randoma11y session colours. Pinned to the
-		     content column's right margin, level with the "Matt Wright" header. -->
-		<input type="checkbox" class="switch theme-toggle" role="switch" id="themeSwitch" aria-label="Random accessible colours">
 		<main><div>
-			<p>Matt Wright</p>
+			<!-- Title row: the "Matt Wright" header with the site-wide colour toggle
+			     to its right (control lives on the home page only). Off by default →
+			     original theme; on → randoma11y session colours. Sharing a flex row
+			     keeps the toggle beside the title at every width, including mobile. -->
+			<div class="intro-header">
+				<p>Matt Wright</p>
+				<input type="checkbox" class="switch theme-toggle" role="switch" id="themeSwitch" aria-label="Random accessible colours">
+			</div>
 			<p>Hi, my name is Matt. I'm a designer based in Seattle, Washington. I've been designing the <a href="https://mercury.com">Mercury</a> app for about five years now. Before that, I was at <a href="https://team.design">Team</a> and Malka Media, designing for clients like Pfizer, ADP, and Deloitte.</p>
 			
 <p>I originally intended to pursue Industrial Design because of the  tangible impact physical objects have on people’s everyday lives. However, after discovering the Interaction Design program at the University of Washington, I fell in love with the discipline. Interaction Design gave me the flexibility to solve problems in any way that resonated with my target audience the most – whether the deliverable was physical, digital, or print. I learned to conduct user research, apply first principles thinking to my findings, and create beautiful things that solved problems.</p>
