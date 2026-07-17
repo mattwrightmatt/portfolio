@@ -17,6 +17,10 @@
 
 <body>
 	<div class="content">
+		<!-- Site-wide colour toggle (control lives on the home page only). Off by
+		     default → original theme; on → randoma11y session colours. Pinned to the
+		     content column's right margin, level with the "Matt Wright" header. -->
+		<input type="checkbox" class="switch theme-toggle" role="switch" id="themeSwitch" aria-label="Random accessible colours">
 		<main><div>
 			<p>Matt Wright</p>
 			<p>Hi, my name is Matt. I'm a designer based in Seattle, Washington. I've been designing the <a href="https://mercury.com">Mercury</a> app for about five years now. Before that, I was at <a href="https://team.design">Team</a> and Malka Media, designing for clients like Pfizer, ADP, and Deloitte.</p>
@@ -29,5 +33,24 @@
 		</div></main>
 
 	</div>
+
+	<script>
+		/* Reflect the current session state and let the toggle drive it. The switch
+		   starts unchecked on a fresh visit (original default theme); if this session
+		   already opted in on another page, it shows as on. */
+		(function () {
+			var sw = document.getElementById('themeSwitch');
+			if (!sw || !window.siteTheme) return;
+			sw.checked = window.siteTheme.isEnabled();
+			sw.addEventListener('change', function () {
+				if (sw.checked) {
+					// If randoma11y couldn't produce a pair, don't leave the switch "on".
+					if (!window.siteTheme.enable()) sw.checked = false;
+				} else {
+					window.siteTheme.disable();
+				}
+			});
+		})();
+	</script>
 </body>
 </html>
