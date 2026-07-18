@@ -7,19 +7,20 @@
 	<title>Matt Wright – Home Espresso</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="stylesheet" href="css/index.css?v=5" type="text/css">
+	<link rel="stylesheet" href="css/index.css?v=6" type="text/css">
 	<!-- Session colour theme: off by default; opt in via the home-page toggle.
 	     ?v bumps force clients past cached copies of these shared assets. -->
-	<script src="js/randoma11y.js?v=5"></script>
-	<script src="js/theme.js?v=5"></script>
+	<script src="js/randoma11y.js?v=6"></script>
+	<script src="js/theme.js?v=6"></script>
+	<script src="js/coffee-card.js?v=6"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
 	<style>
 		/* Espresso-page-specific styles. Design tokens and shared components live in css/index.css. */
-		/* Breadcrumbs on the left, the Details toggle aligned to the right. Carry
-		   the paragraph's default 1em margin on the flex row itself (and zero it on
-		   the inner <p>) so the breadcrumb lands at the same spot as the "Matt
+		/* Breadcrumbs on the left, the Map/List view toggle aligned to the right.
+		   Carry the paragraph's default 1em margin on the flex row itself (and zero
+		   it on the inner <p>) so the breadcrumb lands at the same spot as the "Matt
 		   Wright" heading on the home page — the flex container would otherwise
 		   trap the <p>'s top margin and push it down. */
 		.page-head {
@@ -504,15 +505,19 @@
 			<div class="year-section">
 			<p class="year">2026</p>
 
-			<!-- Coffee entry template: name / process / roaster, then the .coffee-details block
-			     (wrapped in .expand when there are notes). Details are hidden by default and
-			     revealed all at once by the page-level Details toggle.
-			     Each detail line is its own <div> inside .coffee-details, in order:
-			     Origin, Elevation, Variety, (any special line), Roaster's notes.
-			     data-* attributes drive the filters; data-varietal must mirror the Variety line.
-			     Newest at the top within each year group.
+			<!-- Coffee cards use the shared component (styles in css/index.css, demoed on
+			     system.html). Fixed skeleton per card: header (name + roaster), then an
+			     .expand wrapper holding a .coffee-details block of six labelled .cd-line
+			     rows (cd-origin, cd-process, cd-elevation, cd-variety, cd-special,
+			     cd-roaster-notes) and seven .notes slots. Any empty row or unused note slot
+			     carries [hidden] and collapses.
+			     data-* attributes: data-year + data-position (position within the year,
+			     1 = newest/top) record the newest-to-oldest order for future sorting;
+			     data-fav="true" makes js/coffee-card.js inject the favorite marquee using
+			     data-year; data-origin/process/roaster/cat/varietal drive the filters
+			     (data-varietal must mirror the Variety row). Newest at the top of each year.
 			     How to research + format new entries: .claude/skills/coffee-research/SKILL.md -->
-			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="citrus fruit" data-varietal="SL28|SL34|Batian">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="1" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="citrus fruit" data-varietal="SL28|SL34|Batian">
 			<p><span class="coffee-name">Kirinyaga AA, Kenya</span><span class="coffee-roaster"><br>
 			<a href="https://www.sterling.coffee">Sterling Coffee Roasters</a></span></p>
 
@@ -534,7 +539,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Honduras" data-process="Natural" data-roaster="Alma Coffee" data-cat="fruit" data-varietal="Parainema|Catuaí">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="2" data-origin="Honduras" data-process="Natural" data-roaster="Alma Coffee" data-cat="fruit" data-varietal="Parainema|Catuaí">
 			<p><span class="coffee-name">Finca La Unica, Honduras</span><span class="coffee-roaster"><br>
 			<a href="https://myalmacoffee.com">Alma Coffee</a></span></p>
 
@@ -556,7 +561,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Tony's Coffee" data-cat="fruit" data-varietal="SL28|SL34|Ruiru 11|Batian">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="3" data-origin="Kenya" data-process="Washed" data-roaster="Tony's Coffee" data-cat="fruit" data-varietal="SL28|SL34|Ruiru 11|Batian">
 			<p><span class="coffee-name">Kenya Mihuti</span><span class="coffee-roaster"><br>
 			<a href="https://www.tonyscoffee.com">Tony's Coffee</a></span></p>
 
@@ -578,7 +583,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Tony's Coffee" data-cat="nutty choc">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="4" data-origin="Mexico" data-process="Washed" data-roaster="Tony's Coffee" data-cat="nutty choc">
 			<p><span class="coffee-name">Mexico Chiapas</span><span class="coffee-roaster"><br>
 			<a href="https://www.tonyscoffee.com/product/mexico-chiapas/">Tony's Coffee</a></span></p>
 
@@ -600,7 +605,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="5" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty" data-varietal="Heirloom">
 			<p><span class="coffee-name">West Guji, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://naomijoecoffee.com">Naomi Joe</a></span></p>
 
@@ -622,7 +627,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Perc Coffee" data-cat="fruit sweet" data-varietal="Caturra">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="6" data-origin="Colombia" data-process="Washed" data-roaster="Perc Coffee" data-cat="fruit sweet" data-varietal="Caturra">
 			<p><span class="coffee-name">Colombia Jhoan Vergara</span><span class="coffee-roaster"><br>
 			<a href="https://perccoffee.com/products/colombia-jhoan-vergara">Perc Coffee</a></span></p>
 
@@ -644,7 +649,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Guatemala" data-process="Natural" data-roaster="8th &amp; Roast" data-cat="fruit choc sweet" data-varietal="Red Bourbon">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="7" data-origin="Guatemala" data-process="Natural" data-roaster="8th &amp; Roast" data-cat="fruit choc sweet" data-varietal="Red Bourbon">
 			<p><span class="coffee-name">Buena Vista Natural, Guatemala</span><span class="coffee-roaster"><br>
 			<a href="https://www.8thandroast.com/products/concepcion-buena-vista-natural-guatemala">8th &amp; Roast</a></span></p>
 
@@ -666,7 +671,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Atomic Coffee Roasters" data-cat="citrus choc sweet" data-varietal="Caturra|Catuaí">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="8" data-origin="Costa Rica" data-process="Washed" data-roaster="Atomic Coffee Roasters" data-cat="citrus choc sweet" data-varietal="Caturra|Catuaí">
 			<p><span class="coffee-name">Costa Rica Tarrazú</span><span class="coffee-roaster"><br>
 			<a href="https://atomicroastery.com/products/costa-rica-tarrazu">Atomic Coffee Roasters</a></span></p>
 
@@ -688,7 +693,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Little Waves" data-cat="sweet fruit spice" data-varietal="Typica|Caturra|Bourbon|Catimor">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="9" data-origin="Mexico" data-process="Washed" data-roaster="Little Waves" data-cat="sweet fruit spice" data-varietal="Typica|Caturra|Bourbon|Catimor">
 			<p><span class="coffee-name">Bella Vista Mayan Harvest Women's Group, Mexico</span><span class="coffee-roaster"><br>
 			<a href="https://littlewaves.coffee">Little Waves</a></span></p>
 
@@ -710,7 +715,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Washed" data-roaster="Methodical Coffee" data-cat="nutty spice fruit" data-varietal="Caturra|Catuaí">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="10" data-origin="Costa Rica" data-process="Washed" data-roaster="Methodical Coffee" data-cat="nutty spice fruit" data-varietal="Caturra|Catuaí">
 			<p><span class="coffee-name">Costa Rica, La Pastora</span><span class="coffee-roaster"><br>
 			<a href="https://methodicalcoffee.com/products/costa-rica-la-pastora">Methodical Coffee</a></span></p>
 
@@ -732,7 +737,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="fruit choc sweet" data-varietal="Caturra">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="11" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="fruit choc sweet" data-varietal="Caturra">
 			<p><span class="coffee-name">Wild Forest, Colombia</span><span class="coffee-roaster"><br>
 			<a href="https://www.devocion.com/products/coffee-colombia-wildforest">Devoción</a></span></p>
 
@@ -754,7 +759,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Feast Coffee &amp; Culture" data-cat="sweet nutty citrus" data-varietal="Caturra|Castillo|Colombia">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="12" data-origin="Colombia" data-process="Washed" data-roaster="Feast Coffee &amp; Culture" data-cat="sweet nutty citrus" data-varietal="Caturra|Castillo|Colombia">
 			<p><span class="coffee-name">Palmera, Colombia</span><span class="coffee-roaster"><br>
 			<a href="https://www.feastcoffee.com">Feast Coffee &amp; Culture</a></span></p>
 
@@ -776,7 +781,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Honduras" data-process="Washed" data-roaster="Dune Coffee Roasters" data-cat="citrus sweet floral" data-varietal="Pacas">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="13" data-origin="Honduras" data-process="Washed" data-roaster="Dune Coffee Roasters" data-cat="citrus sweet floral" data-varietal="Pacas">
 			<p><span class="coffee-name">Urpania Guzmán, Honduras</span><span class="coffee-roaster"><br>
 			<a href="https://www.dunecoffee.com/products/honduras-urpania-guzman-pacas">Dune Coffee Roasters</a></span></p>
 
@@ -798,7 +803,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Brazil|Peru|Ethiopia" data-process="Blend" data-roaster="Cerberus Coffee" data-cat="choc fruit">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="14" data-origin="Brazil|Peru|Ethiopia" data-process="Blend" data-roaster="Cerberus Coffee" data-cat="choc fruit">
 			<p><span class="coffee-name">Wizard Cat Blend</span><span class="coffee-roaster"><br>
 			<a href="https://cerberuscoffeeco.com/products/wizard-cat-blend">Cerberus Coffee</a></span></p>
 
@@ -820,7 +825,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="True North Coffee Roasters" data-cat="fruit">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="15" data-origin="Colombia" data-process="Washed" data-roaster="True North Coffee Roasters" data-cat="fruit">
 			<p><span class="coffee-name">Buesaco, Nariño — Colombia</span><span class="coffee-roaster"><br>
 			<a href="https://www.drinktruenorth.com">True North Coffee Roasters</a></span></p>
 
@@ -842,7 +847,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Timeless Coffee" data-cat="fruit sweet">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="16" data-origin="Peru" data-process="Washed" data-roaster="Timeless Coffee" data-cat="fruit sweet">
 			<p><span class="coffee-name">Peru Selva Andina</span><span class="coffee-roaster"><br>
 			<a href="https://timelesscoffee.com">Timeless Coffee</a></span></p>
 
@@ -864,7 +869,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Co-Ferment" data-roaster="Perc Coffee" data-cat="fruit floral sweet">
+			<div class="card coffee" data-fav="false" data-year="2026" data-position="17" data-origin="Colombia" data-process="Co-Ferment" data-roaster="Perc Coffee" data-cat="fruit floral sweet">
 			<p><span class="coffee-name">Colombia Young Producers</span><span class="coffee-roaster"><br>
 			<a href="https://perccoffee.com/products/colombia-young-producers">Perc Coffee</a></span></p>
 
@@ -890,7 +895,7 @@
 			<div class="year-section">
 			<p class="year">2025</p>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia|Brazil" data-process="Blend" data-roaster="Naomi Joe" data-cat="fruit floral">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="1" data-origin="Colombia|Brazil" data-process="Blend" data-roaster="Naomi Joe" data-cat="fruit floral">
 			<p><span class="coffee-name">Meadowlark Blend</span><span class="coffee-roaster"><br>
 			<a href="https://naomijoecoffee.com">Naomi Joe</a></span></p>
 
@@ -912,7 +917,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="2" data-origin="Ethiopia" data-process="Natural" data-roaster="Naomi Joe" data-cat="fruit nutty" data-varietal="Heirloom">
 			<p><span class="coffee-name">West Guji, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://naomijoecoffee.com">Naomi Joe</a></span></p>
 
@@ -934,7 +939,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Sightseer Coffee" data-cat="fruit floral" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="3" data-origin="Ethiopia" data-process="Natural" data-roaster="Sightseer Coffee" data-cat="fruit floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Space Cowboy, Yirgacheffe</span><span class="coffee-roaster"><br>
 			<a href="https://sightseercoffee.co">Sightseer Coffee</a></span></p>
 
@@ -956,7 +961,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Costa Rica" data-process="Reposado & Washed" data-roaster="Onda Origins" data-cat="fruit choc" data-varietal="Bourbon">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="4" data-origin="Costa Rica" data-process="Reposado & Washed" data-roaster="Onda Origins" data-cat="fruit choc" data-varietal="Bourbon">
 			<p><span class="coffee-name">Enrique Navarro, Costa Rica</span><span class="coffee-roaster"><br>
 			<a href="https://ondaorigins.com">Onda Origins</a></span></p>
 
@@ -978,7 +983,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="5" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
 			<p><span class="coffee-name">Tusitala</span><span class="coffee-roaster"><br>
 			<a href="https://ondaorigins.com">Onda Origins</a></span></p>
 
@@ -1000,7 +1005,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Onda Origins" data-cat="sweet fruit spice floral" data-varietal="Bourbon|Typica|Mundo Novo|Caturra|Garnica">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="6" data-origin="Mexico" data-process="Washed" data-roaster="Onda Origins" data-cat="sweet fruit spice floral" data-varietal="Bourbon|Typica|Mundo Novo|Caturra|Garnica">
 			<p><span class="coffee-name">Carlos Cadena, Mexico</span><span class="coffee-roaster"><br>
 			<a href="https://ondaorigins.com">Onda Origins</a></span></p>
 
@@ -1022,7 +1027,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="7" data-origin="" data-process="Blend" data-roaster="Onda Origins" data-cat="choc fruit sweet">
 			<p><span class="coffee-name">Tusitala</span><span class="coffee-roaster"><br>
 			<a href="https://ondaorigins.com">Onda Origins</a></span></p>
 
@@ -1044,7 +1049,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet choc fruit">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="8" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet choc fruit">
 			<p><span class="coffee-name">Amparo Pajoy</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1066,7 +1071,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Brio Coffeeworks" data-cat="citrus spice">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="9" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Brio Coffeeworks" data-cat="citrus spice">
 			<p><span class="coffee-name">Sumatra Lintong</span><span class="coffee-roaster"><br>
 			<a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a></span></p>
 
@@ -1088,7 +1093,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="choc citrus nutty">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="10" data-origin="Colombia" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="choc citrus nutty">
 			<p><span class="coffee-name">Finca Santa Ana, Colombia</span><span class="coffee-roaster"><br>
 			<a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a></span></p>
 
@@ -1110,8 +1115,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="true" data-origin="Brazil" data-process="Natural" data-roaster="Onda Origins" data-cat="choc nutty">
-			<div class="fav-marquee" role="img" aria-label="One of my favorites from 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span></div></div>
+			<div class="card coffee" data-fav="true" data-year="2025" data-position="11" data-origin="Brazil" data-process="Natural" data-roaster="Onda Origins" data-cat="choc nutty">
 			<p><span class="coffee-name">Kiko Ribeiro, Brazil</span><span class="coffee-roaster"><br>
 			<a href="https://ondaorigins.com">Onda Origins</a></span></p>
 
@@ -1133,7 +1137,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Burundi" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet fruit floral" data-varietal="Bourbon">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="12" data-origin="Burundi" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="sweet fruit floral" data-varietal="Bourbon">
 			<p><span class="coffee-name">Gitwe, Burundi</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1155,7 +1159,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Mexico" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="nutty sweet citrus" data-varietal="Caturra|Catuaí">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="13" data-origin="Mexico" data-process="Washed" data-roaster="Brio Coffeeworks" data-cat="nutty sweet citrus" data-varietal="Caturra|Catuaí">
 			<p><span class="coffee-name">Mexico Chiapas</span><span class="coffee-roaster"><br>
 			<a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a></span></p>
 
@@ -1177,7 +1181,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Brio Coffeeworks" data-cat="fruit floral" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="14" data-origin="Ethiopia" data-process="Natural" data-roaster="Brio Coffeeworks" data-cat="fruit floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Ethiopia Ardi</span><span class="coffee-roaster"><br>
 			<a href="https://www.briocoffeeworks.com">Brio Coffeeworks</a></span></p>
 
@@ -1199,7 +1203,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia|Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="15" data-origin="Ethiopia|Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit">
 			<p><span class="coffee-name">Punch Bowl</span><span class="coffee-roaster"><br>
 			<a href="https://www.dunecoffee.com">Dune Coffee Roasters</a></span></p>
 
@@ -1221,7 +1225,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Guatemala" data-process="Washed" data-roaster="Onda Origins" data-cat="choc nutty spice" data-varietal="Catuaí|Sarchimor|Caturra">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="16" data-origin="Guatemala" data-process="Washed" data-roaster="Onda Origins" data-cat="choc nutty spice" data-varietal="Catuaí|Sarchimor|Caturra">
 			<p><span class="coffee-name">Ivonne Herrera, Guatemala</span><span class="coffee-roaster"><br>
 			<a href="https://ondaorigins.com">Onda Origins</a></span></p>
 
@@ -1243,8 +1247,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="citrus fruit floral">
-			<div class="fav-marquee" role="img" aria-label="One of my favorites from 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span></div></div>
+			<div class="card coffee" data-fav="true" data-year="2025" data-position="17" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="citrus fruit floral">
 			<p><span class="coffee-name">Bombe, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1266,7 +1269,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Airship Coffee" data-cat="choc sweet spice">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="18" data-origin="Indonesia" data-process="Wet Hulled" data-roaster="Airship Coffee" data-cat="choc sweet spice">
 			<p><span class="coffee-name">Lake Toba Caldera, Sumatra</span><span class="coffee-roaster"><br>
 			<a href="https://airshipcoffee.com">Airship Coffee</a></span></p>
 
@@ -1288,7 +1291,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Myanmar" data-process="Natural" data-roaster="Orcabay Coffee Roasters" data-cat="fruit">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="19" data-origin="Myanmar" data-process="Natural" data-roaster="Orcabay Coffee Roasters" data-cat="fruit">
 			<p><span class="coffee-name">Myanmar Natural</span><span class="coffee-roaster"><br>
 			<a href="https://www.orcabaycoffeebeans.com">Orcabay Coffee Roasters</a></span></p>
 
@@ -1310,7 +1313,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Brazil" data-process="Natural" data-roaster="Máquina" data-cat="sweet choc">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="20" data-origin="Brazil" data-process="Natural" data-roaster="Máquina" data-cat="sweet choc">
 			<p><span class="coffee-name">Groupo de Minas, Brazil</span><span class="coffee-roaster"><br>
 			<a href="https://www.maquinacoffee.com">Máquina</a></span></p>
 
@@ -1332,7 +1335,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus" data-varietal="74110|74112">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="21" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus" data-varietal="74110|74112">
 			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1354,7 +1357,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Anaerobic Natural" data-roaster="Red Rooster Coffee" data-cat="fruit choc floral" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="22" data-origin="Ethiopia" data-process="Anaerobic Natural" data-roaster="Red Rooster Coffee" data-cat="fruit choc floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Sakaro, Gedeb District, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://redroostercoffee.com">Red Rooster Coffee</a></span></p>
 
@@ -1376,7 +1379,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus" data-varietal="74110|74112">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="23" data-origin="Ethiopia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="floral fruit citrus" data-varietal="74110|74112">
 			<p><span class="coffee-name">Zelelu Ararso, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1398,7 +1401,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="choc fruit sweet">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="24" data-origin="Colombia" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="choc fruit sweet">
 			<p><span class="coffee-name">San Sebastián Reserva, Colombia</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1420,7 +1423,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit choc" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="25" data-origin="Ethiopia" data-process="Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit choc" data-varietal="Heirloom">
 			<p><span class="coffee-name">Idido, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://www.dunecoffee.com">Dune Coffee Roasters</a></span></p>
 
@@ -1442,7 +1445,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit citrus">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="26" data-origin="Colombia" data-process="Anaerobic Natural" data-roaster="Dune Coffee Roasters" data-cat="fruit citrus">
 			<p><span class="coffee-name">La Palmera, Colombia</span><span class="coffee-roaster"><br>
 			<a href="https://www.dunecoffee.com">Dune Coffee Roasters</a></span></p>
 
@@ -1464,7 +1467,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Peru" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="fruit sweet floral" data-varietal="Geisha|Bourbon|Caturra|Tabi">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="27" data-origin="Peru" data-process="Washed" data-roaster="Olympia Coffee Roasters" data-cat="fruit sweet floral" data-varietal="Geisha|Bourbon|Caturra|Tabi">
 			<p><span class="coffee-name">Arlen Humbo, Peru</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1486,7 +1489,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="India" data-process="Pulped Natural" data-roaster="Methodical Coffee" data-cat="spice nutty choc" data-varietal="Selection 795|Selection 9|Selection 5B|Chandragiri">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="28" data-origin="India" data-process="Pulped Natural" data-roaster="Methodical Coffee" data-cat="spice nutty choc" data-varietal="Selection 795|Selection 9|Selection 5B|Chandragiri">
 			<p><span class="coffee-name">Hulikere Estate, India</span><span class="coffee-roaster"><br>
 			<a href="https://methodicalcoffee.com">Methodical Coffee</a></span></p>
 
@@ -1508,7 +1511,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Natural" data-roaster="Olympia Coffee Roasters" data-cat="fruit choc">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="29" data-origin="Ethiopia" data-process="Natural" data-roaster="Olympia Coffee Roasters" data-cat="fruit choc">
 			<p><span class="coffee-name">Gotta Natural, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://olympiacoffee.com">Olympia Coffee Roasters</a></span></p>
 
@@ -1530,7 +1533,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Ethiopia" data-process="Washed" data-roaster="Bird Rock Coffee Roasters" data-cat="fruit sweet" data-varietal="Heirloom">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="30" data-origin="Ethiopia" data-process="Washed" data-roaster="Bird Rock Coffee Roasters" data-cat="fruit sweet" data-varietal="Heirloom">
 			<p><span class="coffee-name">Ethiopia Uraga</span><span class="coffee-roaster"><br>
 			<a href="https://birdrockcoffee.com">Bird Rock Coffee Roasters</a></span></p>
 
@@ -1552,8 +1555,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="true" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral" data-varietal="Heirloom">
-			<div class="fav-marquee" role="img" aria-label="One of my favorites from 2025"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span><span class="fav-marquee-item">one of my favorites from 2025</span></span></div></div>
+			<div class="card coffee" data-fav="true" data-year="2025" data-position="31" data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral" data-varietal="Heirloom">
 			<p><span class="coffee-name">Benti Nenka, Ethiopia</span><span class="coffee-roaster"><br>
 			<a href="https://perccoffee.com">Perc Coffee</a></span></p>
 
@@ -1575,7 +1577,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="choc fruit nutty" data-varietal="Caturra|Typica">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="32" data-origin="Colombia" data-process="Washed" data-roaster="Devoción" data-cat="choc fruit nutty" data-varietal="Caturra|Typica">
 			<p><span class="coffee-name">Toro</span><span class="coffee-roaster"><br>
 			<a href="https://www.devocion.com/products/house-blend-coffee-toro">Devoción</a></span></p>
 
@@ -1597,7 +1599,7 @@
 			</div>
 			</div>
 
-			<div class="card coffee" data-fav="false" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="fruit sweet" data-varietal="SL28|SL34|Ruiru 11|Batian">
+			<div class="card coffee" data-fav="false" data-year="2025" data-position="33" data-origin="Kenya" data-process="Washed" data-roaster="Sterling Coffee Roasters" data-cat="fruit sweet" data-varietal="SL28|SL34|Ruiru 11|Batian">
 			<p><span class="coffee-name">Kiamugumo AB</span><span class="coffee-roaster"><br>
 			<a href="https://www.sterling.coffee">Sterling Coffee Roasters</a></span></p>
 
@@ -1639,17 +1641,6 @@
 
 	<script src="js/map.js"></script>
 	<script>
-		function toggleAllInfo(input) {
-			var show = input.checked;
-			document.querySelectorAll('.coffee-details').forEach(function (d) {
-				if (show) {
-					d.removeAttribute('hidden');
-				} else {
-					d.setAttribute('hidden', '');
-				}
-			});
-		}
-
 		/* ---- View switch (Map / List) — top-right toggle, defaults to Map ---- */
 		var mapView = document.querySelector('.map-view');
 		var mapCanvas = mapView.querySelector('.map-canvas');
@@ -1694,9 +1685,10 @@
 		function openCoffeePanel(cards) {
 			panelBody.innerHTML = '';
 			cards.forEach(function (card) {
+				// The modal is just the list card on a scrim — clone it and drop the
+				// filter's inline display:none so it shows regardless of the active filter.
 				var clone = card.cloneNode(true);
 				clone.removeAttribute('style');
-				clone.querySelectorAll('.coffee-details').forEach(function (d) { d.removeAttribute('hidden'); });
 				panelBody.appendChild(clone);
 			});
 			var card = mapModal.querySelector('.map-modal-card');

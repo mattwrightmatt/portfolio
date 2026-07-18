@@ -7,11 +7,12 @@
 	<title>Matt Wright – Design System</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="stylesheet" href="css/index.css?v=5" type="text/css">
+	<link rel="stylesheet" href="css/index.css?v=6" type="text/css">
 	<!-- Session colour theme: off by default; opt in via the home-page toggle.
 	     ?v bumps force clients past cached copies of these shared assets. -->
-	<script src="js/randoma11y.js?v=5"></script>
-	<script src="js/theme.js?v=5"></script>
+	<script src="js/randoma11y.js?v=6"></script>
+	<script src="js/theme.js?v=6"></script>
+	<script src="js/coffee-card.js?v=6"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -68,6 +69,16 @@
 		}
 		.check-row + .check-row {
 			margin-top: 12px;
+		}
+		/* Coffee-card demo: stack the section switches, label left / switch right. */
+		.demo-toggles {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+		.demo-toggles .toggle {
+			display: flex;
+			justify-content: space-between;
 		}
 	</style>
 </head>
@@ -178,16 +189,17 @@
 
 			<p class="section-title">Toggle</p>
 			<div class="card">
-				<label class="toggle"><span>Details</span><input type="checkbox" class="switch" role="switch"></label>
+				<label class="toggle"><span>Enabled</span><input type="checkbox" class="switch" role="switch"></label>
 			</div>
 
 			<p class="section-title">Coffee card</p>
 			<div class="sys-label">The uniform card used on the Espresso page (list view and map
 				modal). One skeleton per card: header (name + roaster), a details block of
 				labelled rows, then note slots. Any section without content — and every spare
-				note slot — carries the “hidden” attribute and collapses,
-				so a card only shows the rows it has. Adding a note unhides the next note slot.</div>
-			<div class="card coffee">
+				note slot — carries the “hidden” attribute and collapses, so a card only shows
+				the rows it has. The favorite banner is a binary flag (data-fav) whose year
+				comes from the card’s data-year. Toggle the sections below to see it adapt.</div>
+			<div class="card coffee" id="demo-card" data-fav="false" data-year="2026" data-position="1">
 				<p><span class="coffee-name">Example Coffee, Country</span><span class="coffee-roaster"><br>
 				<a href="#">Example Roasters</a></span></p>
 
@@ -196,7 +208,7 @@
 				<div class="cd-line cd-process">Process: Washed</div>
 				<div class="cd-line cd-elevation">Elevation: 1,800 MASL</div>
 				<div class="cd-line cd-variety">Variety: Caturra</div>
-				<div class="cd-line cd-special" hidden>Special</div>
+				<div class="cd-line cd-special" hidden>Special: Good Food Award winner</div>
 				<div class="cd-line cd-roaster-notes">Roaster's notes: Cherry, cocoa, orange</div></div>
 
 				<div class="notes">A personal tasting note.</div>
@@ -209,29 +221,16 @@
 			</div>
 			</div>
 
-			<div class="sys-label">Sparse card — a favorite blend with no elevation/variety and no
-				notes yet; the empty rows collapse and there's no rule under the details.</div>
-			<div class="card coffee" data-fav="true">
-				<div class="fav-marquee" role="img" aria-label="One of my favorites"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span></span></div></div>
-				<p><span class="coffee-name">Rotating Blend</span><span class="coffee-roaster"><br>
-				<a href="#">Example Roasters</a></span></p>
-
-				<div class="expand">
-				<div class="coffee-details"><div class="cd-line cd-origin" hidden>Origin</div>
-				<div class="cd-line cd-process" hidden>Process</div>
-				<div class="cd-line cd-elevation" hidden>Elevation</div>
-				<div class="cd-line cd-variety" hidden>Variety</div>
-				<div class="cd-line cd-special">Rotating seasonal blend</div>
-				<div class="cd-line cd-roaster-notes">Roaster's notes: Cacao, cherry, caramel</div></div>
-
-				<div class="notes" hidden>Notes</div>
-				<div class="notes" hidden>Notes</div>
-				<div class="notes" hidden>Notes</div>
-				<div class="notes" hidden>Notes</div>
-				<div class="notes" hidden>Notes</div>
-				<div class="notes" hidden>Notes</div>
-				<div class="notes" hidden>Notes</div>
-			</div>
+			<div class="card demo-toggles">
+				<label class="toggle"><span>Favorite banner</span><input type="checkbox" class="switch" role="switch" data-demo="fav"></label>
+				<label class="toggle"><span>Roaster</span><input type="checkbox" class="switch" role="switch" data-demo=".coffee-roaster" checked></label>
+				<label class="toggle"><span>Origin</span><input type="checkbox" class="switch" role="switch" data-demo=".cd-origin" checked></label>
+				<label class="toggle"><span>Process</span><input type="checkbox" class="switch" role="switch" data-demo=".cd-process" checked></label>
+				<label class="toggle"><span>Elevation</span><input type="checkbox" class="switch" role="switch" data-demo=".cd-elevation" checked></label>
+				<label class="toggle"><span>Variety</span><input type="checkbox" class="switch" role="switch" data-demo=".cd-variety" checked></label>
+				<label class="toggle"><span>Special line</span><input type="checkbox" class="switch" role="switch" data-demo=".cd-special"></label>
+				<label class="toggle"><span>Roaster's notes</span><input type="checkbox" class="switch" role="switch" data-demo=".cd-roaster-notes" checked></label>
+				<label class="toggle"><span>Note</span><input type="checkbox" class="switch" role="switch" data-demo=".notes" checked></label>
 			</div>
 		</div></main>
 
@@ -284,6 +283,28 @@
 				document.querySelectorAll('.chip-menu').forEach(function (m) { m.setAttribute('hidden', ''); });
 			}
 		});
+
+		/* Coffee-card demo: each switch shows/hides one section of #demo-card by
+		   toggling its [hidden] attribute. The Favorite switch flips data-fav and lets
+		   coffee-card.js add/remove the year-stamped marquee. */
+		(function () {
+			var card = document.getElementById('demo-card');
+			if (!card) return;
+			document.querySelectorAll('.demo-toggles [data-demo]').forEach(function (sw) {
+				sw.addEventListener('change', function () {
+					var key = sw.getAttribute('data-demo');
+					if (key === 'fav') {
+						card.setAttribute('data-fav', sw.checked ? 'true' : 'false');
+						if (window.CoffeeCard) window.CoffeeCard.applyFav(card);
+						return;
+					}
+					var el = card.querySelector(key);   // first matching section (e.g. first .notes)
+					if (!el) return;
+					if (sw.checked) el.removeAttribute('hidden');
+					else el.setAttribute('hidden', '');
+				});
+			});
+		})();
 	</script>
 </body>
 </html>

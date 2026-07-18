@@ -29,9 +29,9 @@ Every card is the shared **coffee card component** (documented on `system.html`,
 styles in `css/index.css`). It has one fixed skeleton — don't improvise markup:
 
 ```html
-<div class="card coffee" data-fav="false" data-origin="Ethiopia"
-     data-process="Natural" data-roaster="Perc Coffee" data-cat="fruit citrus floral"
-     data-varietal="Heirloom">
+<div class="card coffee" data-fav="false" data-year="2025" data-position="4"
+     data-origin="Ethiopia" data-process="Natural" data-roaster="Perc Coffee"
+     data-cat="fruit citrus floral" data-varietal="Heirloom">
 <p><span class="coffee-name">Benti Nenka, Ethiopia</span><span class="coffee-roaster"><br>
 <a href="URL">Perc Coffee</a></span></p>
 
@@ -58,9 +58,13 @@ styles in `css/index.css`). It has one fixed skeleton — don't improvise markup
   `Good Food Award winner`) — normally hidden.
 - **Adding a personal note** = unhide the next `.notes` slot and replace its
   "Notes" text. The `add-coffee-note` skill does exactly this.
-- Favorites get a `.fav-marquee` banner as the card's first child and
-  `data-fav="true"` (copy an existing favorite's marquee markup; banner text is
-  `one of my favorites from <YEAR>`).
+- **Favorites** are just `data-fav="true"` — don't paste any banner markup.
+  `js/coffee-card.js` injects the `.fav-marquee` ribbon on load and stamps it with
+  the card's `data-year` (`one of my favorites from <YEAR>`).
+- **`data-year` + `data-position`** are on every card. `data-position` is the
+  coffee's index within its year, **1 = newest (top)**. Together they record the
+  current newest-to-oldest order for future sorting — set them when adding a
+  coffee (see below). They aren't displayed.
 - Detail rows show inline; empty rows are hidden individually via `hidden`.
 
 ## Filter attributes (on the card `<div>`)
@@ -136,9 +140,14 @@ Do **not** include a roast date. (Those were intentionally removed.)
 
 - Place it at the **top** of its year's `.year-section` (newest first). If the
   year has no section yet, add a new `<div class="year-section"><p class="year">YEAR</p>…`.
+- Set `data-year` to that year and `data-position="1"` on the new card, and
+  **bump every existing card in that year's `data-position` up by one** (the new
+  one is now the newest). This keeps the sort order intact.
 - Give `.coffee-details` a fresh unique `id="details-N"`.
 - Fill `data-origin/process/roaster/cat/varietal` and add any new chip-menu
   options. Then research elevation/variety per the workflow above.
+- For a favorite, just set `data-fav="true"` — the banner is injected from
+  `data-year`; don't paste marquee markup.
 
 ## Handy re-sync script
 
