@@ -7,12 +7,12 @@
 	<title>Matt Wright – Design System</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="stylesheet" href="css/index.css?v=6" type="text/css">
+	<link rel="stylesheet" href="css/index.css?v=7" type="text/css">
 	<!-- Session colour theme: off by default; opt in via the home-page toggle.
 	     ?v bumps force clients past cached copies of these shared assets. -->
-	<script src="js/randoma11y.js?v=6"></script>
-	<script src="js/theme.js?v=6"></script>
-	<script src="js/coffee-card.js?v=6"></script>
+	<script src="js/randoma11y.js?v=7"></script>
+	<script src="js/theme.js?v=7"></script>
+	<script src="js/coffee-card.js?v=7"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -27,10 +27,12 @@
 			opacity: 60%;
 			margin-bottom: 8px;
 		}
-		.card > :first-child {
+		/* Zero the outer margins of demo-card contents — but not on coffee cards,
+		   whose favorite banner relies on a negative top margin to sit flush. */
+		.card:not(.coffee) > :first-child {
 			margin-top: 0;
 		}
-		.card > :last-child {
+		.card:not(.coffee) > :last-child {
 			margin-bottom: 0;
 		}
 		.type-row + .type-row {

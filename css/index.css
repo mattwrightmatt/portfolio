@@ -404,26 +404,33 @@ li a:hover:not(.active) {
 .coffee {
   padding: 12px;
 }
+/* Name + roaster are primary body text (roaster is a subdued link on its own
+   line). Set explicitly so the header never inherits a smaller size. */
 .coffee-name {
   font-weight: var(--weight-semibold);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+}
+.coffee-roaster {
+  font-size: var(--font-size);
+  line-height: var(--line-height);
 }
 /* Header paragraph (name + roaster) carries no default margin. */
 .coffee > p:first-of-type {
   margin: 0;
 }
 
-/* Marquee banner across the top of a favorite coffee card. Flush to the
-   card's top and side edges (negative margins cancel the card padding),
-   bottom corners square so it reads as a header ribbon, with the title
-   sitting 12px below it. Top corners use the card's radius minus its 1px
-   border, so the banner nests exactly inside the border instead of
-   leaving a sliver of page background showing at the corner. */
+/* Marquee banner across the top of a favorite coffee card. Negative margins pull
+   it flush to the card's outer top and side edges — covering the border so it
+   reads as the card's top edge with no gap above it — and its top corners use the
+   full card radius to match. Bottom corners stay square (header-ribbon look), with
+   the title sitting 12px below. */
 .fav-marquee {
-  margin: -12px -12px 8px;
+  margin: -13px -13px 8px;
   overflow: hidden;
   background: var(--color-primary);
   color: var(--color-subdued);
-  border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+  border-radius: var(--radius) var(--radius) 0 0;
   font-size: var(--font-size-sm);
   line-height: 1;
   white-space: nowrap;
