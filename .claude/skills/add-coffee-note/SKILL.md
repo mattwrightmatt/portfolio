@@ -5,34 +5,38 @@ description: >-
   Use this whenever the user says "add a note", "add a tasting note", wants to
   jot down an impression of the coffee they're drinking right now, or record a
   thought/observation about a recent coffee. The flow: show the 5 most recent
-  coffees, let the user pick one, then insert their note into that card. Trigger
-  even when they don't mention "espresso", the roaster, or a coffee name — in
-  this repo, "add a note" means a coffee tasting note.
+  coffees, let the user pick one, then unhide that card's next note slot and drop
+  in their text. Trigger even when they don't mention "espresso", the roaster, or
+  a coffee name — in this repo, "add a note" means a coffee tasting note.
 ---
 
 # Add a coffee tasting note
 
-A quick-add flow for dropping a personal tasting note onto a coffee on the
-Espresso page. The user is usually drinking the coffee *now* and wants to
-capture a thought without hunting for the entry themselves — so the whole point
-is to make picking the coffee and adding the note effortless.
+A quick-add flow for dropping a personal tasting note onto a coffee. The user is
+usually drinking the coffee *now* and wants to capture a thought without hunting
+for the entry — so the whole point is to make picking the coffee and adding the
+note effortless.
 
-This skill is the note-*adding* companion to the `coffee-research` skill. That
-skill is the source of truth for the full card schema; this one only touches the
-personal `.notes` and the `.expand` wrapper. When in doubt about card markup,
-read `.claude/skills/coffee-research/SKILL.md`.
+Every coffee card is the shared **coffee card component** (documented on the
+design-system page, `system.html`, styles in `css/index.css`). The part that
+matters here: each card already contains **seven `.notes` slots** — the ones in
+use are visible, the rest sit `hidden` with placeholder text "Notes". Adding a
+note is therefore just *unhiding the next slot and replacing its text*. There's
+no wrapping, nesting, or new markup to author — that structure is what keeps this
+safe and simple (an earlier hand-nested approach once swallowed a whole year's
+cards into one; the component exists so that can't happen again).
 
 ## The flow
 
 ### 1. Show the 5 most recent coffees
 
 "Most recent" is just document order: `espresso.html` lists the newest year
-first and, within a year, the newest coffee at the top. So the 5 most recent are
-the **first 5 `.card.coffee` entries in the file** — no date parsing needed.
+first and the newest coffee at the top of each year. So the 5 most recent are the
+**first 5 `.card.coffee` entries in the file** — no date parsing needed.
 
-Read the coffee names (the `.coffee-name` span) and the roaster (the `<a>` right
-after it) for the first five cards, and present them as a short numbered list so
-the user can pick with a single number:
+Read the coffee names (`.coffee-name`) and roaster (`.coffee-roaster` link) for
+the first five cards and present a short numbered list so the user can pick with
+one number:
 
 ```
 Which coffee is the note for?
@@ -43,79 +47,65 @@ Which coffee is the note for?
 5. West Guji, Ethiopia — Naomi Joe
 ```
 
-If the user already named the coffee in their opening message ("add a note to
-the Kenya Mihuti…"), skip the list and go straight to that card — don't make
-them pick from a list they didn't need. Likewise, if they already gave the note
-text in the same breath, skip step 2's question and add it.
+If the user already named the coffee ("add a note to the Kenya Mihuti…"), skip
+the list and go straight to that card. If they gave the note text in the same
+breath, skip the next step too and just add it.
 
 ### 2. Get the note
 
-If they haven't already provided it, ask for the note text. Add it in the user's
-own voice — this is their tasting journal, not marketing copy. Preserve their
-wording and phrasing; only fix an obvious typo. Don't invent or embellish
-flavors they didn't mention.
+If they haven't provided it, ask for the note text. Add it in the user's own
+voice — this is their tasting journal, not marketing copy. Preserve their wording;
+only fix an obvious typo. Don't invent or embellish flavors they didn't mention.
 
-### 3. Insert the note
+### 3. Unhide the next note slot
 
-A note lives in a `<div class="notes">…</div>`. How you add it depends on
-whether the card already has personal notes:
+In the chosen card, find the **first** slot of the form:
 
-**Case A — the card has no notes yet.** Its `.coffee-details` is a direct child
-of the card (the CSS `.coffee > .coffee-details` drops the bottom border for
-this case). You need to wrap the details in an `.expand` container and add the
-note inside it. Match the surrounding tab indentation exactly.
+```html
+			<div class="notes" hidden>Notes</div>
+```
+
+Unhide it and replace its placeholder with the note — a single edit that changes
+nothing structural:
+
+```html
+			<div class="notes">Tasting cherry and a bit of black tea today.</div>
+```
+
+Because that exact `hidden` slot line repeats (across this card and others), anchor
+your edit on the **line just above the first hidden slot** so the match is unique
+to this card. That preceding line is either the card's last *visible* note or, if
+the card has none yet, its `Roaster's notes:` row (each carries text unique to the
+coffee). For example, adding the first note to a card that has none:
 
 Before:
 ```html
-	<div class="coffee-details" id="details-17"><div>Origin: Kirinyaga, Kenya</div>
-	<div>Process: Washed</div>
-	<div>Roaster's notes: Grapefruit, plum</div></div>
-	</div>
+			<div class="cd-line cd-roaster-notes">Roaster's notes: Stone fruit, blueberry, nougat</div></div>
+
+			<div class="notes" hidden>Notes</div>
 ```
 After:
 ```html
-	<div class="expand">
-	<div class="coffee-details" id="details-17"><div>Origin: Kirinyaga, Kenya</div>
-	<div>Process: Washed</div>
-	<div>Roaster's notes: Grapefruit, plum</div></div>
+			<div class="cd-line cd-roaster-notes">Roaster's notes: Stone fruit, blueberry, nougat</div></div>
 
-	<div class="notes">Tasting grapefruit tartness. Pulled a 1:2.5 shot and getting a bit more sweetness and body</div>
-	</div>
-	</div>
-```
-The `.expand` wrapper opens before `.coffee-details`, the note goes after it with
-a blank line between, and a new closing `</div>` for `.expand` sits just inside
-the card's own closing `</div>`.
-
-**Case B — the card already has notes.** It already has an `.expand` wrapper with
-one or more `.notes` divs. Just append another `.notes` div immediately after the
-last existing one (still inside `.expand`). The CSS `.notes + .notes` handles the
-spacing between stacked notes automatically, so no extra blank line is needed
-between them.
-
-```html
-	<div class="notes">Existing note…</div>
-	<div class="notes">The new note you're adding</div>
-	</div>
+			<div class="notes">Bright and juicy — really nice as a light roast.</div>
 ```
 
-Never put a note inside `.coffee-details` (that block is the factual, toggleable
-research data and is hidden by default) — notes always sit *outside* it.
+Leave the remaining `hidden` slots as they are. The CSS handles everything else:
+the first visible note makes the details grow its dividing rule, and note spacing
+is automatic. (In the rare case a card has already filled all seven slots — only
+the busiest coffee is close — add one more `<div class="notes">…</div>` right after
+the last visible note, still inside the `.expand` wrapper.)
 
-### 4. Verify and confirm
+### 4. Confirm
 
-The details block is hidden until the page's **Details** toggle is on, but a
-`.notes` div is always visible in List view. If you want to confirm the render,
-note that the Espresso page **defaults to Map view**, which hides the card list —
-switch to List view first (the top-right view toggle) before checking that the
-note shows. A quick read-back of the edited card is usually enough.
-
-Tell the user which coffee got the note and show the text you added, so they can
-catch any wording they'd change.
+A `.notes` div is visible in List view (the Espresso page opens in Map view, so
+switch views if you want to eyeball it). Tell the user which coffee got the note
+and show the text you added, so they can catch any wording they'd change.
 
 ### 5. Committing
 
-The user has been keeping this site's changes on `main` (the live site deploys
-from it). After adding a note, offer to commit and push, or just do it if
-they've made that standing preference clear — mirror how they've been working
-rather than assuming. Keep the commit message about the note that was added.
+The user keeps this site's changes on `main` (the live site deploys from it).
+After adding a note, offer to commit and push, or just do it if they've made that
+preference clear — mirror how they've been working. Keep the commit message about
+the note that was added.

@@ -7,11 +7,11 @@
 	<title>Matt Wright – Design System</title>
 	<meta name="description" content="Designer in Seattle, Washington" />
 	<link rel="icon" href="https://raw.githubusercontent.com/mattwrightmatt/portfolio/main/Favicon.png?v=2" />
-	<link rel="stylesheet" href="css/index.css?v=4" type="text/css">
+	<link rel="stylesheet" href="css/index.css?v=5" type="text/css">
 	<!-- Session colour theme: off by default; opt in via the home-page toggle.
 	     ?v bumps force clients past cached copies of these shared assets. -->
-	<script src="js/randoma11y.js?v=4"></script>
-	<script src="js/theme.js?v=4"></script>
+	<script src="js/randoma11y.js?v=5"></script>
+	<script src="js/theme.js?v=5"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -179,6 +179,59 @@
 			<p class="section-title">Toggle</p>
 			<div class="card">
 				<label class="toggle"><span>Details</span><input type="checkbox" class="switch" role="switch"></label>
+			</div>
+
+			<p class="section-title">Coffee card</p>
+			<div class="sys-label">The uniform card used on the Espresso page (list view and map
+				modal). One skeleton per card: header (name + roaster), a details block of
+				labelled rows, then note slots. Any section without content — and every spare
+				note slot — carries the “hidden” attribute and collapses,
+				so a card only shows the rows it has. Adding a note unhides the next note slot.</div>
+			<div class="card coffee">
+				<p><span class="coffee-name">Example Coffee, Country</span><span class="coffee-roaster"><br>
+				<a href="#">Example Roasters</a></span></p>
+
+				<div class="expand">
+				<div class="coffee-details"><div class="cd-line cd-origin">Origin: Farm · Region, Country</div>
+				<div class="cd-line cd-process">Process: Washed</div>
+				<div class="cd-line cd-elevation">Elevation: 1,800 MASL</div>
+				<div class="cd-line cd-variety">Variety: Caturra</div>
+				<div class="cd-line cd-special" hidden>Special</div>
+				<div class="cd-line cd-roaster-notes">Roaster's notes: Cherry, cocoa, orange</div></div>
+
+				<div class="notes">A personal tasting note.</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+			</div>
+			</div>
+
+			<div class="sys-label">Sparse card — a favorite blend with no elevation/variety and no
+				notes yet; the empty rows collapse and there's no rule under the details.</div>
+			<div class="card coffee" data-fav="true">
+				<div class="fav-marquee" role="img" aria-label="One of my favorites"><div class="fav-marquee-track"><span class="fav-marquee-group"><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span></span><span class="fav-marquee-group" aria-hidden="true"><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span><span class="fav-marquee-item">one of my favorites</span></span></div></div>
+				<p><span class="coffee-name">Rotating Blend</span><span class="coffee-roaster"><br>
+				<a href="#">Example Roasters</a></span></p>
+
+				<div class="expand">
+				<div class="coffee-details"><div class="cd-line cd-origin" hidden>Origin</div>
+				<div class="cd-line cd-process" hidden>Process</div>
+				<div class="cd-line cd-elevation" hidden>Elevation</div>
+				<div class="cd-line cd-variety" hidden>Variety</div>
+				<div class="cd-line cd-special">Rotating seasonal blend</div>
+				<div class="cd-line cd-roaster-notes">Roaster's notes: Cacao, cherry, caramel</div></div>
+
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+				<div class="notes" hidden>Notes</div>
+			</div>
 			</div>
 		</div></main>
 

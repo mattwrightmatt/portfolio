@@ -383,3 +383,124 @@ li a:hover:not(.active) {
   background: var(--color-primary);
   opacity: 50%;
 }
+
+
+/* ============================================================
+   COFFEE CARD COMPONENT  — used by the espresso list, the map modal, and the
+   design-system page. Every .card.coffee follows one uniform skeleton:
+
+     .card.coffee
+       [.fav-marquee]                        favorite ribbon (optional)
+       p > .coffee-name + .coffee-roaster     header (roaster hideable)
+       .expand
+         .coffee-details > .cd-line*          labelled facts, one per row
+         .notes*                              tasting notes + spare slots
+
+   Sections whose content is absent carry [hidden] and collapse, so a card only
+   shows the rows it has. Note slots past the real notes stay [hidden] until a
+   note is added. Keeping the styles here (not on the espresso page) makes this a
+   shared component the design system can render.
+   ============================================================ */
+.coffee {
+  padding: 12px;
+}
+.coffee-name {
+  font-weight: var(--weight-semibold);
+}
+/* Header paragraph (name + roaster) carries no default margin. */
+.coffee > p:first-of-type {
+  margin: 0;
+}
+
+/* Marquee banner across the top of a favorite coffee card. Flush to the
+   card's top and side edges (negative margins cancel the card padding),
+   bottom corners square so it reads as a header ribbon, with the title
+   sitting 12px below it. Top corners use the card's radius minus its 1px
+   border, so the banner nests exactly inside the border instead of
+   leaving a sliver of page background showing at the corner. */
+.fav-marquee {
+  margin: -12px -12px 8px;
+  overflow: hidden;
+  background: var(--color-primary);
+  color: var(--color-subdued);
+  border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  white-space: nowrap;
+}
+.fav-marquee-track {
+  display: inline-flex;
+  padding: 8px 0;
+  animation: fav-marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+.fav-marquee-group {
+  display: inline-flex;
+}
+.fav-marquee-item::after {
+  content: "·";
+  margin: 0 1.1em;
+}
+@keyframes fav-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fav-marquee-track { animation: none; }
+}
+
+/* Details block: labelled rows (Origin, Process, Elevation, Variety, an
+   optional one-off line, Roaster's notes). Empty rows are [hidden]. */
+.coffee-details {
+  margin: 12px -12px 0;
+  padding: 12px;
+  border-top: 1px solid var(--color-primary-subtle);
+  border-bottom: 1px solid var(--color-primary-subtle);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+/* 4px between consecutive *visible* rows. Using :not([hidden]) siblings (rather
+   than a plain div + div) means the first visible row never inherits a leading
+   gap just because empty rows sit above it. */
+.coffee-details > .cd-line:not([hidden]) ~ .cd-line:not([hidden]) {
+  margin-top: 4px;
+}
+
+/* Wraps details + notes so a persistent rule sits between the coffee info and
+   the notes. Every card uses .expand now, since it always carries note slots. */
+.expand {
+  margin: 12px -12px 0;
+  padding: 0 12px;
+  border-top: 1px solid var(--color-primary-subtle);
+}
+.expand .coffee-details {
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: none;
+}
+/* A card with no visible notes reads exactly like the old note-less card: no
+   bottom rule under the details and a tighter top gap. */
+.expand:not(:has(> .notes:not([hidden]))) .coffee-details {
+  margin-top: 12px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Personal tasting notes. Spare slots stay [hidden] until a note is added. */
+.notes {
+  border-left: 1px solid;
+  padding-left: 8px;
+  opacity: 60%;
+  margin-top: 16px;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+.notes + .notes {
+  margin-top: 12px;
+}
+
+/* Hidden component sections take up no space. */
+.coffee-details > .cd-line[hidden],
+.expand > .notes[hidden] {
+  display: none;
+}
