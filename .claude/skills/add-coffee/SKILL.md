@@ -71,8 +71,12 @@ Build the card with the shared component markup (copy the anatomy from
   favorite — then `data-fav="true"`, and the marquee is injected automatically
   from `data-year`, no banner markup), plus `data-origin` / `data-process` /
   `data-roaster` / `data-cat` / `data-varietal`. A brand-new roaster, origin,
-  process, or variety value must also be **added to that filter's chip menu**
-  (kept alphabetical) or it won't be filterable — see `coffee-research`.
+  process, or variety value must also be **added to that filter's chip menu** or
+  it won't be filterable — see `coffee-research`. **The user is always trying new
+  coffees, so new processes/varieties/origins/roasters are expected — just add
+  the chip option as a normal part of the job; it's not a decision to flag or ask
+  about.** Keep each menu in its existing order (Varietal is alphabetical; Process
+  is loosely grouped by family, so slot a new one next to its relatives).
 - **Detail rows + notes.** Fill the six `.cd-line` rows you have (hide the rest),
   give `.coffee-details` a fresh unique `id`, and include the seven `.notes`
   slots all `hidden` — the user adds tasting notes later via `add-coffee-note`.

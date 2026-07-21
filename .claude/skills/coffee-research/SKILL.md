@@ -79,8 +79,12 @@ styles in `css/index.css`). It has one fixed skeleton — don't improvise markup
 | `data-varietal` | variety/varieties          | `\|`      | must mirror the `Variety:` detail line |
 
 Every chip menu in the `.filters` block is hardcoded. **If you introduce a new
-origin / process / roaster / varietal value, add it to that chip's menu** (kept
-alphabetical) or it won't be filterable.
+origin / process / roaster / varietal value, add it to that chip's menu** or it
+won't be filterable. The user is always trying new coffees, so new values are
+routine — add them confidently, no need to ask. Keep each menu in its existing
+order: Origin / Roaster / Varietal are alphabetical; the Process menu is loosely
+grouped by family (e.g. the Natural/Honey styles sit together), so place a new
+process next to its relatives rather than strictly alphabetically.
 
 ## Detail-line schema & order
 
